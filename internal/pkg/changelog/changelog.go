@@ -15,7 +15,7 @@ import (
 func MakeFullChangelog(spinner *spinner.Spinner) (*ChangeLogProperties, error) {
 	client, err := githubclient.NewGitHubClient()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("❌ %s", err)
 	}
 
 	changeLog := NewChangeLogProperties(client.RepoContext.Owner, client.RepoContext.Repo)
@@ -25,7 +25,7 @@ func MakeFullChangelog(spinner *spinner.Spinner) (*ChangeLogProperties, error) {
 
 	tags, err := client.GetTags()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("❌ could not get tags: %v", err)
 	}
 
 	// Sort by date, this is mad slow but you can't get at the date
@@ -46,7 +46,7 @@ func MakeFullChangelog(spinner *spinner.Spinner) (*ChangeLogProperties, error) {
 		spinner.Suffix = fmt.Sprintf(" Processing tags: 🏷️  %s", tag.GetName())
 		currentCommit, err := client.GetCommit(tag.GetCommit().GetSHA())
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("❌ could not get commit for tag '%s': %v", tag.GetName(), err)
 		}
 
 		var nextCommit *github.Commit
@@ -57,7 +57,7 @@ func MakeFullChangelog(spinner *spinner.Spinner) (*ChangeLogProperties, error) {
 		}
 
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("❌ could not get next commit: %v", err)
 		}
 
 		pullRequests, err := client.GetPullRequestsBetweenDates(
@@ -65,7 +65,12 @@ func MakeFullChangelog(spinner *spinner.Spinner) (*ChangeLogProperties, error) {
 			currentCommit.GetCommitter().GetDate(),
 		)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf(
+				"❌ could not get pull requests for range '%s - %s': %v",
+				nextCommit.GetCommitter().GetDate(),
+				currentCommit.GetCommitter().GetDate(),
+				err,
+			)
 		}
 
 		typeMap, err := processPullRequests(
@@ -75,7 +80,7 @@ func MakeFullChangelog(spinner *spinner.Spinner) (*ChangeLogProperties, error) {
 			viper.GetStringSlice("excludedLabels"),
 		)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("❌ could not process pull requests: %v", err)
 		}
 
 		changeLog.Tags = append(changeLog.Tags, *typeMap)
