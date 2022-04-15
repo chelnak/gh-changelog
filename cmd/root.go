@@ -4,12 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"time"
 
-	"github.com/briandowns/spinner"
-	"github.com/chelnak/gh-changelog/internal/pkg/changelog"
 	"github.com/chelnak/gh-changelog/internal/pkg/configuration"
-	"github.com/chelnak/gh-changelog/internal/pkg/writer"
 	"github.com/spf13/cobra"
 )
 
@@ -18,27 +14,13 @@ var ErrSilent = errors.New("ErrSilent")
 
 // RootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:           "changelog",
+	Use:           "changelog [command]",
 	Short:         "Create a changelog that adheres to the [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) format",
 	Long:          "Create a changelog that adheres to the [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) format",
 	Version:       version,
 	SilenceUsage:  true,
 	SilenceErrors: true,
-	RunE: func(command *cobra.Command, args []string) error {
-
-		s := spinner.New(spinner.CharSets[11], 100*time.Millisecond)
-		_ = s.Color("green")
-		s.FinalMSG = "✅ Done!\n"
-
-		changeLog, err := changelog.MakeFullChangelog(s)
-		if err != nil {
-			return err
-		}
-
-		s.Stop()
-
-		return writer.Write(changeLog)
-	},
+	Run:           nil,
 }
 
 func init() {
@@ -53,6 +35,9 @@ func init() {
 		cmd.Println(cmd.UsageString())
 		return ErrSilent
 	})
+
+	rootCmd.AddCommand(newCmd)
+	rootCmd.AddCommand(showCmd)
 }
 
 func Execute() int {
