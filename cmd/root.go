@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"time"
@@ -13,13 +14,16 @@ import (
 )
 
 var version = "dev"
+var ErrSilent = errors.New("ErrSilent")
 
 // RootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:     "changelog [args]",
-	Short:   "Create a changelog that adheres to the [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) format",
-	Long:    "Create a changelog that adheres to the [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) format",
-	Version: version,
+	Use:           "changelog",
+	Short:         "Create a changelog that adheres to the [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) format",
+	Long:          "Create a changelog that adheres to the [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) format",
+	Version:       version,
+	SilenceUsage:  true,
+	SilenceErrors: true,
 	RunE: func(command *cobra.Command, args []string) error {
 
 		s := spinner.New(spinner.CharSets[11], 100*time.Millisecond)
@@ -43,10 +47,19 @@ func init() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+
+	rootCmd.SetFlagErrorFunc(func(cmd *cobra.Command, err error) error {
+		cmd.Println(err)
+		cmd.Println(cmd.UsageString())
+		return ErrSilent
+	})
 }
 
 func Execute() int {
 	if err := rootCmd.Execute(); err != nil {
+		if err != ErrSilent {
+			fmt.Fprintln(os.Stderr, err)
+		}
 		return 1
 	}
 	return 0
