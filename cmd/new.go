@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/briandowns/spinner"
@@ -26,6 +27,13 @@ var newCmd = &cobra.Command{
 		}
 
 		s.Stop()
-		return writer.Write(changeLog)
+
+		fileName := viper.GetString("fileName")
+		file, err := os.Create(fileName)
+		if err != nil {
+			return err
+		}
+
+		return writer.Write(changeLog, file)
 	},
 }

@@ -1,15 +1,14 @@
 package writer
 
 import (
-	"os"
+	"io"
 	"text/template"
 
 	"github.com/chelnak/gh-changelog/internal/pkg/changelog"
-	"github.com/spf13/viper"
 )
 
 //lintLint:ignore U1000
-func Write(changeLog *changelog.ChangeLogProperties) error {
+func Write(changeLog *changelog.ChangeLogProperties, writer io.Writer) error {
 	var tmplSrc = `# Changelog
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
@@ -71,13 +70,7 @@ All notable changes to this project will be documented in this file. The format 
 
 	tmpl := template.Must(template.New("changelog").Parse(tmplSrc))
 
-	fileName := viper.GetString("fileName")
-	f, err := os.Create(fileName)
-	if err != nil {
-		return err
-	}
-
-	err = tmpl.Execute(f, changeLog)
+	err := tmpl.Execute(writer, changeLog)
 	if err != nil {
 		return err
 	}

@@ -143,7 +143,7 @@ func processPullRequests(tagName string, date time.Time, pullRequests []*github.
 
 func hasExcludedLabel(excludedLabels []string, pr *github.Issue) bool {
 	for _, label := range pr.Labels {
-		if utils.Contains(excludedLabels, label.GetName()) {
+		if utils.SliceContainsString(excludedLabels, label.GetName()) {
 			return true
 		}
 	}
