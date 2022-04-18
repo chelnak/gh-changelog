@@ -12,7 +12,9 @@ import (
 func Write(changeLog *changelog.ChangeLogProperties) error {
 	var tmplSrc = `# Changelog
 
-All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
+All notable changes to this project will be documented in this file. 
+
+The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 {{range .Tags}}
 ## [{{.Tag}}](https://github.com/{{$.RepoOwner}}/{{$.RepoName}}/tree/{{.Tag}}) - ({{.Date.Format "2006-01-02"}})
 

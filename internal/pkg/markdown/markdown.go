@@ -11,6 +11,7 @@ func Render(path string) error {
 	r, _ := glamour.NewTermRenderer(
 		glamour.WithAutoStyle(),
 		glamour.WithEmoji(),
+		glamour.WithWordWrap(140), // TODO: make this configurable
 	)
 
 	data, err := ioutil.ReadFile(path)
