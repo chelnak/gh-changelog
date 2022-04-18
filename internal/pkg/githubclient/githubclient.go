@@ -12,7 +12,7 @@ import (
 
 type RepoContext struct {
 	Owner string
-	Repo  string
+	Name  string
 }
 
 type GitHubClient struct {
@@ -45,7 +45,7 @@ func NewGitHubClient() (*GitHubClient, error) {
 		baseClient: g,
 		RepoContext: RepoContext{
 			Owner: currentRepository.Owner(),
-			Repo:  currentRepository.Name(),
+			Name:  currentRepository.Name(),
 		},
 		httpContext: context.Background(),
 	}
@@ -61,7 +61,7 @@ func (c *GitHubClient) GetPullRequestsBeforeDate(date time.Time) ([]*github.Issu
 	}
 	query := fmt.Sprintf(
 		"repo:%s/%s type:pr is:merged merged:<%s",
-		c.RepoContext.Owner, c.RepoContext.Repo,
+		c.RepoContext.Owner, c.RepoContext.Name,
 		date.Format("2006-01-02T15:04:05+00:00"),
 	)
 
@@ -81,7 +81,7 @@ func (c *GitHubClient) GetPullRequestAfterDate(date time.Time) ([]*github.Issue,
 	}
 	query := fmt.Sprintf(
 		"repo:%s/%s type:pr is:merged merged:>%s",
-		c.RepoContext.Owner, c.RepoContext.Repo,
+		c.RepoContext.Owner, c.RepoContext.Name,
 		date.Format("2006-01-02T15:04:05+00:00"),
 	)
 	result, _, err := c.baseClient.Search.Issues(c.httpContext, query, &searchOptions)
@@ -100,7 +100,7 @@ func (c *GitHubClient) GetPullRequestsBetweenDates(fromDate time.Time, toDate ti
 	}
 	query := fmt.Sprintf(
 		"repo:%s/%s type:pr is:merged merged:%s..%s",
-		c.RepoContext.Owner, c.RepoContext.Repo,
+		c.RepoContext.Owner, c.RepoContext.Name,
 		fromDate.Format("2006-01-02T15:04:05+00:00"), toDate.Format("2006-01-02T15:04:05+00:00"),
 	)
 	result, response, err := c.baseClient.Search.Issues(c.httpContext, query, &searchOptions)
@@ -131,7 +131,7 @@ func (c *GitHubClient) GetTag(name string) (*github.RepositoryTag, error) {
 	tags, _, err := c.baseClient.Repositories.ListTags(
 		c.httpContext,
 		c.RepoContext.Owner,
-		c.RepoContext.Repo,
+		c.RepoContext.Name,
 		&listTagOptions,
 	)
 	if err != nil {
@@ -154,7 +154,7 @@ func (c *GitHubClient) GetTags() ([]*github.RepositoryTag, error) {
 	tags, _, err := c.baseClient.Repositories.ListTags(
 		c.httpContext,
 		c.RepoContext.Owner,
-		c.RepoContext.Repo,
+		c.RepoContext.Name,
 		&listTagsOptions,
 	)
 	if err != nil {
@@ -168,7 +168,7 @@ func (c *GitHubClient) GetCommit(sha string) (*github.Commit, error) {
 	commit, _, err := c.baseClient.Git.GetCommit(
 		c.httpContext,
 		c.RepoContext.Owner,
-		c.RepoContext.Repo,
+		c.RepoContext.Name,
 		sha,
 	)
 	if err != nil {
@@ -185,7 +185,7 @@ func (c *GitHubClient) GetFirstTag() (*github.RepositoryTag, error) {
 	_, response, err := c.baseClient.Repositories.ListTags(
 		c.httpContext,
 		c.RepoContext.Owner,
-		c.RepoContext.Repo,
+		c.RepoContext.Name,
 		&listTagsOptions,
 	)
 	if err != nil {
@@ -196,7 +196,7 @@ func (c *GitHubClient) GetFirstTag() (*github.RepositoryTag, error) {
 	lastPageOfTags, _, err := c.baseClient.Repositories.ListTags(
 		c.httpContext,
 		c.RepoContext.Owner,
-		c.RepoContext.Repo,
+		c.RepoContext.Name,
 		&listTagsOptions,
 	)
 	if err != nil {
@@ -214,7 +214,7 @@ func (c *GitHubClient) GetLatestTag() (*github.RepositoryTag, error) {
 	tags, _, err := c.baseClient.Repositories.ListTags(
 		c.httpContext,
 		c.RepoContext.Owner,
-		c.RepoContext.Repo,
+		c.RepoContext.Name,
 		&listTagsOptions,
 	)
 	if err != nil {
@@ -235,7 +235,7 @@ func (c *GitHubClient) GetFirstCommit() (*github.Commit, error) {
 	_, response, err := c.baseClient.Repositories.ListCommits(
 		c.httpContext,
 		c.RepoContext.Owner,
-		c.RepoContext.Repo,
+		c.RepoContext.Name,
 		&listCommitsOptions,
 	)
 	if err != nil {
@@ -246,7 +246,7 @@ func (c *GitHubClient) GetFirstCommit() (*github.Commit, error) {
 	lastPageOfCommits, _, err := c.baseClient.Repositories.ListCommits(
 		c.httpContext,
 		c.RepoContext.Owner,
-		c.RepoContext.Repo,
+		c.RepoContext.Name,
 		&listCommitsOptions,
 	)
 	if err != nil {
@@ -256,7 +256,7 @@ func (c *GitHubClient) GetFirstCommit() (*github.Commit, error) {
 	firstCommit, _, err := c.baseClient.Git.GetCommit(
 		c.httpContext,
 		c.RepoContext.Owner,
-		c.RepoContext.Repo,
+		c.RepoContext.Name,
 		lastPageOfCommits[len(lastPageOfCommits)-1].GetSHA(),
 	)
 	if err != nil {
@@ -277,7 +277,7 @@ func (c *GitHubClient) GetLatestCommit() (*github.Commit, error) {
 	commits, _, err := c.baseClient.Repositories.ListCommits(
 		c.httpContext,
 		c.RepoContext.Owner,
-		c.RepoContext.Repo,
+		c.RepoContext.Name,
 		&listCommitsOptions,
 	)
 	if err != nil {
@@ -287,7 +287,7 @@ func (c *GitHubClient) GetLatestCommit() (*github.Commit, error) {
 	latestCommit, _, err := c.baseClient.Git.GetCommit(
 		c.httpContext,
 		c.RepoContext.Owner,
-		c.RepoContext.Repo,
+		c.RepoContext.Name,
 		commits[0].GetSHA(),
 	)
 	if err != nil {

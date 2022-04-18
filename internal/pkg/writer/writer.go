@@ -16,10 +16,10 @@ All notable changes to this project will be documented in this file. The format 
 {{range .Tags}}
 ## [{{.Tag}}](https://github.com/{{$.RepoOwner}}/{{$.RepoName}}/tree/{{.Tag}}) - ({{.Date.Format "2006-01-02"}})
 
-[Full Changelog](https://github.com/{{$.RepoOwner}}/{{$.RepoName}}/compare/v6.1.0...v6.1.1)
-
+[Full Changelog](https://github.com/{{$.RepoOwner}}/{{$.RepoName}}/compare/{{.Tag}}...{{.NextTag}})
 
 {{- if .Added }}
+
 ### Added
 {{range .Added}}
 - {{.}}
@@ -27,6 +27,7 @@ All notable changes to this project will be documented in this file. The format 
 {{- end}}
 
 {{- if .Changed }}
+
 ### Changed
 {{range .Changed}}
 - {{.}}
@@ -34,6 +35,7 @@ All notable changes to this project will be documented in this file. The format 
 {{- end}}
 
 {{- if .Deprecated }}
+
 ### Deprecated
 {{range .Deprecated}}
 - {{.}}
@@ -41,6 +43,7 @@ All notable changes to this project will be documented in this file. The format 
 {{- end}}
 
 {{- if .Removed }}
+
 ### Removed
 {{range .Removed}}
 - {{.}}
@@ -48,6 +51,7 @@ All notable changes to this project will be documented in this file. The format 
 {{- end}}
 
 {{- if .Fixed }}
+
 ### Fixed
 {{range .Fixed}}
 - {{.}}
@@ -55,6 +59,7 @@ All notable changes to this project will be documented in this file. The format 
 {{- end}}
 
 {{- if .Security }}
+
 ### Security
 {{range .Security}}
 - {{.}}
@@ -62,12 +67,14 @@ All notable changes to this project will be documented in this file. The format 
 {{- end}}
 
 {{- if .Other }}
+
 ### Other
 {{range .Other}}
 - {{.}}
 {{- end}}
 {{- end}}
-{{- end}}`
+{{- end}}
+`
 
 	tmpl := template.Must(template.New("changelog").Parse(tmplSrc))
 

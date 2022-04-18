@@ -12,7 +12,7 @@ type ChangeLogProperties struct {
 	Tags      []TagProperties
 }
 
-func NewChangeLogProperties(repoName string, repoOwner string) *ChangeLogProperties {
+func NewChangeLogProperties(repoOwner string, repoName string) *ChangeLogProperties {
 	return &ChangeLogProperties{
 		RepoName:  repoName,
 		RepoOwner: repoOwner,
@@ -22,6 +22,7 @@ func NewChangeLogProperties(repoName string, repoOwner string) *ChangeLogPropert
 
 type TagProperties struct {
 	Tag        string
+	NextTag    string
 	Date       time.Time
 	Added      []string
 	Changed    []string
@@ -32,9 +33,10 @@ type TagProperties struct {
 	Other      []string
 }
 
-func NewTagProperties(tag string, date time.Time) *TagProperties {
+func NewTagProperties(tag string, nextTag string, date time.Time) *TagProperties {
 	return &TagProperties{
 		Tag:        tag,
+		NextTag:    nextTag,
 		Date:       date,
 		Added:      []string{},
 		Changed:    []string{},
@@ -46,8 +48,8 @@ func NewTagProperties(tag string, date time.Time) *TagProperties {
 	}
 }
 
-func (tp *TagProperties) Append(entryType string, entry string) error {
-	switch strings.ToLower(entryType) {
+func (tp *TagProperties) Append(section string, entry string) error {
+	switch strings.ToLower(section) {
 	case "added":
 		tp.Added = append(tp.Added, entry)
 	case "changed":
@@ -63,7 +65,7 @@ func (tp *TagProperties) Append(entryType string, entry string) error {
 	case "other":
 		tp.Other = append(tp.Other, entry)
 	default:
-		return fmt.Errorf("unknown entry type: %s", entryType)
+		return fmt.Errorf("unknown entry type: %s", section)
 	}
 
 	return nil
