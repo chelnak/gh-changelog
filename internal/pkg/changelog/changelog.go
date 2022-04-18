@@ -18,7 +18,7 @@ func MakeFullChangelog(spinner *spinner.Spinner) (*ChangeLogProperties, error) {
 		return nil, fmt.Errorf("❌ %s", err)
 	}
 
-	changeLog := NewChangeLogProperties(client.RepoContext.Owner, client.RepoContext.Repo)
+	changeLog := NewChangeLogProperties(client.RepoContext.Owner, client.RepoContext.Name)
 
 	spinner.Suffix = " Gathering all tags"
 	spinner.Start()
@@ -50,9 +50,12 @@ func MakeFullChangelog(spinner *spinner.Spinner) (*ChangeLogProperties, error) {
 		}
 
 		var nextCommit *github.Commit
+		var nextTag string
 		if idx+1 == len(tags) {
 			nextCommit, err = client.GetFirstCommit()
+			nextTag = nextCommit.GetSHA()
 		} else {
+			nextTag = tags[idx+1].GetName()
 			nextCommit, err = client.GetCommit(tags[idx+1].GetCommit().GetSHA())
 		}
 
@@ -73,72 +76,48 @@ func MakeFullChangelog(spinner *spinner.Spinner) (*ChangeLogProperties, error) {
 			)
 		}
 
-		typeMap, err := processPullRequests(
+		tagProperties, err := getTagProperties(
 			tag.GetName(),
+			nextTag,
 			currentCommit.GetCommitter().GetDate(),
 			pullRequests,
 			viper.GetStringSlice("excludedLabels"),
+			client.RepoContext,
 		)
 		if err != nil {
 			return nil, fmt.Errorf("❌ could not process pull requests: %v", err)
 		}
 
-		changeLog.Tags = append(changeLog.Tags, *typeMap)
+		changeLog.Tags = append(changeLog.Tags, *tagProperties)
 	}
 
 	return changeLog, nil
 }
 
-func processPullRequests(tagName string, date time.Time, pullRequests []*github.Issue, excludedLabels []string) (*TagProperties, error) {
-	// How to do this better?
-	// This whole method is pretty grim.
-
-	sections := viper.GetStringMapStringSlice("sections")
-
-	lookup := make(map[string]string)
-	for k, v := range sections {
-		for _, label := range v {
-			lookup[label] = k
-		}
-	}
-
-	typeMap := NewTagProperties(tagName, date)
+func getTagProperties(currentTag string, nextTag string, date time.Time, pullRequests []*github.Issue, excludedLabels []string, repoContext githubclient.RepoContext) (*TagProperties, error) {
+	tagProperties := NewTagProperties(currentTag, nextTag, date)
 	for _, pr := range pullRequests {
-		// Removed for now. This should be configurable in the future,
-		// if len(pr.Labels) == 0 {
-		// 	return nil, fmt.Errorf("could not process Pull Request #%d. All Pull Requests must have a label", pr.GetNumber())
-		// }
-
 		if !hasExcludedLabel(excludedLabels, pr) {
 			entry := fmt.Sprintf(
 				"%s [#%d](https://github.com/%s/%s/pull/%d) ([%s](https://github.com/%s))\n",
 				pr.GetTitle(),
 				pr.GetNumber(),
-				pr.GetRepository().GetOwner().GetLogin(),
-				pr.GetRepository().GetName(),
+				repoContext.Owner,
+				repoContext.Name,
 				pr.GetNumber(),
 				pr.GetUser().GetLogin(),
 				pr.GetUser().GetLogin(),
 			)
 
-			for _, label := range pr.Labels {
-				if _, ok := lookup[label.GetName()]; ok {
-					err := typeMap.Append(lookup[label.GetName()], entry)
-					if err != nil {
-						return nil, err
-					}
-				} else {
-					// Add tp the "Other" section
-					err := typeMap.Append("Other", entry)
-					if err != nil {
-						return nil, err
-					}
-				}
+			section := getSection(pr.Labels)
+			err := tagProperties.Append(section, entry)
+			if err != nil {
+				return nil, fmt.Errorf("❌ could not append entry: %v", err)
 			}
 		}
 	}
 
-	return typeMap, nil
+	return tagProperties, nil
 }
 
 func hasExcludedLabel(excludedLabels []string, pr *github.Issue) bool {
@@ -149,4 +128,24 @@ func hasExcludedLabel(excludedLabels []string, pr *github.Issue) bool {
 	}
 
 	return false
+}
+
+func getSection(labels []*github.Label) string {
+	sections := viper.GetStringMapStringSlice("sections")
+
+	lookup := make(map[string]string)
+	for k, v := range sections {
+		for _, label := range v {
+			lookup[label] = k
+		}
+	}
+
+	section := "Other"
+	for _, label := range labels {
+		if _, ok := lookup[label.GetName()]; ok {
+			section = lookup[label.GetName()]
+		}
+	}
+
+	return section
 }
