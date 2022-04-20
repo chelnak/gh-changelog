@@ -59,33 +59,47 @@ func (gc *GitClient) GetTags() ([]*Ref, error) {
 	return tags, err
 }
 
-func (gc *GitClient) GetFirstCommit() (*Ref, error) {
-	commitObjectss, err := gc.repo.CommitObjects()
+func (gc *GitClient) GetLogs(reverse bool) ([]*Ref, error) {
+	logOpts := git.LogOptions{
+		Order: git.LogOrderCommitterTime,
+	}
+
+	logsRefs, err := gc.repo.Log(&logOpts)
 	if err != nil {
 		return nil, err
 	}
 
-	commits := []*object.Commit{}
-	err = commitObjectss.ForEach(func(commit *object.Commit) error {
-		commits = append(commits, commit)
+	logs := []*Ref{}
+	err = logsRefs.ForEach(func(c *object.Commit) error {
+		logs = append(logs, &Ref{
+			Sha:  c.Hash.String(),
+			Name: c.Hash.String(),
+			Date: c.Committer.When,
+		})
+
 		return nil
 	})
 
-	sort.Slice(commits, func(i, j int) bool {
-		return commits[i].Committer.When.Before(commits[j].Committer.When)
-	})
-
 	if err != nil {
 		return nil, err
 	}
 
-	ref := &Ref{
-		Sha:  commits[0].Hash.String(),
-		Name: commits[0].Hash.String(), // Set Name to the commit hash because it is the first commit and doesn't have a name
-		Date: commits[0].Committer.When,
+	if reverse {
+		sort.Slice(logs, func(i, j int) bool {
+			return logs[i].Date.Before(logs[j].Date)
+		})
 	}
 
-	return ref, nil
+	return logs, nil
+}
+
+func (gc *GitClient) GetFirstCommit() (*Ref, error) {
+	logs, err := gc.GetLogs(true)
+	if err != nil {
+		return nil, err
+	}
+
+	return logs[0], nil
 }
 
 func NewGitClient() (*GitClient, error) {
