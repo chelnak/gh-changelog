@@ -44,3 +44,32 @@ gh changelog new
 ```bash
 gh changelog show
 ```
+
+## Configuration
+
+Configuration for `gh changelog` can be found at `~/.config/gh-changelog/config.yaml`.
+However some sensible defaults are provided to help you get off to a flying start.
+
+```yaml
+# Labels added here will be ommitted from the changelog
+excluded_labels:
+  - maintenance
+# This is the filename of the generated changelog
+file_name: CHANGELOG.md
+# This is where labels are mapped to the sections in a changelog entry
+# The possible sections are restricted to: Added, Changed, Deprecated,
+# Removed, Fixed, Security.
+sections:
+  Changed:
+    - backwards-incompatible
+  Added:
+    - fixed
+    - enhancement
+  Fixed:
+    - bug
+    - bugfix
+    - documentation
+# When set to true, unlabelled entries will not be included in the changelog.
+# By default they will be grouped in a section named "Other".
+skip_entries_without_label: false
+```
