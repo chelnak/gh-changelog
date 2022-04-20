@@ -18,7 +18,7 @@ var newCmd = &cobra.Command{
 	RunE: func(command *cobra.Command, args []string) error {
 		s := spinner.New(spinner.CharSets[11], 100*time.Millisecond)
 		_ = s.Color("green")
-		s.FinalMSG = fmt.Sprintf("✅ Open %s or run 'gh changelog show' to view your changelog.\n", viper.GetString("fileName"))
+		s.FinalMSG = fmt.Sprintf("✅ Open %s or run 'gh changelog show' to view your changelog.\n", viper.GetString("file_name"))
 
 		changeLog, err := changelog.MakeFullChangelog(s)
 		if err != nil {

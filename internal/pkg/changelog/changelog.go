@@ -62,7 +62,7 @@ func MakeFullChangelog(spinner *spinner.Spinner) (*ChangeLogProperties, error) {
 			nextTag.Name,
 			currentTag.Date,
 			pullRequests,
-			viper.GetStringSlice("excludedLabels"),
+			viper.GetStringSlice("excluded_labels"),
 			client.RepoContext,
 		)
 		if err != nil {
@@ -93,7 +93,7 @@ func getTagProperties(currentTag string, nextTag string, date time.Time, pullReq
 			section := getSection(pr.Labels)
 			err := tagProperties.Append(section, entry)
 			if err != nil {
-				return nil, fmt.Errorf("❌ could not append entry: %v", err)
+				return nil, err
 			}
 		}
 	}
@@ -121,11 +121,16 @@ func getSection(labels []*github.Label) string {
 		}
 	}
 
-	section := "Other"
+	section := ""
 	for _, label := range labels {
 		if _, ok := lookup[label.GetName()]; ok {
 			section = lookup[label.GetName()]
 		}
+	}
+
+	skipUnlabelledEntries := viper.GetBool("skip_entries_without_label")
+	if !skipUnlabelledEntries {
+		section = "Other"
 	}
 
 	return section

@@ -11,11 +11,8 @@ import (
 func InitConfig() error {
 	home, _ := os.UserHomeDir()
 
-	cfgFile := "config.yml"
-	viper.SetConfigName(cfgFile)
+	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
-
-	viper.AddConfigPath(home)
 
 	cfgPath := filepath.Join(home, ".config", "gh-changelog")
 	viper.AddConfigPath(cfgPath)
@@ -26,28 +23,23 @@ func InitConfig() error {
 		}
 	}
 
-	cfgFilePath := filepath.Join(cfgPath, cfgFile)
-
-	if _, err := os.Stat(cfgFilePath); os.IsNotExist(err) {
-		_, err := os.Create(filepath.Clean(cfgFilePath))
-		if err != nil {
-			return fmt.Errorf("failed to initialise %s: %s", cfgFilePath, err)
-		}
+	SetDefaults()
+	err := viper.SafeWriteConfig()
+	if err != nil {
+		return fmt.Errorf("failed to write config: %s", err)
 	}
 
-	err := viper.ReadInConfig()
+	err = viper.ReadInConfig()
 	if err != nil {
 		return fmt.Errorf("failed to read config: %s", err)
 	}
 
-	setDefaults()
-
 	return nil
 }
 
-func setDefaults() {
-	viper.SetDefault("fileName", "CHANGELOG.md")
-	viper.SetDefault("excludedLabels", []string{"maintenance"})
+func SetDefaults() {
+	viper.SetDefault("file_name", "CHANGELOG.md")
+	viper.SetDefault("excluded_labels", []string{"maintenance"})
 
 	sections := make(map[string][]string)
 	sections["Changed"] = []string{"backwards-incompatible"}
@@ -55,4 +47,6 @@ func setDefaults() {
 	sections["Fixed"] = []string{"bug", "bugfix", "documentation"}
 
 	viper.SetDefault("sections", sections)
+
+	viper.SetDefault("skip_entries_without_label", false)
 }
