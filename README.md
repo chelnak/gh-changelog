@@ -5,6 +5,14 @@
 
 An opinionated [GitHub Cli](https://github.com/cli/cli) extension for creating changelogs that adhere to the [keep a changelog](https://keepachangelog.com/en/1.0.0/) specification.
 
+## What is supported?
+
+`gh-changelog` is the tool for you if:
+
+- You want to closely follow the [keep a changelog](https://keepachangelog.com/en/1.0.0/) specification
+- You are using tags to mark releases
+- You are following a pull-request workflow
+
 ## Installation and Usage
 
 Before you start make sure that:
