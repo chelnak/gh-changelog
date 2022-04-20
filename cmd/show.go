@@ -12,7 +12,7 @@ var showCmd = &cobra.Command{
 	Long:  "Renders the changelog in the terminal",
 	RunE: func(command *cobra.Command, args []string) error {
 
-		changelog := viper.GetString("fileName")
+		changelog := viper.GetString("file_name")
 		return markdown.Render(changelog)
 	},
 }

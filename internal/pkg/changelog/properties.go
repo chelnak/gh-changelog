@@ -65,7 +65,7 @@ func (tp *TagProperties) Append(section string, entry string) error {
 	case "other":
 		tp.Other = append(tp.Other, entry)
 	default:
-		return fmt.Errorf("unknown entry type: %s", section)
+		return fmt.Errorf("unknown entry type '%s'", section)
 	}
 
 	return nil

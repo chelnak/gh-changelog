@@ -80,7 +80,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 	tmpl := template.Must(template.New("changelog").Parse(tmplSrc))
 
-	fileName := viper.GetString("fileName")
+	fileName := viper.GetString("file_name")
 	f, err := os.Create(fileName)
 	if err != nil {
 		return err
