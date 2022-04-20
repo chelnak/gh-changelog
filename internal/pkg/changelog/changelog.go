@@ -2,10 +2,10 @@ package changelog
 
 import (
 	"fmt"
-	"sort"
 	"time"
 
 	"github.com/briandowns/spinner"
+	"github.com/chelnak/gh-changelog/internal/pkg/gitclient"
 	"github.com/chelnak/gh-changelog/internal/pkg/githubclient"
 	"github.com/chelnak/gh-changelog/internal/pkg/utils"
 	"github.com/google/go-github/v43/github"
@@ -18,68 +18,49 @@ func MakeFullChangelog(spinner *spinner.Spinner) (*ChangeLogProperties, error) {
 		return nil, fmt.Errorf("❌ %s", err)
 	}
 
+	gitClient, err := gitclient.NewGitClient()
+	if err != nil {
+		return nil, fmt.Errorf("❌ %s", err)
+	}
+
 	changeLog := NewChangeLogProperties(client.RepoContext.Owner, client.RepoContext.Name)
 
 	spinner.Suffix = " Gathering all tags"
 	spinner.Start()
 
-	tags, err := client.GetTags()
+	tags, err := gitClient.GetTags()
 	if err != nil {
 		return nil, fmt.Errorf("❌ could not get tags: %v", err)
 	}
 
-	// Sort by date, this is mad slow but you can't get at the date
-	// any other way or sort the api response.
-	spinner.Suffix = " Sorting entries"
-	sort.Slice(tags, func(i, j int) bool {
-		tagICommit, _ := client.GetCommit(tags[i].GetCommit().GetSHA())
-		tagIDate := tagICommit.GetCommitter().GetDate()
-
-		tagJCommit, _ := client.GetCommit(tags[j].GetCommit().GetSHA())
-		tagJDate := tagJCommit.GetCommitter().GetDate()
-
-		return tagIDate.After(tagJDate)
-	})
-
 	spinner.Suffix = " Gathering all pull requests"
-	for idx, tag := range tags {
-		spinner.Suffix = fmt.Sprintf(" Processing tags: 🏷️  %s", tag.GetName())
-		currentCommit, err := client.GetCommit(tag.GetCommit().GetSHA())
-		if err != nil {
-			return nil, fmt.Errorf("❌ could not get commit for tag '%s': %v", tag.GetName(), err)
-		}
+	for idx, currentTag := range tags {
+		spinner.Suffix = fmt.Sprintf(" Processing tags: 🏷️  %s", currentTag.Name)
 
-		var nextCommit *github.Commit
-		var nextTag string
+		var nextTag *gitclient.Ref
 		if idx+1 == len(tags) {
-			nextCommit, err = client.GetFirstCommit()
-			nextTag = nextCommit.GetSHA()
+			nextTag, err = gitClient.GetFirstCommit()
+			if err != nil {
+				return nil, fmt.Errorf("❌ could not get first commit: %v", err)
+			}
 		} else {
-			nextTag = tags[idx+1].GetName()
-			nextCommit, err = client.GetCommit(tags[idx+1].GetCommit().GetSHA())
+			nextTag = tags[idx+1]
 		}
 
-		if err != nil {
-			return nil, fmt.Errorf("❌ could not get next commit: %v", err)
-		}
-
-		pullRequests, err := client.GetPullRequestsBetweenDates(
-			nextCommit.GetCommitter().GetDate(),
-			currentCommit.GetCommitter().GetDate(),
-		)
+		pullRequests, err := client.GetPullRequestsBetweenDates(nextTag.Date, currentTag.Date)
 		if err != nil {
 			return nil, fmt.Errorf(
 				"❌ could not get pull requests for range '%s - %s': %v",
-				nextCommit.GetCommitter().GetDate(),
-				currentCommit.GetCommitter().GetDate(),
+				nextTag.Date,
+				currentTag.Date,
 				err,
 			)
 		}
 
 		tagProperties, err := getTagProperties(
-			tag.GetName(),
-			nextTag,
-			currentCommit.GetCommitter().GetDate(),
+			currentTag.Name,
+			nextTag.Name,
+			currentTag.Date,
 			pullRequests,
 			viper.GetStringSlice("excludedLabels"),
 			client.RepoContext,
