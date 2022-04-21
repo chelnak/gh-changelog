@@ -23,15 +23,12 @@ func InitConfig() error {
 		}
 	}
 
-	SetDefaults()
-	err := viper.SafeWriteConfig()
-	if err != nil {
-		return fmt.Errorf("failed to write config: %s", err)
-	}
-
-	err = viper.ReadInConfig()
-	if err != nil {
-		return fmt.Errorf("failed to read config: %s", err)
+	if err := viper.ReadInConfig(); err != nil {
+		SetDefaults()
+		err := viper.SafeWriteConfig()
+		if err != nil {
+			return fmt.Errorf("failed to write config: %s", err)
+		}
 	}
 
 	return nil

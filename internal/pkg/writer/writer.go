@@ -9,13 +9,13 @@ import (
 )
 
 //lintLint:ignore U1000
-func Write(changeLog *changelog.ChangeLogProperties) error {
+func Write(changeLog *changelog.ChangeLog) error {
 	var tmplSrc = `# Changelog
 
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
-{{range .Tags}}
+{{range .Entries}}
 ## [{{.Tag}}](https://github.com/{{$.RepoOwner}}/{{$.RepoName}}/tree/{{.Tag}}) - ({{.Date.Format "2006-01-02"}})
 
 [Full Changelog](https://github.com/{{$.RepoOwner}}/{{$.RepoName}}/compare/{{.Tag}}...{{.NextTag}})
