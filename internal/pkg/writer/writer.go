@@ -16,9 +16,9 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 {{range .Entries}}
-## [{{.Tag}}](https://github.com/{{$.RepoOwner}}/{{$.RepoName}}/tree/{{.Tag}}) - ({{.Date.Format "2006-01-02"}})
+## [{{.CurrentTag}}](https://github.com/{{$.RepoOwner}}/{{$.RepoName}}/tree/{{.CurrentTag}}) - ({{.Date.Format "2006-01-02"}})
 
-[Full Changelog](https://github.com/{{$.RepoOwner}}/{{$.RepoName}}/compare/{{.Tag}}...{{.NextTag}})
+[Full Changelog](https://github.com/{{$.RepoOwner}}/{{$.RepoName}}/compare/{{.PreviousTag}}...{{.CurrentTag}})
 
 {{- if .Added }}
 
