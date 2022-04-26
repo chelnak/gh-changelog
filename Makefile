@@ -6,4 +6,4 @@ lint:
 	@golangci-lint run ./...
 
 build:
-	@WORKINGDIR=$(pwd) goreleaser build --snapshot --rm-dist
+	@WORKINGDIR=$(pwd) goreleaser build --snapshot --rm-dist --single-target
