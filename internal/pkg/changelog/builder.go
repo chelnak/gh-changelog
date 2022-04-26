@@ -7,23 +7,22 @@ import (
 
 	"github.com/briandowns/spinner"
 	"github.com/chelnak/gh-changelog/internal/pkg/gitclient"
-	"github.com/chelnak/gh-changelog/internal/pkg/githubclient"
+	"github.com/chelnak/gh-changelog/internal/pkg/githubv4client"
 	"github.com/chelnak/gh-changelog/internal/pkg/utils"
-	"github.com/google/go-github/v43/github"
 	"github.com/spf13/viper"
 )
 
 type Entry struct {
-	Tag        string
-	NextTag    string
-	Date       time.Time
-	Added      []string
-	Changed    []string
-	Deprecated []string
-	Removed    []string
-	Fixed      []string
-	Security   []string
-	Other      []string
+	CurrentTag  string
+	PreviousTag string
+	Date        time.Time
+	Added       []string
+	Changed     []string
+	Deprecated  []string
+	Removed     []string
+	Fixed       []string
+	Security    []string
+	Other       []string
 }
 
 func (e *Entry) Append(section string, entry string) error {
@@ -55,35 +54,32 @@ type ChangeLog struct {
 	Entries   []Entry
 }
 
-func NewChangeLogBuilder(gitClient *gitclient.GitClient, githubClient *githubclient.GitHubClient, tags []*gitclient.Ref) *changeLogBuilder {
-	s := spinner.New(spinner.CharSets[11], 100*time.Millisecond)
-	_ = s.Color("green")
-	s.FinalMSG = fmt.Sprintf("✅ Open %s or run 'gh changelog show' to view your changelog.\n", viper.GetString("file_name"))
-
-	return &changeLogBuilder{
-		spinner:      s,
-		gitClient:    gitClient,
-		githubClient: githubClient,
-		tags:         tags,
-	}
-}
-
 type changeLogBuilder struct {
-	spinner      *spinner.Spinner
-	gitClient    *gitclient.GitClient
-	githubClient *githubclient.GitHubClient
-	tags         []*gitclient.Ref
+	spinner        *spinner.Spinner
+	githubV4Client *githubv4client.GitHubGraphClient
+	git            *gitclient.Git
+	tags           []githubv4client.Tag
 }
 
 func (builder *changeLogBuilder) Build() (*ChangeLog, error) {
+	builder.spinner.Start()
+
+	builder.spinner.Suffix = " Fetching tags..."
+
+	tags, err := builder.githubV4Client.GetTags()
+	if err != nil {
+		return nil, err
+	}
+
+	builder.tags = tags
+
 	changeLog := &ChangeLog{
-		RepoName:  builder.githubClient.RepoContext.Name,
-		RepoOwner: builder.githubClient.RepoContext.Owner,
+		RepoName:  builder.githubV4Client.RepoContext.Name,
+		RepoOwner: builder.githubV4Client.RepoContext.Owner,
 		Entries:   []Entry{},
 	}
 
-	builder.spinner.Start()
-	err := builder.buildChangeLog(changeLog)
+	err = builder.buildChangeLog(changeLog)
 	if err != nil {
 		builder.spinner.FinalMSG = ""
 		builder.spinner.Stop()
@@ -96,32 +92,37 @@ func (builder *changeLogBuilder) Build() (*ChangeLog, error) {
 
 func (builder *changeLogBuilder) buildChangeLog(changeLog *ChangeLog) error {
 	for idx, currentTag := range builder.tags {
-		builder.spinner.Suffix = fmt.Sprintf(" Processing tags: 🏷️  %s", currentTag.Name)
+		builder.spinner.Suffix = fmt.Sprintf(" Building changelog: 🏷️  %s", currentTag.Name)
+		var previousTag githubv4client.Tag
 
-		var nextTag *gitclient.Ref
-		var err error
 		if idx+1 == len(builder.tags) {
-			nextTag, err = builder.gitClient.GetFirstCommit()
+			firstCommitSha, err := builder.git.GetFirstCommit()
 			if err != nil {
-				return fmt.Errorf("could not get first commit: %v", err)
+				return err
+			}
+
+			date, err := builder.git.GetDateOfHash(firstCommitSha)
+			if err != nil {
+				return err
+			}
+
+			previousTag = githubv4client.Tag{
+				Name: firstCommitSha,
+				Sha:  firstCommitSha,
+				Date: date,
 			}
 		} else {
-			nextTag = builder.tags[idx+1]
+			previousTag = builder.tags[idx+1]
 		}
 
-		pullRequests, err := builder.githubClient.GetPullRequestsBetweenDates(nextTag.Date, currentTag.Date)
+		pullRequests, err := builder.githubV4Client.GetPullRequestsBetweenDates(previousTag.Date, currentTag.Date)
 		if err != nil {
-			return fmt.Errorf(
-				"could not get pull requests for range '%s - %s': %v",
-				nextTag.Date,
-				currentTag.Date,
-				err,
-			)
+			return err
 		}
 
 		entry, err := builder.populateEntry(
 			currentTag.Name,
-			nextTag.Name,
+			previousTag.Name,
 			currentTag.Date,
 			pullRequests,
 		)
@@ -135,18 +136,18 @@ func (builder *changeLogBuilder) buildChangeLog(changeLog *ChangeLog) error {
 	return nil
 }
 
-func (builder *changeLogBuilder) populateEntry(currentTag string, nextTag string, date time.Time, pullRequests []*github.Issue) (*Entry, error) {
+func (builder *changeLogBuilder) populateEntry(currentTag string, previousTag string, date time.Time, pullRequests []githubv4client.PullRequest) (*Entry, error) {
 	entry := &Entry{
-		Tag:        currentTag,
-		NextTag:    nextTag,
-		Date:       date,
-		Added:      []string{},
-		Changed:    []string{},
-		Deprecated: []string{},
-		Removed:    []string{},
-		Fixed:      []string{},
-		Security:   []string{},
-		Other:      []string{},
+		CurrentTag:  currentTag,
+		PreviousTag: previousTag,
+		Date:        date,
+		Added:       []string{},
+		Changed:     []string{},
+		Deprecated:  []string{},
+		Removed:     []string{},
+		Fixed:       []string{},
+		Security:    []string{},
+		Other:       []string{},
 	}
 
 	excludedLabels := viper.GetStringSlice("excluded_labels")
@@ -154,13 +155,13 @@ func (builder *changeLogBuilder) populateEntry(currentTag string, nextTag string
 		if !hasExcludedLabel(excludedLabels, pr) {
 			line := fmt.Sprintf(
 				"%s [#%d](https://github.com/%s/%s/pull/%d) ([%s](https://github.com/%s))\n",
-				pr.GetTitle(),
-				pr.GetNumber(),
-				builder.githubClient.RepoContext.Owner,
-				builder.githubClient.RepoContext.Name,
-				pr.GetNumber(),
-				pr.GetUser().GetLogin(),
-				pr.GetUser().GetLogin(),
+				pr.Title,
+				pr.Number,
+				builder.githubV4Client.RepoContext.Owner,
+				builder.githubV4Client.RepoContext.Name,
+				pr.Number,
+				pr.User,
+				pr.User,
 			)
 
 			section := getSection(pr.Labels)
@@ -176,9 +177,31 @@ func (builder *changeLogBuilder) populateEntry(currentTag string, nextTag string
 	return entry, nil
 }
 
-func hasExcludedLabel(excludedLabels []string, pr *github.Issue) bool {
+func NewChangeLogBuilder() (*changeLogBuilder, error) {
+	s := spinner.New(spinner.CharSets[11], 100*time.Millisecond)
+	_ = s.Color("green")
+	s.FinalMSG = fmt.Sprintf("✅ Open %s or run 'gh changelog show' to view your changelog.\n", viper.GetString("file_name"))
+
+	v4, err := githubv4client.NewGitHubGraphClient()
+	if err != nil {
+		return nil, err
+	}
+
+	git := gitclient.NewGitHandler()
+
+	builder := &changeLogBuilder{
+		spinner:        s,
+		githubV4Client: v4,
+		git:            git,
+		tags:           []githubv4client.Tag{},
+	}
+
+	return builder, err
+}
+
+func hasExcludedLabel(excludedLabels []string, pr githubv4client.PullRequest) bool {
 	for _, label := range pr.Labels {
-		if utils.Contains(excludedLabels, label.GetName()) {
+		if utils.Contains(excludedLabels, label.Name) {
 			return true
 		}
 	}
@@ -186,7 +209,7 @@ func hasExcludedLabel(excludedLabels []string, pr *github.Issue) bool {
 	return false
 }
 
-func getSection(labels []*github.Label) string {
+func getSection(labels []githubv4client.Label) string {
 	sections := viper.GetStringMapStringSlice("sections")
 
 	lookup := make(map[string]string)
@@ -196,15 +219,16 @@ func getSection(labels []*github.Label) string {
 		}
 	}
 
-	section := ""
+	var section string
 	skipUnlabelledEntries := viper.GetBool("skip_entries_without_label")
+
+	if !skipUnlabelledEntries {
+		section = "Other"
+	}
+
 	for _, label := range labels {
-		if _, ok := lookup[label.GetName()]; ok {
-			section = lookup[label.GetName()]
-		} else {
-			if !skipUnlabelledEntries {
-				section = "Other"
-			}
+		if _, ok := lookup[label.Name]; ok {
+			section = lookup[label.Name]
 		}
 	}
 
