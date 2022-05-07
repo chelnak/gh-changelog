@@ -39,6 +39,12 @@ gh extension upgrade chelnak/gh-changelog
 gh changelog new
 ```
 
+### Create a new changelog for an untagged version
+
+```bash
+gh changelog new --next-version v1.2.0
+```
+
 ### View your changelog in the terminal
 
 ```bash
@@ -72,4 +78,8 @@ sections:
 # When set to true, unlabelled entries will not be included in the changelog.
 # By default they will be grouped in a section named "Other".
 skip_entries_without_label: false
+# Adds an unreleased section to the changelog. This will contain any qualifying entries
+# that have been added since the last tag.
+# Note: The unreleased section is not created when the --next-version flag is used.
+show_unreleased: true
 ```

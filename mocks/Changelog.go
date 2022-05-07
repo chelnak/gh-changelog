@@ -58,6 +58,22 @@ func (_m *Changelog) GetRepoOwner() string {
 	return r0
 }
 
+// GetUnreleased provides a mock function with given fields:
+func (_m *Changelog) GetUnreleased() []string {
+	ret := _m.Called()
+
+	var r0 []string
+	if rf, ok := ret.Get(0).(func() []string); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]string)
+		}
+	}
+
+	return r0
+}
+
 // NewChangelog creates a new instance of Changelog. It also registers the testing.TB interface on the mock and a cleanup function to assert the mocks expectations.
 func NewChangelog(t testing.TB) *Changelog {
 	mock := &Changelog{}

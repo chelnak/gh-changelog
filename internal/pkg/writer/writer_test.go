@@ -32,11 +32,17 @@ func Test_ItWritesOutAChangelogInTheCorrectFormat(t *testing.T) {
 		},
 	})
 
+	mockChangelog.On("GetUnreleased").Return([]string{"Unreleased 1", "Unreleased 2"})
+
 	var buf bytes.Buffer
 	err := writer.Write(&buf, mockChangelog)
 
 	assert.NoError(t, err)
 	mockChangelog.AssertExpectations(t)
+
+	assert.Regexp(t, "## Unreleased", buf.String())
+	assert.Regexp(t, "- Unreleased 1", buf.String())
+	assert.Regexp(t, "- Unreleased 2", buf.String())
 
 	assert.Regexp(t, regexp.MustCompile(`## \[v1.0.0\]\(https:\/\/github.com\/TestOwner\/TestRepo\/tree\/v1.0.0\)`), buf.String())
 	assert.Regexp(t, "### Added", buf.String())

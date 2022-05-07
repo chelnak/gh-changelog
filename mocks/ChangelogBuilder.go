@@ -73,6 +73,22 @@ func (_m *ChangelogBuilder) WithGithubClient(client githubclient.GitHubClient) c
 	return r0
 }
 
+// WithNextVersion provides a mock function with given fields: nextVersion
+func (_m *ChangelogBuilder) WithNextVersion(nextVersion string) changelog.ChangelogBuilder {
+	ret := _m.Called(nextVersion)
+
+	var r0 changelog.ChangelogBuilder
+	if rf, ok := ret.Get(0).(func(string) changelog.ChangelogBuilder); ok {
+		r0 = rf(nextVersion)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(changelog.ChangelogBuilder)
+		}
+	}
+
+	return r0
+}
+
 // WithSpinner provides a mock function with given fields: enabled
 func (_m *ChangelogBuilder) WithSpinner(enabled bool) changelog.ChangelogBuilder {
 	ret := _m.Called(enabled)

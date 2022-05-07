@@ -90,8 +90,6 @@ func (client *githubClient) GetTags() ([]Tag, error) {
 			return nil, fmt.Errorf("error getting tags: %w", err)
 		}
 
-		fmt.Println(TagQuery)
-
 		for _, node := range TagQuery.Repository.Refs.Nodes {
 			switch node.Target.TypeName {
 			case "Tag":

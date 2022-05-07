@@ -35,3 +35,30 @@ func TestSliceContainsString(t *testing.T) {
 		})
 	}
 }
+
+func TestIsValidSemanticVersion(t *testing.T) {
+	tests := []struct {
+		name  string
+		value string
+		want  bool
+	}{
+		{
+			name:  "valid semantic version",
+			value: "1.0.0",
+			want:  true,
+		},
+		{
+			name:  "invalid semantic version",
+			value: "asdasdasd1",
+			want:  false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := utils.IsValidSemanticVersion(tt.value); got != tt.want {
+				t.Errorf("IsValidSemanticVersion() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

@@ -3,6 +3,7 @@ module github.com/chelnak/gh-changelog
 go 1.18
 
 require (
+	github.com/Masterminds/semver/v3 v3.1.1
 	github.com/briandowns/spinner v1.18.1
 	github.com/charmbracelet/bubbles v0.10.3
 	github.com/charmbracelet/bubbletea v0.20.0

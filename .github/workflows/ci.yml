@@ -36,8 +36,8 @@ jobs:
         with:
           version: latest
 
-      # - name: test
-      #   run: go test -v ./...
+      - name: test
+        run: go test -v ./...
 
   release:
     name: release  
