@@ -23,8 +23,9 @@ func InitConfig() error {
 		}
 	}
 
+	SetDefaults()
+
 	if err := viper.ReadInConfig(); err != nil {
-		SetDefaults()
 		err := viper.SafeWriteConfig()
 		if err != nil {
 			return fmt.Errorf("failed to write config: %s", err)
@@ -46,4 +47,6 @@ func SetDefaults() {
 	viper.SetDefault("sections", sections)
 
 	viper.SetDefault("skip_entries_without_label", false)
+
+	viper.SetDefault("show_unreleased", true)
 }

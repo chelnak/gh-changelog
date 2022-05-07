@@ -51,27 +51,31 @@ func (e *Entry) append(section string, entry string) error {
 type Changelog interface {
 	GetRepoName() string
 	GetRepoOwner() string
+	GetUnreleased() []string
 	GetEntries() []Entry
 }
 
 type changelog struct {
-	repoName  string
-	repoOwner string
-	entries   []Entry
+	repoName   string
+	repoOwner  string
+	unreleased []string
+	entries    []Entry
 }
 
 type ChangelogBuilder interface {
 	WithSpinner(enabled bool) ChangelogBuilder
 	WithGitClient(client gitclient.GitClient) ChangelogBuilder
 	WithGithubClient(client githubclient.GitHubClient) ChangelogBuilder
+	WithNextVersion(nextVersion string) ChangelogBuilder
 	Build() (Changelog, error)
 }
 
 type changelogBuilder struct {
-	spinner *spinner.Spinner
-	github  githubclient.GitHubClient
-	git     gitclient.GitClient
-	tags    []githubclient.Tag
+	spinner     *spinner.Spinner
+	github      githubclient.GitHubClient
+	git         gitclient.GitClient
+	tags        []githubclient.Tag
+	nextVersion string
 }
 
 func (builder *changelogBuilder) WithSpinner(enabled bool) ChangelogBuilder {
@@ -90,6 +94,11 @@ func (builder *changelogBuilder) WithGitClient(git gitclient.GitClient) Changelo
 
 func (builder *changelogBuilder) WithGithubClient(client githubclient.GitHubClient) ChangelogBuilder {
 	builder.github = client
+	return builder
+}
+
+func (builder *changelogBuilder) WithNextVersion(nextVersion string) ChangelogBuilder {
+	builder.nextVersion = nextVersion
 	return builder
 }
 
@@ -116,12 +125,17 @@ func (builder *changelogBuilder) Build() (Changelog, error) {
 		return nil, err
 	}
 
-	builder.tags = tags
+	err = builder.setNextVersion()
+	if err != nil {
+		return nil, err
+	}
+	builder.tags = append(builder.tags, tags...)
 
 	c := &changelog{
-		repoName:  builder.github.GetRepoName(),
-		repoOwner: builder.github.GetRepoOwner(),
-		entries:   []Entry{},
+		repoName:   builder.github.GetRepoName(),
+		repoOwner:  builder.github.GetRepoOwner(),
+		unreleased: []string{},
+		entries:    []Entry{},
 	}
 
 	err = builder.buildChangeLog(c)
@@ -136,6 +150,27 @@ func (builder *changelogBuilder) Build() (Changelog, error) {
 }
 
 func (builder *changelogBuilder) buildChangeLog(changelog *changelog) error {
+	if viper.GetBool("show_unreleased") && builder.nextVersion == "" {
+		builder.spinner.Suffix = " Calculating unreleased entries"
+
+		nextTag := builder.tags[0]
+		pullRequests, err := builder.github.GetPullRequestsBetweenDates(nextTag.Date, time.Now())
+		if err != nil {
+			return err
+		}
+
+		unreleased, err := builder.populateUnreleasedEntry(
+			nextTag.Name,
+			nextTag.Sha,
+			pullRequests,
+		)
+		if err != nil {
+			return fmt.Errorf("could not process pull requests: %v", err)
+		}
+
+		changelog.unreleased = unreleased
+	}
+
 	for idx, currentTag := range builder.tags {
 		builder.spinner.Suffix = fmt.Sprintf(" Building changelog: 🏷️  %s", currentTag.Name)
 		var previousTag githubclient.Tag
@@ -165,7 +200,7 @@ func (builder *changelogBuilder) buildChangeLog(changelog *changelog) error {
 			return err
 		}
 
-		entry, err := builder.populateEntry(
+		entry, err := builder.populateReleasedEntry(
 			currentTag.Name,
 			previousTag.Name,
 
@@ -182,7 +217,30 @@ func (builder *changelogBuilder) buildChangeLog(changelog *changelog) error {
 	return nil
 }
 
-func (builder *changelogBuilder) populateEntry(currentTag string, previousTag string, date time.Time, pullRequests []githubclient.PullRequest) (*Entry, error) {
+func (builder *changelogBuilder) populateUnreleasedEntry(nextTag string, headSha string, pullRequests []githubclient.PullRequest) ([]string, error) {
+	unreleased := []string{}
+	excludedLabels := viper.GetStringSlice("excluded_labels")
+	for _, pr := range pullRequests {
+		if !hasExcludedLabel(excludedLabels, pr) {
+			line := fmt.Sprintf(
+				"%s [#%d](https://github.com/%s/%s/pull/%d) ([%s](https://github.com/%s))\n",
+				pr.Title,
+				pr.Number,
+				builder.github.GetRepoOwner(),
+				builder.github.GetRepoName(),
+				pr.Number,
+				pr.User,
+				pr.User,
+			)
+
+			unreleased = append(unreleased, line)
+		}
+	}
+
+	return unreleased, nil
+}
+
+func (builder *changelogBuilder) populateReleasedEntry(currentTag string, previousTag string, date time.Time, pullRequests []githubclient.PullRequest) (*Entry, error) {
 	entry := &Entry{
 		CurrentTag:  currentTag,
 		PreviousTag: previousTag,
@@ -223,6 +281,29 @@ func (builder *changelogBuilder) populateEntry(currentTag string, previousTag st
 	return entry, nil
 }
 
+func (builder *changelogBuilder) setNextVersion() error {
+	if builder.nextVersion != "" {
+		if !utils.IsValidSemanticVersion(builder.nextVersion) {
+			return fmt.Errorf("'%s' is not a valid semantic version", builder.nextVersion)
+		}
+
+		lastCommitSha, err := builder.git.GetLastCommit()
+		if err != nil {
+			return err
+		}
+
+		tag := githubclient.Tag{
+			Name: builder.nextVersion,
+			Sha:  lastCommitSha,
+			Date: time.Now(),
+		}
+
+		builder.tags = append(builder.tags, tag)
+	}
+
+	return nil
+}
+
 func (c *changelog) GetRepoName() string {
 	return c.repoName
 }
@@ -233,6 +314,10 @@ func (c *changelog) GetRepoOwner() string {
 
 func (c *changelog) GetEntries() []Entry {
 	return c.entries
+}
+
+func (c *changelog) GetUnreleased() []string {
+	return c.unreleased
 }
 
 func NewChangelogBuilder() ChangelogBuilder {

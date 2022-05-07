@@ -14,7 +14,17 @@ func Write(writer io.Writer, changelog changelog.Changelog) error {
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
+
+{{- $unreleased := .GetUnreleased }}
+{{- if $unreleased }}
+
+## Unreleased
+{{range $unreleased }}
+- {{.}}
+{{- end}}
+{{- end -}}
 {{range .GetEntries}}
+
 ## [{{.CurrentTag}}](https://github.com/{{$.GetRepoOwner}}/{{$.GetRepoName}}/tree/{{.CurrentTag}}) - ({{.Date.Format "2006-01-02"}})
 
 [Full Changelog](https://github.com/{{$.GetRepoOwner}}/{{$.GetRepoName}}/compare/{{.PreviousTag}}...{{.CurrentTag}})

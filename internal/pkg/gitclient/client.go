@@ -8,13 +8,8 @@ import (
 
 type GitClient interface {
 	GetFirstCommit() (string, error)
+	GetLastCommit() (string, error)
 	GetDateOfHash(hash string) (time.Time, error)
-}
-
-type Tag struct {
-	Name string
-	Sha  string
-	Date time.Time
 }
 
 type execOptions struct {
@@ -42,6 +37,12 @@ func (g git) GetFirstCommit() (string, error) {
 	})
 }
 
+func (g git) GetLastCommit() (string, error) {
+	return g.exec(execOptions{
+		args: []string{"log", "-1", "--pretty=format:%H"},
+	})
+}
+
 func (g git) GetDateOfHash(hash string) (time.Time, error) {
 	date, err := g.exec(execOptions{
 		args: []string{"log", "-1", "--format=%cI", hash, "--date=local"},
@@ -50,6 +51,7 @@ func (g git) GetDateOfHash(hash string) (time.Time, error) {
 	if err != nil {
 		return time.Time{}, err
 	}
+
 	return time.ParseInLocation(time.RFC3339, date, time.Local)
 }
 
