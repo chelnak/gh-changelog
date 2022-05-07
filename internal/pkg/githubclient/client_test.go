@@ -1,7 +1,6 @@
 package githubclient_test
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/chelnak/gh-changelog/internal/pkg/githubclient"
@@ -55,8 +54,6 @@ func Test_GetTagsReturnsASliceOfTags(t *testing.T) {
 	assert.NoError(t, err)
 
 	tags, err := client.GetTags()
-
-	fmt.Println(tags)
 
 	assert.NoError(t, err)
 

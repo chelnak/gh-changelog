@@ -8,5 +8,6 @@ lint:
 build:
 	@WORKINGDIR=$(pwd) goreleaser build --snapshot --rm-dist --single-target
 
+.PHONY: mocks
 mocks:
-	@mockery --all --keeptree
+	@mockery --all
