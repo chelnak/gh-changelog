@@ -10,9 +10,9 @@ import (
 )
 
 var version = "dev"
-var ErrSilent = errors.New("ErrSilent")
+var errSilent = errors.New("ErrSilent")
 
-// RootCmd represents the base command when called without any subcommands
+// rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:           "changelog [command]",
 	Short:         "Create a changelog that adheres to the [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) format",
@@ -33,16 +33,18 @@ func init() {
 	rootCmd.SetFlagErrorFunc(func(cmd *cobra.Command, err error) error {
 		cmd.Println(err)
 		cmd.Println(cmd.UsageString())
-		return ErrSilent
+		return errSilent
 	})
 
 	rootCmd.AddCommand(newCmd)
 	rootCmd.AddCommand(showCmd)
 }
 
+// Execute is called from main and is responsible for processing
+// requests to the application and handling exit codes appropriately
 func Execute() int {
 	if err := rootCmd.Execute(); err != nil {
-		if err != ErrSilent {
+		if err != errSilent {
 			fmt.Fprintln(os.Stderr, err)
 		}
 		return 1
