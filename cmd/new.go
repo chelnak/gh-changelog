@@ -1,20 +1,34 @@
 package cmd
 
 import (
+	"os"
+
 	"github.com/chelnak/gh-changelog/internal/pkg/changelog"
 	"github.com/chelnak/gh-changelog/internal/pkg/writer"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
+// newCmd is the entry point for creating a new changelog
 var newCmd = &cobra.Command{
 	Use:   "new",
 	Short: "Creates a new changelog from activity in the current repository",
-	Long:  "Creates a new changelog from activity the current repository.",
+	Long:  "Creates a new changelog from activity in the current repository.",
 	RunE: func(command *cobra.Command, args []string) error {
-		changeLog, err := changelog.NewChangelog()
+		builder := changelog.NewChangelogBuilder()
+		builder = builder.WithSpinner(true)
+
+		changelog, err := builder.Build()
 		if err != nil {
 			return err
 		}
-		return writer.Write(changeLog)
+
+		fileName := viper.GetString("file_name")
+		f, err := os.Create(fileName)
+		if err != nil {
+			return err
+		}
+
+		return writer.Write(f, changelog)
 	},
 }
