@@ -86,7 +86,6 @@ func versionIsGreaterThan(currentVersion, nextVersion string) bool {
 
 func parseLocalVersion(version string) string {
 	slice := strings.Split(version, " ")
-	fmt.Println(slice)
 
 	if len(slice) == 1 {
 		return version
