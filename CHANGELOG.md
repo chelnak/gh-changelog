@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## Unreleased
 
+- Lowercase section names [#52](https://github.com/chelnak/gh-changelog/pull/52) ([chelnak](https://github.com/chelnak))
+
+- Remove additional newlines in markdown [#51](https://github.com/chelnak/gh-changelog/pull/51) ([chelnak](https://github.com/chelnak))
+
+- Add a test for configuration setup [#49](https://github.com/chelnak/gh-changelog/pull/49) ([chelnak](https://github.com/chelnak))
+
 - Rework configuration [#47](https://github.com/chelnak/gh-changelog/pull/47) ([chelnak](https://github.com/chelnak))
 
 
