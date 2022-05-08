@@ -66,12 +66,12 @@ file_name: CHANGELOG.md
 # The possible sections are restricted to: Added, Changed, Deprecated,
 # Removed, Fixed, Security.
 sections:
-  Changed:
+  changed:
     - backwards-incompatible
-  Added:
+  added:
     - fixed
     - enhancement
-  Fixed:
+  fixed:
     - bug
     - bugfix
     - documentation
