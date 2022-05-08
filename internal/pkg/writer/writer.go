@@ -24,7 +24,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 {{- end}}
 {{- end -}}
 {{range .GetEntries}}
-## [{{.CurrentTag}}](https://github.com/{{$.GetRepoOwner}}/{{$.GetRepoName}}/tree/{{.CurrentTag}}) - ({{.Date.Format "2006-01-02"}})
+## [{{.CurrentTag}}](https://github.com/{{$.GetRepoOwner}}/{{$.GetRepoName}}/tree/{{.CurrentTag}}) - {{.Date.Format "2006-01-02"}}
 
 [Full Changelog](https://github.com/{{$.GetRepoOwner}}/{{$.GetRepoName}}/compare/{{.PreviousTag}}...{{.CurrentTag}})
 {{if .Added }}
