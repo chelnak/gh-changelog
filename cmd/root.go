@@ -6,7 +6,9 @@ import (
 	"os"
 
 	"github.com/chelnak/gh-changelog/internal/pkg/configuration"
+	"github.com/chelnak/gh-changelog/internal/pkg/utils"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 var version = "dev"
@@ -21,6 +23,11 @@ var rootCmd = &cobra.Command{
 	SilenceUsage:  true,
 	SilenceErrors: true,
 	Run:           nil,
+	PersistentPostRun: func(cmd *cobra.Command, args []string) {
+		if viper.GetBool("check_for_updates") {
+			utils.CheckForUpdate(version)
+		}
+	},
 }
 
 func init() {

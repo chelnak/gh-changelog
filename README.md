@@ -82,4 +82,6 @@ skip_entries_without_label: false
 # that have been added since the last tag.
 # Note: The unreleased section is not created when the --next-version flag is used.
 show_unreleased: true
+# If set to false, the tool will not check remotely for updates
+check_for_updates: true
 ```

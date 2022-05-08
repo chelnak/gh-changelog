@@ -49,4 +49,6 @@ func SetDefaults() {
 	viper.SetDefault("skip_entries_without_label", false)
 
 	viper.SetDefault("show_unreleased", true)
+
+	viper.SetDefault("check_for_updates", true)
 }
