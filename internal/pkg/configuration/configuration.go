@@ -56,9 +56,9 @@ func setDefaults() {
 	viper.SetDefault("excluded_labels", []string{"maintenance"})
 
 	sections := make(map[string][]string)
-	sections["Changed"] = []string{"backwards-incompatible"}
-	sections["Added"] = []string{"feature", "enhancement"}
-	sections["Fixed"] = []string{"bug", "bugfix", "documentation"}
+	sections["changed"] = []string{"backwards-incompatible"}
+	sections["added"] = []string{"feature", "enhancement"}
+	sections["fixed"] = []string{"bug", "bugfix", "documentation"}
 
 	viper.SetDefault("sections", sections)
 

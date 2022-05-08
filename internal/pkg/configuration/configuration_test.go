@@ -18,9 +18,9 @@ func TestInitConfigSetsCorrectValues(t *testing.T) {
 	assert.Equal(t, []string{"maintenance"}, config.ExcludedLabels)
 	assert.Equal(t, 1, len(config.ExcludedLabels))
 
-	assert.True(t, containsKey(config.Sections, "Changed"))
-	assert.True(t, containsKey(config.Sections, "Added"))
-	assert.True(t, containsKey(config.Sections, "Fixed"))
+	assert.True(t, containsKey(config.Sections, "changed"))
+	assert.True(t, containsKey(config.Sections, "added"))
+	assert.True(t, containsKey(config.Sections, "fixed"))
 
 	assert.Equal(t, 3, len(config.Sections))
 	assert.Equal(t, false, config.SkipEntriesWithoutLabel)
