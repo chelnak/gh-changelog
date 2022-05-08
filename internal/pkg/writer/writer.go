@@ -24,29 +24,23 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 {{- end}}
 {{- end -}}
 {{range .GetEntries}}
-
 ## [{{.CurrentTag}}](https://github.com/{{$.GetRepoOwner}}/{{$.GetRepoName}}/tree/{{.CurrentTag}}) - ({{.Date.Format "2006-01-02"}})
 
 [Full Changelog](https://github.com/{{$.GetRepoOwner}}/{{$.GetRepoName}}/compare/{{.PreviousTag}}...{{.CurrentTag}})
-
-{{- if .Added }}
-
+{{if .Added }}
 ### Added
 {{range .Added}}
 - {{.}}
 {{- end}}
-{{- end}}
-
+{{- end -}}
 {{- if .Changed }}
-
 ### Changed
-{{range .Changed}}
+{{- range .Changed}}
 - {{.}}
 {{- end}}
 {{- end}}
 
 {{- if .Deprecated }}
-
 ### Deprecated
 {{range .Deprecated}}
 - {{.}}
@@ -54,7 +48,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 {{- end}}
 
 {{- if .Removed }}
-
 ### Removed
 {{range .Removed}}
 - {{.}}
@@ -62,7 +55,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 {{- end}}
 
 {{- if .Fixed }}
-
 ### Fixed
 {{range .Fixed}}
 - {{.}}
@@ -70,7 +62,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 {{- end}}
 
 {{- if .Security }}
-
 ### Security
 {{range .Security}}
 - {{.}}
@@ -78,14 +69,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 {{- end}}
 
 {{- if .Other }}
-
 ### Other
 {{range .Other}}
 - {{.}}
 {{- end}}
 {{- end}}
-{{- end}}
-`
+{{- end}}`
 
 	tmpl := template.Must(template.New("changelog").Parse(tmplSrc))
 
