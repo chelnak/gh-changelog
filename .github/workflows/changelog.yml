@@ -4,6 +4,8 @@ name: changelog
 
 on:
   push:
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
@@ -29,5 +31,6 @@ jobs:
           title: "changelog"
           commit-message: "automated changelog generation"
           body: "This PR contains an automatically generated changelog."
+          base: main
           labels:
             "maintenance"
