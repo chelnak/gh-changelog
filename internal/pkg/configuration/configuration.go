@@ -8,6 +8,17 @@ import (
 	"github.com/spf13/viper"
 )
 
+var Config configuration
+
+type configuration struct {
+	FileName                string              `mapstructure:"file_name"`
+	ExcludedLabels          []string            `mapstructure:"excluded_labels"`
+	Sections                map[string][]string `mapstructure:"sections"`
+	SkipEntriesWithoutLabel bool                `mapstructure:"skip_entries_without_label"`
+	ShowUnreleased          bool                `mapstructure:"show_unreleased"`
+	CheckForUpdates         bool                `mapstructure:"check_for_updates"`
+}
+
 func InitConfig() error {
 	home, _ := os.UserHomeDir()
 
@@ -23,7 +34,7 @@ func InitConfig() error {
 		}
 	}
 
-	SetDefaults()
+	setDefaults()
 
 	if err := viper.ReadInConfig(); err != nil {
 		err := viper.SafeWriteConfig()
@@ -32,10 +43,15 @@ func InitConfig() error {
 		}
 	}
 
+	err := viper.Unmarshal(&Config)
+	if err != nil {
+		return fmt.Errorf("failed to parse config: %s", err)
+	}
+
 	return nil
 }
 
-func SetDefaults() {
+func setDefaults() {
 	viper.SetDefault("file_name", "CHANGELOG.md")
 	viper.SetDefault("excluded_labels", []string{"maintenance"})
 
