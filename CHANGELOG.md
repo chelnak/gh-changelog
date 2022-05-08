@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## Unreleased
 
+- Add update check [#41](https://github.com/chelnak/gh-changelog/pull/41) ([chelnak](https://github.com/chelnak))
+
 - Break up changelog package [#38](https://github.com/chelnak/gh-changelog/pull/38) ([chelnak](https://github.com/chelnak))
 
 - Fix error messages [#37](https://github.com/chelnak/gh-changelog/pull/37) ([chelnak](https://github.com/chelnak))
