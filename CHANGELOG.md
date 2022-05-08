@@ -4,11 +4,18 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
-## Unreleased
+## [v0.6.0](https://github.com/chelnak/gh-changelog/tree/v0.6.0) - (2022-05-08)
+
+[Full Changelog](https://github.com/chelnak/gh-changelog/compare/v0.5.0...v0.6.0)
+
+### Added
 
 - Add update check [#41](https://github.com/chelnak/gh-changelog/pull/41) ([chelnak](https://github.com/chelnak))
 
 - Break up changelog package [#38](https://github.com/chelnak/gh-changelog/pull/38) ([chelnak](https://github.com/chelnak))
+
+
+### Fixed
 
 - Fix error messages [#37](https://github.com/chelnak/gh-changelog/pull/37) ([chelnak](https://github.com/chelnak))
 
