@@ -16,7 +16,7 @@ func Render(path string) error {
 
 	data, err := ioutil.ReadFile(path)
 	if err != nil {
-		return errors.New("❌ changelog not found. Check your configuration or run gh changelog new")
+		return errors.New("changelog not found. Check your configuration or run gh changelog new")
 	}
 
 	content, err := r.Render(string(data))

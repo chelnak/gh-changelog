@@ -45,7 +45,7 @@ func init() {
 func Execute() int {
 	if err := rootCmd.Execute(); err != nil {
 		if err != errSilent {
-			fmt.Fprintln(os.Stderr, err)
+			fmt.Fprintln(os.Stderr, fmt.Errorf("❌ %s", err))
 		}
 		return 1
 	}
