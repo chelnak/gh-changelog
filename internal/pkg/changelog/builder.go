@@ -5,10 +5,10 @@ import (
 	"time"
 
 	"github.com/briandowns/spinner"
+	"github.com/chelnak/gh-changelog/internal/pkg/configuration"
 	"github.com/chelnak/gh-changelog/internal/pkg/gitclient"
 	"github.com/chelnak/gh-changelog/internal/pkg/githubclient"
 	"github.com/chelnak/gh-changelog/internal/pkg/utils"
-	"github.com/spf13/viper"
 )
 
 type ChangelogBuilder interface {
@@ -37,7 +37,7 @@ func (builder *changelogBuilder) WithSpinner(enabled bool) ChangelogBuilder {
 	if enabled {
 		builder.spinner = spinner.New(spinner.CharSets[11], 100*time.Millisecond)
 		_ = builder.spinner.Color("green")
-		builder.spinner.FinalMSG = fmt.Sprintf("✅ Open %s or run 'gh changelog show' to view your changelog.\n", viper.GetString("file_name"))
+		builder.spinner.FinalMSG = fmt.Sprintf("✅ Open %s or run 'gh changelog show' to view your changelog.\n", configuration.Config.FileName)
 	}
 	return builder
 }
@@ -113,7 +113,7 @@ func (builder *changelogBuilder) Build() (Changelog, error) {
 }
 
 func (builder *changelogBuilder) buildChangeLog(changelog *changelog) error {
-	if viper.GetBool("show_unreleased") && builder.nextVersion == "" {
+	if configuration.Config.ShowUnreleased && builder.nextVersion == "" {
 		builder.spinner.Suffix = " Getting unreleased entries"
 
 		nextTag := builder.tags[0]
@@ -182,7 +182,7 @@ func (builder *changelogBuilder) buildChangeLog(changelog *changelog) error {
 
 func (builder *changelogBuilder) populateUnreleasedEntry(nextTag string, headSha string, pullRequests []githubclient.PullRequest) ([]string, error) {
 	unreleased := []string{}
-	excludedLabels := viper.GetStringSlice("excluded_labels")
+	excludedLabels := configuration.Config.ExcludedLabels
 	for _, pr := range pullRequests {
 		if !hasExcludedLabel(excludedLabels, pr) {
 			line := fmt.Sprintf(
@@ -217,7 +217,7 @@ func (builder *changelogBuilder) populateReleasedEntry(currentTag string, previo
 		Other:       []string{},
 	}
 
-	excludedLabels := viper.GetStringSlice("excluded_labels")
+	excludedLabels := configuration.Config.ExcludedLabels
 	for _, pr := range pullRequests {
 		if !hasExcludedLabel(excludedLabels, pr) {
 			line := fmt.Sprintf(
@@ -278,7 +278,7 @@ func hasExcludedLabel(excludedLabels []string, pr githubclient.PullRequest) bool
 }
 
 func getSection(labels []githubclient.Label) string {
-	sections := viper.GetStringMapStringSlice("sections")
+	sections := configuration.Config.Sections
 
 	lookup := make(map[string]string)
 	for k, v := range sections {
@@ -288,7 +288,7 @@ func getSection(labels []githubclient.Label) string {
 	}
 
 	var section string
-	skipUnlabelledEntries := viper.GetBool("skip_entries_without_label")
+	skipUnlabelledEntries := configuration.Config.SkipEntriesWithoutLabel
 
 	if !skipUnlabelledEntries {
 		section = "Other"

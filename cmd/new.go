@@ -4,9 +4,9 @@ import (
 	"os"
 
 	"github.com/chelnak/gh-changelog/internal/pkg/changelog"
+	"github.com/chelnak/gh-changelog/internal/pkg/configuration"
 	"github.com/chelnak/gh-changelog/internal/pkg/writer"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 var nextVersion string
@@ -26,7 +26,7 @@ var newCmd = &cobra.Command{
 			return err
 		}
 
-		fileName := viper.GetString("file_name")
+		fileName := configuration.Config.FileName
 		f, err := os.Create(fileName)
 		if err != nil {
 			return err
