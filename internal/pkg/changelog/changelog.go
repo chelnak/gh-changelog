@@ -19,7 +19,7 @@ type Entry struct {
 	Other       []string
 }
 
-func (e *Entry) append(section string, entry string) error {
+func (e *Entry) Append(section string, entry string) error {
 	switch strings.ToLower(section) {
 	case "added":
 		e.Added = append(e.Added, entry)
@@ -45,8 +45,10 @@ func (e *Entry) append(section string, entry string) error {
 type Changelog interface {
 	GetRepoName() string
 	GetRepoOwner() string
-	GetUnreleased() []string
 	GetEntries() []Entry
+	AddEntry(Entry)
+	GetUnreleased() []string
+	AddUnreleased([]string)
 }
 
 type changelog struct {
@@ -54,6 +56,15 @@ type changelog struct {
 	repoOwner  string
 	unreleased []string
 	entries    []Entry
+}
+
+func NewChangelog(repoName string, repoOwner string) Changelog {
+	return &changelog{
+		repoName:   repoName,
+		repoOwner:  repoOwner,
+		unreleased: []string{},
+		entries:    []Entry{},
+	}
 }
 
 func (c *changelog) GetRepoName() string {
@@ -68,6 +79,14 @@ func (c *changelog) GetEntries() []Entry {
 	return c.entries
 }
 
+func (c *changelog) AddEntry(entry Entry) {
+	c.entries = append(c.entries, entry)
+}
+
 func (c *changelog) GetUnreleased() []string {
 	return c.unreleased
+}
+
+func (c *changelog) AddUnreleased(entry []string) {
+	c.unreleased = append(c.unreleased, entry...)
 }

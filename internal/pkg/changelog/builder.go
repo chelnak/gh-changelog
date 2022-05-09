@@ -11,10 +11,12 @@ import (
 	"github.com/chelnak/gh-changelog/internal/pkg/utils"
 )
 
+var Now = time.Now // must be a better way to stub this
+
 type ChangelogBuilder interface {
 	WithSpinner(enabled bool) ChangelogBuilder
 	WithGitClient(client gitclient.GitClient) ChangelogBuilder
-	WithGithubClient(client githubclient.GitHubClient) ChangelogBuilder
+	WithGitHubClient(client githubclient.GitHubClient) ChangelogBuilder
 	WithNextVersion(nextVersion string) ChangelogBuilder
 	Build() (Changelog, error)
 }
@@ -49,7 +51,7 @@ func (builder *changelogBuilder) WithGitClient(git gitclient.GitClient) Changelo
 }
 
 // WithGitHubClient allows the consumer to use a custom github client that implements the GitHubClient interface
-func (builder *changelogBuilder) WithGithubClient(client githubclient.GitHubClient) ChangelogBuilder {
+func (builder *changelogBuilder) WithGitHubClient(client githubclient.GitHubClient) ChangelogBuilder {
 	builder.github = client
 	return builder
 }
@@ -96,12 +98,7 @@ func (builder *changelogBuilder) Build() (Changelog, error) {
 
 	builder.tags = append(builder.tags, tags...)
 
-	c := &changelog{
-		repoName:   builder.github.GetRepoName(),
-		repoOwner:  builder.github.GetRepoOwner(),
-		unreleased: []string{},
-		entries:    []Entry{},
-	}
+	c := NewChangelog(builder.github.GetRepoName(), builder.github.GetRepoOwner())
 
 	err = builder.buildChangeLog(c)
 	if err != nil {
@@ -112,12 +109,12 @@ func (builder *changelogBuilder) Build() (Changelog, error) {
 	return c, nil
 }
 
-func (builder *changelogBuilder) buildChangeLog(changelog *changelog) error {
+func (builder *changelogBuilder) buildChangeLog(changelog Changelog) error {
 	if configuration.Config.ShowUnreleased && builder.nextVersion == "" {
 		builder.spinner.Suffix = " Getting unreleased entries"
 
 		nextTag := builder.tags[0]
-		pullRequests, err := builder.github.GetPullRequestsBetweenDates(nextTag.Date, time.Now())
+		pullRequests, err := builder.github.GetPullRequestsBetweenDates(nextTag.Date, Now())
 		if err != nil {
 			return err
 		}
@@ -131,7 +128,7 @@ func (builder *changelogBuilder) buildChangeLog(changelog *changelog) error {
 			return fmt.Errorf("could not process pull requests: %v", err)
 		}
 
-		changelog.unreleased = unreleased
+		changelog.AddUnreleased(unreleased)
 	}
 
 	for idx, currentTag := range builder.tags {
@@ -174,7 +171,8 @@ func (builder *changelogBuilder) buildChangeLog(changelog *changelog) error {
 			return fmt.Errorf("could not process pull requests: %v", err)
 		}
 
-		changelog.entries = append(changelog.entries, *entry)
+		//changelog.entries = append(changelog.entries, *entry)
+		changelog.AddEntry(*entry)
 	}
 
 	return nil
@@ -232,8 +230,9 @@ func (builder *changelogBuilder) populateReleasedEntry(currentTag string, previo
 			)
 
 			section := getSection(pr.Labels)
+
 			if section != "" {
-				err := entry.append(section, line)
+				err := entry.Append(section, line)
 				if err != nil {
 					return nil, err
 				}
@@ -258,7 +257,7 @@ func (builder *changelogBuilder) setNextVersion() error {
 		tag := githubclient.Tag{
 			Name: builder.nextVersion,
 			Sha:  lastCommitSha,
-			Date: time.Now(),
+			Date: Now(),
 		}
 
 		builder.tags = append(builder.tags, tag)
