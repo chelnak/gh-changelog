@@ -29,7 +29,7 @@ func Test_ItReturnsTheCorrectRepoOwner(t *testing.T) {
 	assert.Equal(t, "TestOwner", repoName)
 }
 
-func newJsonResponder(status int, body string) httpmock.Responder {
+func NewJSONResponder(status int, body string) httpmock.Responder {
 	resp := httpmock.NewStringResponse(status, body)
 	resp.Header.Set("Content-Type", "application/json")
 	return httpmock.ResponderFromResponse(resp)
@@ -41,7 +41,7 @@ func Test_GetTagsReturnsASliceOfTags(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 	httpmock.RegisterResponder("POST", "https://api.github.com/graphql",
-		newJsonResponder(500, httpmock.File("data/get_tags_response.json").String()),
+		NewJSONResponder(500, httpmock.File("data/get_tags_response.json").String()),
 	)
 
 	t.Setenv("GITHUB_TOKEN", "xxxxxxxx")
