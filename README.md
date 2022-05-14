@@ -85,3 +85,11 @@ show_unreleased: true
 # If set to false, the tool will not check remotely for updates
 check_for_updates: true
 ```
+
+You can also override any setting using environment variables. When configured from the environment
+properties are prefixed with `CHANGELOG`. For example, overriding `check_for_updates` might look
+something like this:
+
+```bash
+export CHANGELOG_CHECK_FOR_UPDATES=false
+```

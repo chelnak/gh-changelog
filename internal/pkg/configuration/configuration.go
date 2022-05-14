@@ -43,6 +43,9 @@ func InitConfig() error {
 		}
 	}
 
+	viper.AutomaticEnv()
+	viper.SetEnvPrefix("changelog")
+
 	err := viper.Unmarshal(&Config)
 	if err != nil {
 		return fmt.Errorf("failed to parse config: %s", err)
