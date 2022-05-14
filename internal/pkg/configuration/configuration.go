@@ -7,22 +7,49 @@
 package configuration
 
 import (
+	"encoding/json"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 
 	"github.com/spf13/viper"
+	"gopkg.in/yaml.v2"
 )
 
 var Config configuration
 
 type configuration struct {
-	FileName                string              `mapstructure:"file_name"`
-	ExcludedLabels          []string            `mapstructure:"excluded_labels"`
-	Sections                map[string][]string `mapstructure:"sections"`
-	SkipEntriesWithoutLabel bool                `mapstructure:"skip_entries_without_label"`
-	ShowUnreleased          bool                `mapstructure:"show_unreleased"`
-	CheckForUpdates         bool                `mapstructure:"check_for_updates"`
+	FileName                string              `mapstructure:"file_name" yaml:"file_name" json:"fileName"`
+	ExcludedLabels          []string            `mapstructure:"excluded_labels" yaml:"excluded_labels" json:"excludedLabels"`
+	Sections                map[string][]string `mapstructure:"sections" yaml:"sections" json:"sections"`
+	SkipEntriesWithoutLabel bool                `mapstructure:"skip_entries_without_label" yaml:"skip_entries_without_label" json:"skipEntriesWithoutLabel"`
+	ShowUnreleased          bool                `mapstructure:"show_unreleased" yaml:"show_unreleased" json:"showUnreleased"`
+	CheckForUpdates         bool                `mapstructure:"check_for_updates" yaml:"check_for_updates" json:"checkForUpdates"`
+}
+
+func write(data []byte, writer io.Writer) error {
+	_, err := writer.Write(data)
+	return err
+}
+
+func (c *configuration) PrintJSON(writer io.Writer) error {
+	b, err := json.MarshalIndent(c, "", "  ")
+	b = append(b, '\n')
+	if err != nil {
+		return err
+	}
+
+	return write(b, writer)
+}
+
+func (c *configuration) PrintYAML(writer io.Writer) error {
+	b, err := yaml.Marshal(c)
+	if err != nil {
+		return err
+	}
+
+	return write(b, writer)
 }
 
 func InitConfig() error {

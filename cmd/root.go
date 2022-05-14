@@ -46,6 +46,7 @@ func init() {
 
 	rootCmd.AddCommand(newCmd)
 	rootCmd.AddCommand(showCmd)
+	rootCmd.AddCommand(configCmd)
 }
 
 // Execute is called from main and is responsible for processing
