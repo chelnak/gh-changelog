@@ -51,6 +51,18 @@ gh changelog new --next-version v1.2.0
 gh changelog show
 ```
 
+### View the current configuration in the terminal
+
+```bash
+gh changelog config
+```
+
+Or to print out JSON instead of YAML:
+
+```bash
+gh changelog config -o json
+```
+
 ## Configuration
 
 Configuration for `gh changelog` can be found at `~/.config/gh-changelog/config.yaml`.

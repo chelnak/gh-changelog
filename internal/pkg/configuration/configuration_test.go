@@ -1,6 +1,7 @@
 package configuration_test
 
 import (
+	"bytes"
 	"testing"
 
 	"github.com/chelnak/gh-changelog/internal/pkg/configuration"
@@ -26,6 +27,73 @@ func TestInitConfigSetsCorrectValues(t *testing.T) {
 	assert.Equal(t, false, config.SkipEntriesWithoutLabel)
 	assert.Equal(t, true, config.ShowUnreleased)
 	assert.Equal(t, true, config.CheckForUpdates)
+}
+
+func TestPrintJSON(t *testing.T) {
+	err := configuration.InitConfig()
+	assert.NoError(t, err)
+
+	config := configuration.Config
+
+	var buf bytes.Buffer
+	err = config.PrintJSON(&buf)
+	assert.NoError(t, err)
+
+	cfg := `{
+  "fileName": "CHANGELOG.md",
+  "excludedLabels": [
+    "maintenance"
+  ],
+  "sections": {
+    "added": [
+      "feature",
+      "enhancement"
+    ],
+    "changed": [
+      "backwards-incompatible"
+    ],
+    "fixed": [
+      "bug",
+      "bugfix",
+      "documentation"
+    ]
+  },
+  "skipEntriesWithoutLabel": false,
+  "showUnreleased": true,
+  "checkForUpdates": true
+}
+`
+	assert.Equal(t, cfg, buf.String())
+}
+
+func TestPrintYAML(t *testing.T) {
+	err := configuration.InitConfig()
+	assert.NoError(t, err)
+
+	config := configuration.Config
+
+	var buf bytes.Buffer
+	err = config.PrintYAML(&buf)
+	assert.NoError(t, err)
+
+	cfg := `file_name: CHANGELOG.md
+excluded_labels:
+- maintenance
+sections:
+  added:
+  - feature
+  - enhancement
+  changed:
+  - backwards-incompatible
+  fixed:
+  - bug
+  - bugfix
+  - documentation
+skip_entries_without_label: false
+show_unreleased: true
+check_for_updates: true
+`
+	assert.Equal(t, cfg, buf.String())
 }
 
 func containsKey(m map[string][]string, key string) bool {
