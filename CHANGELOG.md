@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
+
+## Unreleased
+
+- Add a command to view current config [#63](https://github.com/chelnak/gh-changelog/pull/63) ([chelnak](https://github.com/chelnak))
+
+- Enable configuration from environment [#61](https://github.com/chelnak/gh-changelog/pull/61) ([chelnak](https://github.com/chelnak))
+
 ## [v0.7.0](https://github.com/chelnak/gh-changelog/tree/v0.7.0) - 2022-05-14
 
 [Full Changelog](https://github.com/chelnak/gh-changelog/compare/v0.6.1...v0.7.0)
@@ -12,8 +19,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - Lowercase section names [#52](https://github.com/chelnak/gh-changelog/pull/52) ([chelnak](https://github.com/chelnak))
 
 - Remove additional newlines in markdown [#51](https://github.com/chelnak/gh-changelog/pull/51) ([chelnak](https://github.com/chelnak))
-
-- Add a test for configuration setup [#49](https://github.com/chelnak/gh-changelog/pull/49) ([chelnak](https://github.com/chelnak))
 
 - Rework configuration [#47](https://github.com/chelnak/gh-changelog/pull/47) ([chelnak](https://github.com/chelnak))
 
