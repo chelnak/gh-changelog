@@ -1,3 +1,6 @@
+//Package gitclient is responsible for providing an interface
+//to the local git binary. It provides predefined calls that can
+//be easily consumed by other packages.
 package gitclient
 
 import (

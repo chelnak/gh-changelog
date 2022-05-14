@@ -1,3 +1,5 @@
+//Package cmd holds all top-level cobra commands. Each file should contain
+//only one command and that command should have only one purpose.
 package cmd
 
 import (

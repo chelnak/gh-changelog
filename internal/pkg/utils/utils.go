@@ -1,3 +1,5 @@
+//Package utils contains a number generic of methods that are used
+//throughout the application.
 package utils
 
 import (

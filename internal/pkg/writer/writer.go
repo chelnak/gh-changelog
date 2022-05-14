@@ -1,3 +1,5 @@
+//Package writer is responsible for parsing the given changelog struct
+//into a go template and writing it to the given writer.
 package writer
 
 import (
@@ -7,7 +9,6 @@ import (
 	"github.com/chelnak/gh-changelog/internal/pkg/changelog"
 )
 
-//lintLint:ignore U1000
 func Write(writer io.Writer, changelog changelog.Changelog) error {
 	var tmplSrc = `# Changelog
 

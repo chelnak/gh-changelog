@@ -1,3 +1,5 @@
+// Package changelog package is responsible for collecting the data that
+// will be used to generate the changelog.
 package changelog
 
 import (
@@ -13,6 +15,7 @@ import (
 
 var Now = time.Now // must be a better way to stub this
 
+// ChangelogBuilder represents
 type ChangelogBuilder interface {
 	WithSpinner(enabled bool) ChangelogBuilder
 	WithGitClient(client gitclient.GitClient) ChangelogBuilder
