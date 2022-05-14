@@ -1,3 +1,6 @@
+//Package githubclient is a wrapper around the githubv4 client.
+//It's purpose is to provide abstraction for some graphql queries
+//that retrieve data for the changelog.
 package githubclient
 
 import (

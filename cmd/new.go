@@ -1,7 +1,10 @@
+//Package cmd holds all top-level cobra commands. Each file should contain
+//only one command and that command should have only one purpose.
 package cmd
 
 import (
 	"os"
+	"path/filepath"
 
 	"github.com/chelnak/gh-changelog/internal/pkg/changelog"
 	"github.com/chelnak/gh-changelog/internal/pkg/configuration"
@@ -26,8 +29,7 @@ var newCmd = &cobra.Command{
 			return err
 		}
 
-		fileName := configuration.Config.FileName
-		f, err := os.Create(fileName)
+		f, err := os.Create(filepath.Clean(configuration.Config.FileName))
 		if err != nil {
 			return err
 		}
