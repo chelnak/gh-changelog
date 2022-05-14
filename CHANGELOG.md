@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## Unreleased
 
+- Tests for changelog package [#56](https://github.com/chelnak/gh-changelog/pull/56) ([chelnak](https://github.com/chelnak))
+
 - Ensure that Keep a Changelog format is followed [#53](https://github.com/chelnak/gh-changelog/pull/53) ([chelnak](https://github.com/chelnak))
 
 - Lowercase section names [#52](https://github.com/chelnak/gh-changelog/pull/52) ([chelnak](https://github.com/chelnak))
