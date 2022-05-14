@@ -4,19 +4,27 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
-## Unreleased
+## [v0.7.0](https://github.com/chelnak/gh-changelog/tree/v0.7.0) - (2022-05-14)
 
-- Tests for changelog package [#56](https://github.com/chelnak/gh-changelog/pull/56) ([chelnak](https://github.com/chelnak))
+[Full Changelog](https://github.com/chelnak/gh-changelog/compare/v0.6.1...v0.7.0)
 
-- Ensure that Keep a Changelog format is followed [#53](https://github.com/chelnak/gh-changelog/pull/53) ([chelnak](https://github.com/chelnak))
-
-- Lowercase section names [#52](https://github.com/chelnak/gh-changelog/pull/52) ([chelnak](https://github.com/chelnak))
+### Added
 
 - Remove additional newlines in markdown [#51](https://github.com/chelnak/gh-changelog/pull/51) ([chelnak](https://github.com/chelnak))
 
 - Add a test for configuration setup [#49](https://github.com/chelnak/gh-changelog/pull/49) ([chelnak](https://github.com/chelnak))
 
 - Rework configuration [#47](https://github.com/chelnak/gh-changelog/pull/47) ([chelnak](https://github.com/chelnak))
+
+
+### Fixed
+
+- Ensure that Keep a Changelog format is followed [#53](https://github.com/chelnak/gh-changelog/pull/53) ([chelnak](https://github.com/chelnak))
+
+
+### Other
+
+- Lowercase section names [#52](https://github.com/chelnak/gh-changelog/pull/52) ([chelnak](https://github.com/chelnak))
 
 
 ## [v0.6.1](https://github.com/chelnak/gh-changelog/tree/v0.6.1) - (2022-05-08)
