@@ -66,6 +66,7 @@ gh changelog config -o json
 ## Configuration
 
 Configuration for `gh changelog` can be found at `~/.config/gh-changelog/config.yaml`.
+
 However some sensible defaults are provided to help you get off to a flying start.
 
 ```yaml
@@ -98,8 +99,9 @@ show_unreleased: true
 check_for_updates: true
 ```
 
-You can also override any setting using environment variables. When configured from the environment
-properties are prefixed with `CHANGELOG`. For example, overriding `check_for_updates` might look
+You can also override any setting using environment variables. When configured from the environment,
+properties are prefixed with `CHANGELOG`.
+For example, overriding `check_for_updates` might look
 something like this:
 
 ```bash
