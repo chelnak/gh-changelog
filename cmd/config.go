@@ -3,7 +3,6 @@
 package cmd
 
 import (
-	"bufio"
 	"errors"
 	"os"
 
@@ -19,27 +18,14 @@ var configCmd = &cobra.Command{
 	Short: "Prints the current configuration to the terminal in either json or yaml format. Defaults to yaml.",
 	Long:  "Prints the current configuration to the terminal in either json or yaml format. Defaults to yaml.",
 	RunE: func(command *cobra.Command, args []string) error {
-
-		writer := bufio.NewWriter(os.Stdout)
-
-		var err error
-		defer func() {
-			err = writer.Flush()
-		}()
-
-		if err != nil {
-			return err
-		}
-
 		switch output {
 		case "json":
-			return configuration.Config.PrintJSON(writer)
+			return configuration.Config.PrintJSON(os.Stdout)
 		case "yaml":
-			return configuration.Config.PrintYAML(writer)
+			return configuration.Config.PrintYAML(os.Stdout)
 		default:
 			return errors.New("invalid output format. Valid values are 'json' and 'yaml'")
 		}
-
 	},
 }
 

@@ -29,7 +29,7 @@ type configuration struct {
 }
 
 func write(data []byte, writer io.Writer) error {
-	_, err := writer.Write(data)
+	_, err := fmt.Fprint(writer, string(data))
 	return err
 }
 
