@@ -4,6 +4,7 @@ package changelog
 
 import (
 	"fmt"
+	"os/exec"
 	"time"
 
 	"github.com/briandowns/spinner"
@@ -83,7 +84,7 @@ func (builder *changelogBuilder) Build() (Changelog, error) {
 	}
 
 	if builder.git == nil {
-		builder.git = gitclient.NewGitClient()
+		builder.git = gitclient.NewGitClient(exec.Command)
 	}
 
 	builder.spinner.Suffix = " Fetching tags..."

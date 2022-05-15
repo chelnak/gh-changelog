@@ -15,18 +15,22 @@ type GitClient interface {
 	GetDateOfHash(hash string) (time.Time, error)
 }
 
+type execContext = func(name string, arg ...string) *exec.Cmd
+
 type execOptions struct {
 	args []string
 }
 
 type git struct {
+	execContext execContext
 }
 
 func (g git) exec(opts execOptions) (string, error) {
 	// TODO: Consider not using a private exec function and hardcode
 	// each call to git in the respective command.
 	// For now, the lint check is disabled.
-	output, err := exec.Command("git", opts.args...).Output() // #nosec G204
+	// output, err := exec.Command("git", opts.args...).Output() // #nosec G204
+	output, err := g.execContext("git", opts.args...).Output() // #nosec G204
 	if err != nil {
 		return "", err
 	}
@@ -58,6 +62,8 @@ func (g git) GetDateOfHash(hash string) (time.Time, error) {
 	return time.ParseInLocation(time.RFC3339, date, time.Local)
 }
 
-func NewGitClient() GitClient {
-	return git{}
+func NewGitClient(cmdContext execContext) GitClient {
+	return git{
+		execContext: cmdContext,
+	}
 }
