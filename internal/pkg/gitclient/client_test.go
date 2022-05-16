@@ -30,6 +30,13 @@ func fakeExecFailure(command string, args ...string) *exec.Cmd {
 	return cmd
 }
 
+func safeSetMockOutput(output string) func() {
+	_ = os.Setenv("GO_TEST_PROCESS_EXPECTED_OUTPUT", output)
+	return func() {
+		_ = os.Unsetenv("GO_TEST_PROCESS_EXPECTED_OUTPUT")
+	}
+}
+
 func TestShellProcessSuccess(t *testing.T) {
 	if os.Getenv("GO_TEST_PROCESS") != "1" {
 		return
@@ -67,6 +74,16 @@ func TestGetFirstCommitFailure(t *testing.T) {
 	assert.Error(t, err)
 }
 
+func TestGetFirstCommitWithOrphansSuccess(t *testing.T) {
+	defer safeSetMockOutput("test-hash-0\ntest-hash-1")()
+
+	gitClient := gitclient.NewGitClient(fakeExecSuccess)
+	commit, err := gitClient.GetFirstCommit()
+
+	assert.NoError(t, err)
+	assert.Equal(t, "test-hash-0", commit)
+}
+
 func TestGetLastCommitSuccess(t *testing.T) {
 	gitClient := gitclient.NewGitClient(fakeExecSuccess)
 	commit, err := gitClient.GetLastCommit()
@@ -84,7 +101,7 @@ func TestGetLastCommitFailure(t *testing.T) {
 
 func TestGetDateOfHashSuccess(t *testing.T) {
 	mockDate := "2022-04-18T19:31:31+00:00"
-	_ = os.Setenv("GO_TEST_PROCESS_EXPECTED_OUTPUT", mockDate)
+	defer safeSetMockOutput(mockDate)()
 
 	gitClient := gitclient.NewGitClient(fakeExecSuccess)
 	date, err := gitClient.GetDateOfHash("test-hash")

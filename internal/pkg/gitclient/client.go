@@ -4,6 +4,7 @@
 package gitclient
 
 import (
+	"fmt"
 	"os/exec"
 	"strings"
 	"time"
@@ -32,16 +33,31 @@ func (g git) exec(opts execOptions) (string, error) {
 	// output, err := exec.Command("git", opts.args...).Output() // #nosec G204
 	output, err := g.execContext("git", opts.args...).Output() // #nosec G204
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("git command failed: %s\n%s", strings.Join(opts.args, " "), err)
 	}
 
 	return strings.Trim(string(output), "\n"), nil
 }
 
 func (g git) GetFirstCommit() (string, error) {
-	return g.exec(execOptions{
-		args: []string{"rev-list", "--max-parents=0", "HEAD"},
+	response, err := g.exec(execOptions{
+		args: []string{"rev-list", "--max-parents=0", "HEAD", "--reverse"},
 	})
+
+	if err != nil {
+		return "", err
+	}
+
+	hashes := strings.Split(response, "\n")
+
+	// if len(hashes) > 1 {
+	// 	//If we arrive here it means that rev-list has returned more than one commit.
+	// 	//This can happen when there are orphaned commits in the repository.
+	// 	//We split the response by newline and return the the item at position 0.
+	// 	//TODO: Logging should be added here to explain the situation.
+	// }
+
+	return hashes[0], nil
 }
 
 func (g git) GetLastCommit() (string, error) {
