@@ -99,3 +99,19 @@ func TestChangelogBuilder(t *testing.T) {
 	fmt.Println(changelog.GetEntries())
 	assert.Equal(t, changelog.GetEntries()[0].Added[0], "this is a test pr [#1](https://github.com/repo-owner/repo-name/pull/1) ([test-user](https://github.com/test-user))\n")
 }
+
+func TestChangelogBuilderWithAnOlderNextVersion(t *testing.T) {
+	_ = configuration.InitConfig()
+
+	mockGitClient := setupMockGitClient()
+	mockGitHubClient := setupMockGitHubClient()
+
+	testBuilder.WithSpinner(true)
+	testBuilder.WithGitClient(mockGitClient)
+	testBuilder.WithGitHubClient(mockGitHubClient)
+	testBuilder.WithNextVersion("v0.0.1")
+
+	_, err := testBuilder.Build()
+	assert.Error(t, err)
+	assert.Equal(t, err.Error(), "the next version should be greater than the former: 'v0.0.1' ≤ 'v1.0.0'")
+}
