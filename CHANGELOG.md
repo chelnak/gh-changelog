@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## Unreleased
 
+- Validate next version [#76](https://github.com/chelnak/gh-changelog/pull/76) ([chelnak](https://github.com/chelnak))
+
+- Handle orphaned commits [#74](https://github.com/chelnak/gh-changelog/pull/74) ([chelnak](https://github.com/chelnak))
+
 - Simplify config printing [#70](https://github.com/chelnak/gh-changelog/pull/70) ([chelnak](https://github.com/chelnak))
 
 - Add a command to view current config [#63](https://github.com/chelnak/gh-changelog/pull/63) ([chelnak](https://github.com/chelnak))
