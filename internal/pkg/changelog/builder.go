@@ -94,7 +94,7 @@ func (builder *changelogBuilder) Build() (Changelog, error) {
 		return nil, err
 	}
 
-	err = builder.setNextVersion()
+	err = builder.setNextVersion(tags[0].Name)
 	if err != nil {
 		builder.spinner.FinalMSG = ""
 		return nil, err
@@ -247,10 +247,14 @@ func (builder *changelogBuilder) populateReleasedEntry(currentTag string, previo
 	return entry, nil
 }
 
-func (builder *changelogBuilder) setNextVersion() error {
+func (builder *changelogBuilder) setNextVersion(currentVersion string) error {
 	if builder.nextVersion != "" {
 		if !utils.IsValidSemanticVersion(builder.nextVersion) {
 			return fmt.Errorf("'%s' is not a valid semantic version", builder.nextVersion)
+		}
+
+		if !utils.VersionIsGreaterThan(currentVersion, builder.nextVersion) {
+			return fmt.Errorf("the next version should be greater than the former: '%s' ≤ '%s'", builder.nextVersion, currentVersion)
 		}
 
 		lastCommitSha, err := builder.git.GetLastCommit()

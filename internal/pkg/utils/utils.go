@@ -40,7 +40,7 @@ func CheckForUpdate(currentVersion string) bool {
 
 	currentVersion = parseLocalVersion(currentVersion)
 
-	if versionIsGreaterThan(currentVersion, release.Version) {
+	if VersionIsGreaterThan(currentVersion, release.Version) {
 		color.Yellow("\nVersion %s is available ✨\n\n", release.Version)
 		fmt.Println("Run", color.GreenString(`gh extension upgrade chelnak/gh-changelog`), "to upgrade.")
 
@@ -72,7 +72,7 @@ func requestLatestRelease() (Release, error) {
 	return release, nil
 }
 
-func versionIsGreaterThan(currentVersion, nextVersion string) bool {
+func VersionIsGreaterThan(currentVersion, nextVersion string) bool {
 	constraint, err := semver.NewConstraint(fmt.Sprintf("> %s", currentVersion))
 	if err != nil {
 		return false
