@@ -65,6 +65,36 @@ func TestIsValidSemanticVersion(t *testing.T) {
 	}
 }
 
+func TestVersionIsGreaterThan(t *testing.T) {
+	tests := []struct {
+		name  string
+		value string
+		want  bool
+	}{
+		{
+			name:  "version is greater than",
+			value: "2.0.0",
+			want:  true,
+		},
+		{
+			name:  "version is not greater than",
+			value: "0.1.0",
+			want:  false,
+		},
+		{
+			name:  "when the version is equal",
+			value: "1.0.0",
+			want:  false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.want, utils.VersionIsGreaterThan("1.0.0", tt.value))
+		})
+	}
+}
+
 func TestCheckForUpdates(t *testing.T) {
 	tests := []struct {
 		name           string
