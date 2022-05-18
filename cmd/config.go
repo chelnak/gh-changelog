@@ -10,7 +10,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var output string
+var (
+	output  string
+	noColor bool
+)
 
 // configCmd is the entry point for printing the applications configuration in the terminal
 var configCmd = &cobra.Command{
@@ -20,9 +23,9 @@ var configCmd = &cobra.Command{
 	RunE: func(command *cobra.Command, args []string) error {
 		switch output {
 		case "json":
-			return configuration.Config.PrintJSON(os.Stdout)
+			return configuration.Config.PrintJSON(noColor, os.Stdout)
 		case "yaml":
-			return configuration.Config.PrintYAML(os.Stdout)
+			return configuration.Config.PrintYAML(noColor, os.Stdout)
 		default:
 			return errors.New("invalid output format. Valid values are 'json' and 'yaml'")
 		}
@@ -31,4 +34,5 @@ var configCmd = &cobra.Command{
 
 func init() {
 	configCmd.Flags().StringVarP(&output, "output", "o", "yaml", "The output format. Valid values are 'json' and 'yaml'. Defaults to 'yaml'.")
+	configCmd.Flags().BoolVarP(&noColor, "no-color", "n", false, "Disable color output")
 }

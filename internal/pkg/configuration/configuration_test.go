@@ -36,7 +36,7 @@ func TestPrintJSON(t *testing.T) {
 	config := configuration.Config
 
 	var buf bytes.Buffer
-	err = config.PrintJSON(&buf)
+	err = config.PrintJSON(true, &buf)
 	assert.NoError(t, err)
 
 	cfg := `{
@@ -73,10 +73,11 @@ func TestPrintYAML(t *testing.T) {
 	config := configuration.Config
 
 	var buf bytes.Buffer
-	err = config.PrintYAML(&buf)
+	err = config.PrintYAML(true, &buf)
 	assert.NoError(t, err)
 
-	cfg := `file_name: CHANGELOG.md
+	cfg := `---
+file_name: CHANGELOG.md
 excluded_labels:
 - maintenance
 sections:
