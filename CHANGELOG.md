@@ -21,8 +21,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 - Validate next version [#76](https://github.com/chelnak/gh-changelog/pull/76) ([chelnak](https://github.com/chelnak))
 
-### Other
-
 - Handle orphaned commits [#74](https://github.com/chelnak/gh-changelog/pull/74) ([chelnak](https://github.com/chelnak))
 
 ## [v0.7.0](https://github.com/chelnak/gh-changelog/tree/v0.7.0) - 2022-05-14
