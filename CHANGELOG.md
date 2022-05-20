@@ -3,18 +3,27 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
+## [v0.8.0](https://github.com/chelnak/gh-changelog/tree/v0.8.0) - 2022-05-20
 
-## Unreleased
+[Full Changelog](https://github.com/chelnak/gh-changelog/compare/v0.7.0...v0.8.0)
 
-- Validate next version [#76](https://github.com/chelnak/gh-changelog/pull/76) ([chelnak](https://github.com/chelnak))
+### Added
 
-- Handle orphaned commits [#74](https://github.com/chelnak/gh-changelog/pull/74) ([chelnak](https://github.com/chelnak))
+- Colorize config output [#77](https://github.com/chelnak/gh-changelog/pull/77) ([chelnak](https://github.com/chelnak))
 
 - Simplify config printing [#70](https://github.com/chelnak/gh-changelog/pull/70) ([chelnak](https://github.com/chelnak))
 
 - Add a command to view current config [#63](https://github.com/chelnak/gh-changelog/pull/63) ([chelnak](https://github.com/chelnak))
 
 - Enable configuration from environment [#61](https://github.com/chelnak/gh-changelog/pull/61) ([chelnak](https://github.com/chelnak))
+
+### Fixed
+
+- Validate next version [#76](https://github.com/chelnak/gh-changelog/pull/76) ([chelnak](https://github.com/chelnak))
+
+### Other
+
+- Handle orphaned commits [#74](https://github.com/chelnak/gh-changelog/pull/74) ([chelnak](https://github.com/chelnak))
 
 ## [v0.7.0](https://github.com/chelnak/gh-changelog/tree/v0.7.0) - 2022-05-14
 
