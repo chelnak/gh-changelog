@@ -13,6 +13,10 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/alecthomas/chroma"
+	"github.com/alecthomas/chroma/formatters"
+	"github.com/alecthomas/chroma/lexers"
+	"github.com/alecthomas/chroma/styles"
 	"github.com/spf13/viper"
 	"gopkg.in/yaml.v2"
 )
@@ -28,28 +32,73 @@ type configuration struct {
 	CheckForUpdates         bool                `mapstructure:"check_for_updates" yaml:"check_for_updates" json:"checkForUpdates"`
 }
 
-func write(data []byte, writer io.Writer) error {
-	_, err := fmt.Fprint(writer, string(data))
-	return err
+type writeOptions struct {
+	data      string
+	lexerName string
+	noColor   bool
+	writer    io.Writer
 }
 
-func (c *configuration) PrintJSON(writer io.Writer) error {
+func prettyWrite(opts writeOptions) error {
+	lexer := lexers.Get(opts.lexerName)
+	if lexer == nil {
+		lexer = lexers.Fallback
+	}
+
+	lexer = chroma.Coalesce(lexer)
+
+	style := styles.Get("native")
+	if style == nil {
+		style = styles.Fallback
+	}
+
+	formatter := formatters.Get("terminal16m")
+
+	if opts.noColor {
+		formatter = formatters.Get("noop")
+	}
+
+	iterator, err := lexer.Tokenise(nil, opts.data)
+	if err != nil {
+		return err
+	}
+
+	return formatter.Format(opts.writer, style, iterator)
+}
+
+func (c *configuration) PrintJSON(noColor bool, writer io.Writer) error {
 	b, err := json.MarshalIndent(c, "", "  ")
 	b = append(b, '\n')
 	if err != nil {
 		return err
 	}
 
-	return write(b, writer)
+	opts := writeOptions{
+		data:      string(b),
+		lexerName: "json",
+		noColor:   noColor,
+		writer:    writer,
+	}
+
+	return prettyWrite(opts)
 }
 
-func (c *configuration) PrintYAML(writer io.Writer) error {
+func (c *configuration) PrintYAML(noColor bool, writer io.Writer) error {
 	b, err := yaml.Marshal(c)
+	y := []byte("---\n")
+	y = append(y, b...)
 	if err != nil {
 		return err
 	}
 
-	return write(b, writer)
+	opts := writeOptions{
+		data:      string(y),
+		lexerName: "json",
+		noColor:   noColor,
+		writer:    writer,
+	}
+
+	return prettyWrite(opts)
 }
 
 func InitConfig() error {
@@ -103,4 +152,6 @@ func setDefaults() {
 	viper.SetDefault("show_unreleased", true)
 
 	viper.SetDefault("check_for_updates", true)
+
+	viper.SetDefault("no_color", false)
 }
