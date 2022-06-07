@@ -93,7 +93,7 @@ func (c *configuration) PrintYAML(noColor bool, writer io.Writer) error {
 
 	opts := writeOptions{
 		data:      string(y),
-		lexerName: "json",
+		lexerName: "yaml",
 		noColor:   noColor,
 		writer:    writer,
 	}
