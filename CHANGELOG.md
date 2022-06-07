@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
+## [v0.8.1](https://github.com/chelnak/gh-changelog/tree/v0.8.1) - 2022-06-07
+
+[Full Changelog](https://github.com/chelnak/gh-changelog/compare/v0.8.0...v0.8.1)
+
+### Fixed
+
+- Fix lexer in PrintYAML method [#80](https://github.com/chelnak/gh-changelog/pull/80) ([chelnak](https://github.com/chelnak))
+
 ## [v0.8.0](https://github.com/chelnak/gh-changelog/tree/v0.8.0) - 2022-05-20
 
 [Full Changelog](https://github.com/chelnak/gh-changelog/compare/v0.7.0...v0.8.0)
@@ -67,11 +75,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Added
 
-- Refactor & (some) tests [#34](https://github.com/chelnak/gh-changelog/pull/34) ([chelnak](https://github.com/chelnak))
-
-### Other
-
 - Implementation of next-version and unreleased [#35](https://github.com/chelnak/gh-changelog/pull/35) ([chelnak](https://github.com/chelnak))
+
+- Refactor & (some) tests [#34](https://github.com/chelnak/gh-changelog/pull/34) ([chelnak](https://github.com/chelnak))
 
 ## [v0.4.0](https://github.com/chelnak/gh-changelog/tree/v0.4.0) - 2022-04-26
 
@@ -79,17 +85,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Added
 
+- Migrate to GitHubs v4 API [#29](https://github.com/chelnak/gh-changelog/pull/29) ([chelnak](https://github.com/chelnak))
+
+- Better config [#28](https://github.com/chelnak/gh-changelog/pull/28) ([chelnak](https://github.com/chelnak))
+
 - Better config [#27](https://github.com/chelnak/gh-changelog/pull/27) ([chelnak](https://github.com/chelnak))
 
 ### Fixed
 
 - Clarify functionality in README [#25](https://github.com/chelnak/gh-changelog/pull/25) ([chelnak](https://github.com/chelnak))
-
-### Other
-
-- Migrate to GitHubs v4 API [#29](https://github.com/chelnak/gh-changelog/pull/29) ([chelnak](https://github.com/chelnak))
-
-- Better config [#28](https://github.com/chelnak/gh-changelog/pull/28) ([chelnak](https://github.com/chelnak))
 
 ## [v0.3.1](https://github.com/chelnak/gh-changelog/tree/v0.3.1) - 2022-04-20
 
