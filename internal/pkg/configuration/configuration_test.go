@@ -16,8 +16,8 @@ func TestInitConfigSetsCorrectValues(t *testing.T) {
 
 	assert.Equal(t, "CHANGELOG.md", config.FileName)
 
-	assert.Equal(t, []string{"maintenance"}, config.ExcludedLabels)
-	assert.Equal(t, 1, len(config.ExcludedLabels))
+	assert.Equal(t, []string{"maintenance", "dependencies"}, config.ExcludedLabels)
+	assert.Equal(t, 2, len(config.ExcludedLabels))
 
 	assert.True(t, containsKey(config.Sections, "changed"))
 	assert.True(t, containsKey(config.Sections, "added"))
@@ -42,7 +42,8 @@ func TestPrintJSON(t *testing.T) {
 	cfg := `{
   "fileName": "CHANGELOG.md",
   "excludedLabels": [
-    "maintenance"
+    "maintenance",
+    "dependencies"
   ],
   "sections": {
     "added": [
@@ -80,6 +81,7 @@ func TestPrintYAML(t *testing.T) {
 file_name: CHANGELOG.md
 excluded_labels:
 - maintenance
+- dependencies
 sections:
   added:
   - feature
