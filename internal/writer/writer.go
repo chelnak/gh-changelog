@@ -6,7 +6,7 @@ import (
 	"io"
 	"text/template"
 
-	"github.com/chelnak/gh-changelog/internal/pkg/changelog"
+	"github.com/chelnak/gh-changelog/internal/changelog"
 )
 
 func Write(writer io.Writer, changelog changelog.Changelog) error {

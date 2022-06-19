@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/chelnak/gh-changelog/internal/pkg/configuration"
-	"github.com/chelnak/gh-changelog/internal/pkg/utils"
+	"github.com/chelnak/gh-changelog/internal/configuration"
+	"github.com/chelnak/gh-changelog/internal/utils"
 	"github.com/spf13/cobra"
 )
 

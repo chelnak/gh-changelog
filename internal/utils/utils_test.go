@@ -3,7 +3,7 @@ package utils_test
 import (
 	"testing"
 
-	"github.com/chelnak/gh-changelog/internal/pkg/utils"
+	"github.com/chelnak/gh-changelog/internal/utils"
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/h2non/gock.v1"
 )

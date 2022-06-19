@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/chelnak/gh-changelog/internal/pkg/configuration"
+	"github.com/chelnak/gh-changelog/internal/configuration"
 	"github.com/stretchr/testify/assert"
 )
 

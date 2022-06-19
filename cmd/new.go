@@ -6,9 +6,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/chelnak/gh-changelog/internal/pkg/changelog"
-	"github.com/chelnak/gh-changelog/internal/pkg/configuration"
-	"github.com/chelnak/gh-changelog/internal/pkg/writer"
+	"github.com/chelnak/gh-changelog/internal/changelog"
+	"github.com/chelnak/gh-changelog/internal/configuration"
+	"github.com/chelnak/gh-changelog/internal/writer"
 	"github.com/spf13/cobra"
 )
 

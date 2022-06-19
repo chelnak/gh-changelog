@@ -5,9 +5,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/chelnak/gh-changelog/internal/pkg/changelog"
-	"github.com/chelnak/gh-changelog/internal/pkg/configuration"
-	"github.com/chelnak/gh-changelog/internal/pkg/githubclient"
+	"github.com/chelnak/gh-changelog/internal/changelog"
+	"github.com/chelnak/gh-changelog/internal/configuration"
+	"github.com/chelnak/gh-changelog/internal/githubclient"
 	"github.com/chelnak/gh-changelog/mocks"
 	"github.com/stretchr/testify/assert"
 )

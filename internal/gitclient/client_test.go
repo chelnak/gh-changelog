@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/chelnak/gh-changelog/internal/pkg/gitclient"
+	"github.com/chelnak/gh-changelog/internal/gitclient"
 	"github.com/stretchr/testify/assert"
 )
 
