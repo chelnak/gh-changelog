@@ -3,6 +3,11 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
+
+## Unreleased
+
+- Add a new excluded label default [#82](https://github.com/chelnak/gh-changelog/pull/82) ([chelnak](https://github.com/chelnak))
+
 ## [v0.8.1](https://github.com/chelnak/gh-changelog/tree/v0.8.1) - 2022-06-07
 
 [Full Changelog](https://github.com/chelnak/gh-changelog/compare/v0.8.0...v0.8.1)
