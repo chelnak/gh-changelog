@@ -138,7 +138,7 @@ func InitConfig() error {
 
 func setDefaults() {
 	viper.SetDefault("file_name", "CHANGELOG.md")
-	viper.SetDefault("excluded_labels", []string{"maintenance"})
+	viper.SetDefault("excluded_labels", []string{"maintenance", "dependencies"})
 
 	sections := make(map[string][]string)
 	sections["changed"] = []string{"backwards-incompatible"}
