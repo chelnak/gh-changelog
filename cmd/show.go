@@ -3,8 +3,8 @@
 package cmd
 
 import (
-	"github.com/chelnak/gh-changelog/internal/pkg/configuration"
-	"github.com/chelnak/gh-changelog/internal/pkg/markdown"
+	"github.com/chelnak/gh-changelog/internal/configuration"
+	"github.com/chelnak/gh-changelog/internal/markdown"
 	"github.com/spf13/cobra"
 )
 

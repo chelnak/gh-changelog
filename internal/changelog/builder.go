@@ -8,10 +8,10 @@ import (
 	"time"
 
 	"github.com/briandowns/spinner"
-	"github.com/chelnak/gh-changelog/internal/pkg/configuration"
-	"github.com/chelnak/gh-changelog/internal/pkg/gitclient"
-	"github.com/chelnak/gh-changelog/internal/pkg/githubclient"
-	"github.com/chelnak/gh-changelog/internal/pkg/utils"
+	"github.com/chelnak/gh-changelog/internal/configuration"
+	"github.com/chelnak/gh-changelog/internal/gitclient"
+	"github.com/chelnak/gh-changelog/internal/githubclient"
+	"github.com/chelnak/gh-changelog/internal/utils"
 )
 
 var Now = time.Now // must be a better way to stub this

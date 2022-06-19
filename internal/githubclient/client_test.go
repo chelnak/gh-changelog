@@ -3,7 +3,7 @@ package githubclient_test
 import (
 	"testing"
 
-	"github.com/chelnak/gh-changelog/internal/pkg/githubclient"
+	"github.com/chelnak/gh-changelog/internal/githubclient"
 	"github.com/chelnak/gh-changelog/mocks"
 	"github.com/jarcoal/httpmock"
 	"github.com/stretchr/testify/assert"

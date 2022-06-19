@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	githubclient "github.com/chelnak/gh-changelog/internal/pkg/githubclient"
+	githubclient "github.com/chelnak/gh-changelog/internal/githubclient"
 	mock "github.com/stretchr/testify/mock"
 
 	testing "testing"

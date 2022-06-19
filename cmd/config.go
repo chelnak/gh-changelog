@@ -6,7 +6,7 @@ import (
 	"errors"
 	"os"
 
-	"github.com/chelnak/gh-changelog/internal/pkg/configuration"
+	"github.com/chelnak/gh-changelog/internal/configuration"
 	"github.com/spf13/cobra"
 )
 

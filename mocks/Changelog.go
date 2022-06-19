@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	changelog "github.com/chelnak/gh-changelog/internal/pkg/changelog"
+	changelog "github.com/chelnak/gh-changelog/internal/changelog"
 	mock "github.com/stretchr/testify/mock"
 
 	testing "testing"
