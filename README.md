@@ -73,6 +73,7 @@ However some sensible defaults are provided to help you get off to a flying star
 # Labels added here will be ommitted from the changelog
 excluded_labels:
   - maintenance
+  - dependencies
 # This is the filename of the generated changelog
 file_name: CHANGELOG.md
 # This is where labels are mapped to the sections in a changelog entry
