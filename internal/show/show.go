@@ -1,6 +1,6 @@
-//Package markdown is responsible for rendering the contents of a
+//Package show is responsible for rendering the contents of a
 //given CHANGELOG.md file and displaying it in the terminal.
-package markdown
+package show
 
 import (
 	"errors"
