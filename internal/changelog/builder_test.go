@@ -51,7 +51,7 @@ func setupMockGitHubClient() *mocks.GitHubClient {
 			Number: 1,
 			Title:  "this is a test pr",
 			User:   "test-user",
-			Labels: []githubclient.Label{
+			Labels: []githubclient.PullRequestLabel{
 				{
 					Name: "enhancement",
 				},
@@ -61,7 +61,7 @@ func setupMockGitHubClient() *mocks.GitHubClient {
 			Number: 2,
 			Title:  "this is a test pr 2",
 			User:   "test-user",
-			Labels: []githubclient.Label{
+			Labels: []githubclient.PullRequestLabel{
 				{
 					Name: "enhancement",
 				},

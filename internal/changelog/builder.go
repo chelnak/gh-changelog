@@ -284,7 +284,7 @@ func hasExcludedLabel(excludedLabels []string, pr githubclient.PullRequest) bool
 	return false
 }
 
-func getSection(labels []githubclient.Label) string {
+func getSection(labels []githubclient.PullRequestLabel) string {
 	sections := configuration.Config.Sections
 
 	lookup := make(map[string]string)
