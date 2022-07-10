@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## Unreleased
 
+- Refactoring and code hygiene [#88](https://github.com/chelnak/gh-changelog/pull/88) ([chelnak](https://github.com/chelnak))
+
 - Remove internal/pkg [#86](https://github.com/chelnak/gh-changelog/pull/86) ([chelnak](https://github.com/chelnak))
 
 - Add a new excluded label default [#82](https://github.com/chelnak/gh-changelog/pull/82) ([chelnak](https://github.com/chelnak))
