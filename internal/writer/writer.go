@@ -9,8 +9,7 @@ import (
 	"github.com/chelnak/gh-changelog/internal/changelog"
 )
 
-func Write(writer io.Writer, changelog changelog.Changelog) error {
-	var tmplSrc = `# Changelog
+var tmplSrc = `# Changelog
 
 All notable changes to this project will be documented in this file.
 
@@ -77,11 +76,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 {{- end}}
 {{- end}}`
 
+func Write(writer io.Writer, changelog changelog.Changelog) error {
 	tmpl := template.Must(template.New("changelog").Parse(tmplSrc))
-
-	err := tmpl.Execute(writer, changelog)
-	if err != nil {
-		return err
-	}
-	return nil
+	return tmpl.Execute(writer, changelog)
 }
