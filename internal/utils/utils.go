@@ -1,11 +1,11 @@
-//Package utils contains a number generic of methods that are used
-//throughout the application.
+// Package utils contains a number generic of methods that are used
+// throughout the application.
 package utils
 
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strings"
 
@@ -58,7 +58,7 @@ func requestLatestRelease() (Release, error) {
 		return Release{}, err
 	}
 
-	body, err := ioutil.ReadAll(response.Body)
+	body, err := io.ReadAll(response.Body)
 	if err != nil {
 		return Release{}, err
 	}

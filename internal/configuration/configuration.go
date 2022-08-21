@@ -1,9 +1,9 @@
-//Package configuration contains a number of methods that are used
-//to provide configuration to the wider application. It uses viper
-//to pull config from either the environment or a config file then
-//unmarhsals the config into the configuration struct. The configuration struct
-//is made available to the application via a package level variable
-//called Config.
+// Package configuration contains a number of methods that are used
+// to provide configuration to the wider application. It uses viper
+// to pull config from either the environment or a config file then
+// unmarhsals the config into the configuration struct. The configuration struct
+// is made available to the application via a package level variable
+// called Config.
 package configuration
 
 import (

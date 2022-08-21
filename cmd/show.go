@@ -1,10 +1,10 @@
-//Package cmd holds all top-level cobra commands. Each file should contain
-//only one command and that command should have only one purpose.
+// Package cmd holds all top-level cobra commands. Each file should contain
+// only one command and that command should have only one purpose.
 package cmd
 
 import (
 	"github.com/chelnak/gh-changelog/internal/configuration"
-	"github.com/chelnak/gh-changelog/internal/show"
+	"github.com/chelnak/gh-changelog/pkg/show"
 	"github.com/spf13/cobra"
 )
 
@@ -15,6 +15,6 @@ var showCmd = &cobra.Command{
 	Long:  "Renders the current changelog in the terminal",
 	RunE: func(command *cobra.Command, args []string) error {
 		changelog := configuration.Config.FileName
-		return show.Render(changelog)
+		return show.RenderFile(changelog)
 	},
 }

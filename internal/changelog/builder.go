@@ -123,11 +123,7 @@ func (builder *changelogBuilder) buildChangeLog(changelog Changelog) error {
 			return err
 		}
 
-		unreleased, err := builder.populateUnreleasedEntry(
-			nextTag.Name,
-			nextTag.Sha,
-			pullRequests,
-		)
+		unreleased := builder.populateUnreleasedEntry(pullRequests)
 		if err != nil {
 			return fmt.Errorf("could not process pull requests: %v", err)
 		}
@@ -182,7 +178,7 @@ func (builder *changelogBuilder) buildChangeLog(changelog Changelog) error {
 	return nil
 }
 
-func (builder *changelogBuilder) populateUnreleasedEntry(nextTag string, headSha string, pullRequests []githubclient.PullRequest) ([]string, error) {
+func (builder *changelogBuilder) populateUnreleasedEntry(pullRequests []githubclient.PullRequest) []string {
 	unreleased := []string{}
 	excludedLabels := configuration.Config.ExcludedLabels
 	for _, pr := range pullRequests {
@@ -202,7 +198,7 @@ func (builder *changelogBuilder) populateUnreleasedEntry(nextTag string, headSha
 		}
 	}
 
-	return unreleased, nil
+	return unreleased
 }
 
 func (builder *changelogBuilder) populateReleasedEntry(currentTag string, previousTag string, date time.Time, pullRequests []githubclient.PullRequest) (*Entry, error) {
@@ -287,6 +283,7 @@ func hasExcludedLabel(excludedLabels []string, pr githubclient.PullRequest) bool
 func getSection(labels []githubclient.PullRequestLabel) string {
 	sections := configuration.Config.Sections
 
+	// Refactor
 	lookup := make(map[string]string)
 	for k, v := range sections {
 		for _, label := range v {

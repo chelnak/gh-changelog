@@ -1,9 +1,8 @@
-//Package show is responsible for rendering the contents of a
-//given CHANGELOG.md file and displaying it in the terminal.
-//The contents of this viewport file has been taken from the following
-//example:
-//https://github.com/charmbracelet/bubbletea/blob/master/examples/pager/main.go
-package show
+// Package viewport is a bubbletea application that renders content in the terminal.
+// The contents of this viewport file has been taken from the following
+// example:
+// https://github.com/charmbracelet/bubbletea/blob/master/examples/pager/main.go
+package viewport
 
 import (
 	"fmt"
@@ -107,7 +106,7 @@ func max(a, b int) int {
 	return b
 }
 
-func start(content string) error {
+func Start(content string) error {
 	p := tea.NewProgram(
 		model{content: content},
 		tea.WithAltScreen(),

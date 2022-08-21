@@ -1,5 +1,5 @@
-//Package writer is responsible for parsing the given changelog struct
-//into a go template and writing it to the given writer.
+// Package writer is responsible for parsing the given changelog struct
+// into a go template and writing it to the given writer.
 package writer
 
 import (
