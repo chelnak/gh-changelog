@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"os/exec"
+	"strings"
 	"time"
 
 	"github.com/briandowns/spinner"
@@ -23,15 +24,19 @@ type ChangelogBuilder interface {
 	WithGitClient(client gitclient.GitClient) ChangelogBuilder
 	WithGitHubClient(client githubclient.GitHubClient) ChangelogBuilder
 	WithNextVersion(nextVersion string) ChangelogBuilder
+	WithFromVersion(fromVersion string) ChangelogBuilder
+	WithFromLastVersion(fromLastVersion bool) ChangelogBuilder
 	Build() (Changelog, error)
 }
 
 type changelogBuilder struct {
-	spinner     *spinner.Spinner
-	github      githubclient.GitHubClient
-	git         gitclient.GitClient
-	tags        []githubclient.Tag
-	nextVersion string
+	spinner         *spinner.Spinner
+	github          githubclient.GitHubClient
+	git             gitclient.GitClient
+	tags            []githubclient.Tag
+	nextVersion     string
+	fromVersion     string
+	fromLastVersion bool
 }
 
 // NewChangelogBuilder creates a new returns a new instance of the changelog builder struct
@@ -65,6 +70,20 @@ func (builder *changelogBuilder) WithGitHubClient(client githubclient.GitHubClie
 // or a valid semantic version string passed from the consumer.
 func (builder *changelogBuilder) WithNextVersion(nextVersion string) ChangelogBuilder {
 	builder.nextVersion = nextVersion
+	return builder
+}
+
+// WithFromVersion sets the point at which the changelog starts. The value is either an empty string
+// or a valid semantic version string passed from the consumer.
+func (builder *changelogBuilder) WithFromVersion(fromVersion string) ChangelogBuilder {
+	builder.fromVersion = fromVersion
+	return builder
+}
+
+// WithFromLastVersion will build the changelog from the last tag. This ultimately produces a changelog
+// with one entry.
+func (builder *changelogBuilder) WithFromLastVersion(fromLastVersion bool) ChangelogBuilder {
+	builder.fromLastVersion = fromLastVersion
 	return builder
 }
 
@@ -173,8 +192,11 @@ func (builder *changelogBuilder) buildChangeLog(changelog Changelog) error {
 			return fmt.Errorf("could not process pull requests: %v", err)
 		}
 
-		//changelog.entries = append(changelog.entries, *entry)
 		changelog.AddEntry(*entry)
+
+		if strings.EqualFold(builder.fromVersion, currentTag.Name) || builder.fromLastVersion {
+			break
+		}
 	}
 
 	return nil
