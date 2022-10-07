@@ -1,37 +1,39 @@
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
 
-name: ci
+name: "ci"
 
 on:
   pull_request:
     branches:
-      - main
+      - "main"
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: "write"
 
 env:
   GO_VERSION: 1.18
 
 jobs:
-  lint:
-    name: lint
-    runs-on: ubuntu-latest
+  ci:
+    name: "ci"
+    runs-on: "ubuntu-latest"
     steps:
-      - uses: actions/checkout@v2
+
+      - name: "checkout"
+        uses: "actions/checkout@v3"
         with:
           fetch-depth: 0
 
-      - name: Set up Go
-        uses: actions/setup-go@v2
+      - name: "setup go"
+        uses: "actions/setup-go@v3"
         with:
           go-version: ${{ env.GO_VERSION }}
 
-      - name: lint
-        uses: golangci/golangci-lint-action@v2
+      - name: "lint"
+        uses: "golangci/golangci-lint-action@v2"
         with:
-          version: latest
+          version: "latest"
 
-      - name: test
+      - name: "test"
         run: go test -v ./...

@@ -1,43 +1,41 @@
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
 
-name: changelog
+name: "changelog"
 
 on:
-  push:
-    branches:
-      - main
-    tags-ignore:
-      - "*"
-  workflow_dispatch:
-  workflow_call:
+ workflow_dispatch:
+    inputs:
+      version:
+        description: "The next version that will be released"
+        required: true
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: "write"
+  pull-requests: "write"
 
 jobs:
   changelog:
-    name: changelog
-    runs-on: ubuntu-latest
+    name: "changelog"
+    runs-on: "ubuntu-latest"
     steps:
-      - uses: actions/checkout@v2
+      - uses: "actions/checkout@v3"
         with:
           fetch-depth: 0
 
-      - name: Generate changelog
+      - name: "gh changelog new --next-version ${{ github.event.inputs.version }}"
         run: |
           export GH_HOST=github.com
           gh extension install chelnak/gh-changelog
-          gh changelog new
+          gh changelog new --next-version ${{ github.event.inputs.version }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v4
+      - name: "create pull request"
+        uses: "peter-evans/create-pull-request@v4"
         with:
-          title: "changelog"
+          title: "Release prep for version ${{ github.event.inputs.version }}"
           commit-message: "automated changelog generation"
           body: "This PR contains an automatically generated changelog."
-          base: main
+          base: "main"
           labels:
             "maintenance"
