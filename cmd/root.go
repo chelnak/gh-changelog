@@ -17,9 +17,38 @@ var errSilent = errors.New("ErrSilent")
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:           "changelog [command]",
-	Short:         "Create a changelog that adheres to the [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) format",
-	Long:          "Create a changelog that adheres to the [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) format",
+	Use:   "changelog [command]",
+	Short: "A GitHub CLI extension that will make your changelogs ✨",
+	Long: `gh changelog - A GitHub CLI extension that will make your changelogs ✨
+
+Easily create standardised changelogs for your project that follow
+conventions set by the keepachangelog project.
+
+For more information check out the following link:
+
+🔗 https://keepachangelog.com
+
+Getting started is easy:
+
+┌────────────────────┐
+│•••                 │
+├────────────────────┤
+│                    │
+│→ gh changelog new  │
+└────────────────────┘
+
+You can also view the changelog at any time:
+
+┌────────────────────┐
+│•••                 │
+├────────────────────┤
+│                    │
+│→ gh changelog show │
+└────────────────────┘
+
+Issues or feature requests can be opened at:
+
+🔗 https://github.com/chelnak/gh-changelog/issues`,
 	Version:       version,
 	SilenceUsage:  true,
 	SilenceErrors: true,
