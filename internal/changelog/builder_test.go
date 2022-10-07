@@ -115,3 +115,19 @@ func TestChangelogBuilderWithAnOlderNextVersion(t *testing.T) {
 	assert.Error(t, err)
 	assert.Equal(t, err.Error(), "the next version should be greater than the former: 'v0.0.1' ≤ 'v1.0.0'")
 }
+
+func TestChangelogBuilderWithNoTags(t *testing.T) {
+	_ = configuration.InitConfig()
+
+	mockGitClient := setupMockGitClient()
+	mockGitHubClient := &mocks.GitHubClient{}
+	mockGitHubClient.On("GetTags").Return([]githubclient.Tag{}, nil)
+
+	testBuilder.WithSpinner(true)
+	testBuilder.WithGitClient(mockGitClient)
+	testBuilder.WithGitHubClient(mockGitHubClient)
+
+	_, err := testBuilder.Build()
+	assert.Error(t, err)
+	assert.Equal(t, err.Error(), "there are no tags on this repository to evaluate")
+}
