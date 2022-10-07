@@ -1,8 +1,8 @@
-//Package show is responsible for rendering the contents of a
-//given CHANGELOG.md file and displaying it in the terminal.
-//The contents of this viewport file has been taken from the following
-//example:
-//https://github.com/charmbracelet/bubbletea/blob/master/examples/pager/main.go
+// Package show is responsible for rendering the contents of a
+// given CHANGELOG.md file and displaying it in the terminal.
+// The contents of this viewport file has been taken from the following
+// example:
+// https://github.com/charmbracelet/bubbletea/blob/master/examples/pager/main.go
 package show
 
 import (
