@@ -63,7 +63,7 @@ Issues or feature requests can be opened at:
 func init() {
 	err := configuration.InitConfig()
 	if err != nil {
-		fmt.Println(err)
+		formatError(err)
 		os.Exit(1)
 	}
 
@@ -78,12 +78,19 @@ func init() {
 	rootCmd.AddCommand(configCmd)
 }
 
+func formatError(err error) {
+	fmt.Print("\n❌ It looks like something went wrong!\n")
+	fmt.Println("\nReported errors:")
+	fmt.Fprintln(os.Stderr, fmt.Errorf("• %s", err))
+	fmt.Println()
+}
+
 // Execute is called from main and is responsible for processing
 // requests to the application and handling exit codes appropriately
 func Execute() int {
 	if err := rootCmd.Execute(); err != nil {
 		if err != errSilent {
-			fmt.Fprintln(os.Stderr, fmt.Errorf("❌ %s", err))
+			formatError(err)
 		}
 		return 1
 	}
