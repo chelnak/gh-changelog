@@ -3,6 +3,7 @@
 package changelog
 
 import (
+	"errors"
 	"fmt"
 	"os/exec"
 	"time"
@@ -92,6 +93,11 @@ func (builder *changelogBuilder) Build() (Changelog, error) {
 	if err != nil {
 		builder.spinner.FinalMSG = ""
 		return nil, err
+	}
+
+	if len(tags) == 0 {
+		builder.spinner.FinalMSG = ""
+		return nil, errors.New("there are no tags on this repository to evaluate")
 	}
 
 	err = builder.setNextVersion(tags[0].Name)
