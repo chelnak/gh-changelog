@@ -3,10 +3,11 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
+## [v0.9.0](https://github.com/chelnak/gh-changelog/tree/v0.9.0) - 2022-10-07
 
-## Unreleased
+[Full Changelog](https://github.com/chelnak/gh-changelog/compare/v0.8.1...v0.9.0)
 
-- Properly handle a repo with no tags [#95](https://github.com/chelnak/gh-changelog/pull/95) ([chelnak](https://github.com/chelnak))
+### Added
 
 - Help and error UX improvements [#92](https://github.com/chelnak/gh-changelog/pull/92) ([chelnak](https://github.com/chelnak))
 
@@ -15,6 +16,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - Remove internal/pkg [#86](https://github.com/chelnak/gh-changelog/pull/86) ([chelnak](https://github.com/chelnak))
 
 - Add a new excluded label default [#82](https://github.com/chelnak/gh-changelog/pull/82) ([chelnak](https://github.com/chelnak))
+
+### Fixed
+
+- Properly handle a repo with no tags [#95](https://github.com/chelnak/gh-changelog/pull/95) ([chelnak](https://github.com/chelnak))
 
 ## [v0.8.1](https://github.com/chelnak/gh-changelog/tree/v0.8.1) - 2022-06-07
 
