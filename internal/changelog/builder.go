@@ -123,15 +123,7 @@ func (builder *changelogBuilder) buildChangeLog(changelog Changelog) error {
 			return err
 		}
 
-		unreleased, err := builder.populateUnreleasedEntry(
-			nextTag.Name,
-			nextTag.Sha,
-			pullRequests,
-		)
-		if err != nil {
-			return fmt.Errorf("could not process pull requests: %v", err)
-		}
-
+		unreleased := builder.populateUnreleasedEntry(pullRequests)
 		changelog.AddUnreleased(unreleased)
 	}
 
@@ -182,7 +174,7 @@ func (builder *changelogBuilder) buildChangeLog(changelog Changelog) error {
 	return nil
 }
 
-func (builder *changelogBuilder) populateUnreleasedEntry(nextTag string, headSha string, pullRequests []githubclient.PullRequest) ([]string, error) {
+func (builder *changelogBuilder) populateUnreleasedEntry(pullRequests []githubclient.PullRequest) []string {
 	unreleased := []string{}
 	excludedLabels := configuration.Config.ExcludedLabels
 	for _, pr := range pullRequests {
@@ -202,7 +194,7 @@ func (builder *changelogBuilder) populateUnreleasedEntry(nextTag string, headSha
 		}
 	}
 
-	return unreleased, nil
+	return unreleased
 }
 
 func (builder *changelogBuilder) populateReleasedEntry(currentTag string, previousTag string, date time.Time, pullRequests []githubclient.PullRequest) (*Entry, error) {

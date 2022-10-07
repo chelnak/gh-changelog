@@ -1,10 +1,10 @@
-//Package show is responsible for rendering the contents of a
-//given CHANGELOG.md file and displaying it in the terminal.
+// Package show is responsible for rendering the contents of a
+// given CHANGELOG.md file and displaying it in the terminal.
 package show
 
 import (
 	"errors"
-	"io/ioutil"
+	"os"
 	"path/filepath"
 
 	"github.com/charmbracelet/glamour"
@@ -17,7 +17,7 @@ func Render(path string) error {
 		glamour.WithWordWrap(140), // TODO: make this configurable
 	)
 
-	data, err := ioutil.ReadFile(filepath.Clean(path))
+	data, err := os.ReadFile(filepath.Clean(path))
 	if err != nil {
 		return errors.New("changelog not found. Check your configuration or run gh changelog new")
 	}
