@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## Unreleased
 
+- Properly handle a repo with no tags [#95](https://github.com/chelnak/gh-changelog/pull/95) ([chelnak](https://github.com/chelnak))
+
+- Help and error UX improvements [#92](https://github.com/chelnak/gh-changelog/pull/92) ([chelnak](https://github.com/chelnak))
+
 - Refactoring and code hygiene [#88](https://github.com/chelnak/gh-changelog/pull/88) ([chelnak](https://github.com/chelnak))
 
 - Remove internal/pkg [#86](https://github.com/chelnak/gh-changelog/pull/86) ([chelnak](https://github.com/chelnak))
