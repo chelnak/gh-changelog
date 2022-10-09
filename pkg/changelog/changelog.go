@@ -1,5 +1,5 @@
-// Package changelog package is responsible for collecting the data that
-// will be used to generate the changelog.
+// Package changelog provides the datastructure that is responsible for
+// holding the changelog data.
 package changelog
 
 import (

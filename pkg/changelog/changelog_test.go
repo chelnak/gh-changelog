@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/chelnak/gh-changelog/internal/changelog"
+	"github.com/chelnak/gh-changelog/pkg/changelog"
 	"github.com/stretchr/testify/assert"
 )
 
