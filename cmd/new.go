@@ -6,15 +6,15 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/chelnak/gh-changelog/internal/changelog"
 	"github.com/chelnak/gh-changelog/internal/configuration"
 	"github.com/chelnak/gh-changelog/internal/writer"
+	"github.com/chelnak/gh-changelog/pkg/builder"
 	"github.com/spf13/cobra"
 )
 
 var nextVersion string
 var fromVersion string
-var fromLastVersion bool
+var latestVersion bool
 
 // newCmd is the entry point for creating a new changelog
 var newCmd = &cobra.Command{
@@ -22,13 +22,19 @@ var newCmd = &cobra.Command{
 	Short: "Creates a new changelog from activity in the current repository",
 	Long:  "Creates a new changelog from activity in the current repository.",
 	RunE: func(command *cobra.Command, args []string) error {
-		builder := changelog.NewChangelogBuilder()
-		builder = builder.WithSpinner(true)
-		builder = builder.WithNextVersion(nextVersion)
-		builder = builder.WithFromVersion(fromVersion)
-		builder = builder.WithFromLastVersion(fromLastVersion)
+		opts := builder.BuilderOptions{
+			EnableSpinner: true,
+			NextVersion:   nextVersion,
+			FromVersion:   fromVersion,
+			LatestVersion: latestVersion,
+		}
 
-		changelog, err := builder.Build()
+		builder, err := builder.NewBuilder(opts)
+		if err != nil {
+			return err
+		}
+
+		changelog, err := builder.BuildChangelog()
 		if err != nil {
 			return err
 		}
@@ -38,7 +44,11 @@ var newCmd = &cobra.Command{
 			return err
 		}
 
-		return writer.Write(f, changelog)
+		if err := writer.Write(f, changelog); err != nil {
+			return err
+		}
+
+		return nil
 	},
 }
 
@@ -53,12 +63,12 @@ func init() {
 	)
 
 	newCmd.Flags().BoolVar(
-		&fromLastVersion,
-		"from-last-version",
+		&latestVersion,
+		"latest",
 		false,
-		"Build the changelog starting from the last tag. Using this flag will result in a changelog with one entry.\nIt can be useful for generating a changelog to be used in release notes.",
+		"Build the changelog starting from the latest tag. Using this flag will result in a changelog with one entry.\nIt can be useful for generating a changelog to be used in release notes.",
 	)
 
-	newCmd.MarkFlagsMutuallyExclusive("from-version", "from-last-version")
+	newCmd.MarkFlagsMutuallyExclusive("from-version", "latest")
 	newCmd.Flags().SortFlags = false
 }
