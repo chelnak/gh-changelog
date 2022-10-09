@@ -13,6 +13,7 @@ require (
 	github.com/cli/go-gh v0.1.1
 	github.com/fatih/color v1.13.0
 	github.com/jarcoal/httpmock v1.2.0
+	github.com/rs/zerolog v1.28.0
 	github.com/shurcooL/githubv4 v0.0.0-20220922232305-70b4d362a8cb
 	github.com/spf13/cobra v1.5.0
 	github.com/spf13/viper v1.13.0
