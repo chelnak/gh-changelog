@@ -1,14 +1,19 @@
-package changelog_test
+package builder_test
 
 import (
 	"testing"
 	"time"
 
-	"github.com/chelnak/gh-changelog/internal/changelog"
 	"github.com/chelnak/gh-changelog/internal/configuration"
 	"github.com/chelnak/gh-changelog/internal/githubclient"
 	"github.com/chelnak/gh-changelog/mocks"
+	"github.com/chelnak/gh-changelog/pkg/builder"
 	"github.com/stretchr/testify/assert"
+)
+
+const (
+	repoName  = "repo-name"
+	repoOwner = "repo-owner"
 )
 
 func safeParseTime() time.Time {
@@ -40,11 +45,11 @@ func setupMockGitHubClient() *mocks.GitHubClient {
 	}, nil)
 
 	// bad ??
-	changelog.Now = func() time.Time {
+	builder.Now = func() time.Time {
 		return safeParseTime()
 	}
 
-	mockGitHubClient.On("GetPullRequestsBetweenDates", safeParseTime(), changelog.Now()).Return([]githubclient.PullRequest{}, nil).Once()
+	mockGitHubClient.On("GetPullRequestsBetweenDates", safeParseTime(), builder.Now()).Return([]githubclient.PullRequest{}, nil).Once()
 	mockGitHubClient.On("GetPullRequestsBetweenDates", time.Time{}, time.Time{}).Return([]githubclient.PullRequest{
 		{
 			Number: 2,
@@ -74,33 +79,36 @@ func setupMockGitHubClient() *mocks.GitHubClient {
 	return mockGitHubClient
 }
 
-func setupBuilder(gitClient *mocks.GitClient, gitHubClient *mocks.GitHubClient) changelog.ChangelogBuilder { // nolint:unparam
+func setupBuilder(opts *builder.BuilderOptions) builder.Builder { // nolint:unparam
 	_ = configuration.InitConfig()
-	b := changelog.NewChangelogBuilder()
 
-	if gitClient == nil {
-		gitClient = setupMockGitClient()
+	if opts == nil {
+		opts = &builder.BuilderOptions{}
 	}
 
-	if gitHubClient == nil {
-		gitHubClient = setupMockGitHubClient()
+	opts.EnableSpinner = true
+
+	if opts.GitClient == nil {
+		opts.GitClient = setupMockGitClient()
 	}
 
-	b.WithSpinner(true)
-	b.WithGitClient(gitClient)
-	b.WithGitHubClient(gitHubClient)
+	if opts.GitHubClient == nil {
+		opts.GitHubClient = setupMockGitHubClient()
+	}
+
+	b, _ := builder.NewBuilder(*opts)
 
 	return b
 }
 
 func TestChangelogBuilder(t *testing.T) {
-	builder := setupBuilder(nil, nil)
+	builder := setupBuilder(nil)
 
-	changelog, err := builder.Build()
+	changelog, err := builder.BuildChangelog()
 	assert.NoError(t, err)
 
-	assert.Equal(t, "repo-name", changelog.GetRepoName())
-	assert.Equal(t, "repo-owner", changelog.GetRepoOwner())
+	assert.Equal(t, repoName, changelog.GetRepoName())
+	assert.Equal(t, repoOwner, changelog.GetRepoOwner())
 
 	assert.Len(t, changelog.GetUnreleased(), 0)
 	assert.Len(t, changelog.GetEntries(), 2)
@@ -113,10 +121,12 @@ func TestChangelogBuilder(t *testing.T) {
 }
 
 func TestShouldErrorWithAnOlderNextVersion(t *testing.T) {
-	builder := setupBuilder(nil, nil)
-	builder.WithNextVersion("v0.0.1")
+	opts := &builder.BuilderOptions{
+		NextVersion: "v0.0.1",
+	}
+	builder := setupBuilder(opts)
+	_, err := builder.BuildChangelog()
 
-	_, err := builder.Build()
 	assert.Error(t, err)
 	assert.Equal(t, "the next version should be greater than the former: 'v0.0.1' ≤ 'v2.0.0'", err.Error())
 }
@@ -124,19 +134,28 @@ func TestShouldErrorWithAnOlderNextVersion(t *testing.T) {
 func TestShouldErrorWithNoTags(t *testing.T) {
 	mockGitHubClient := &mocks.GitHubClient{}
 	mockGitHubClient.On("GetTags").Return([]githubclient.Tag{}, nil)
+	mockGitHubClient.On("GetRepoName").Return(repoName)
+	mockGitHubClient.On("GetRepoOwner").Return(repoOwner)
 
-	builder := setupBuilder(nil, mockGitHubClient)
+	opts := &builder.BuilderOptions{
+		GitHubClient: mockGitHubClient,
+	}
 
-	_, err := builder.Build()
+	builder := setupBuilder(opts)
+	_, err := builder.BuildChangelog()
+
 	assert.Error(t, err)
 	assert.Equal(t, "there are no tags on this repository to evaluate", err.Error())
 }
 
 func TestWithFromVersion(t *testing.T) {
-	builder := setupBuilder(nil, nil)
-	builder.WithFromVersion("v2.0.0")
+	opts := &builder.BuilderOptions{
+		FromVersion: "v2.0.0",
+	}
 
-	changelog, err := builder.Build()
+	builder := setupBuilder(opts)
+	changelog, err := builder.BuildChangelog()
+
 	assert.NoError(t, err)
 	assert.Len(t, changelog.GetEntries(), 1)
 	assert.Equal(
@@ -147,10 +166,13 @@ func TestWithFromVersion(t *testing.T) {
 }
 
 func TestWithFromLastVersion(t *testing.T) {
-	builder := setupBuilder(nil, nil)
-	builder.WithFromLastVersion(true)
+	opts := &builder.BuilderOptions{
+		LatestVersion: true,
+	}
 
-	changelog, err := builder.Build()
+	builder := setupBuilder(opts)
+	changelog, err := builder.BuildChangelog()
+
 	assert.NoError(t, err)
 	assert.Len(t, changelog.GetEntries(), 1)
 	assert.Equal(
