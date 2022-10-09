@@ -15,6 +15,7 @@ import (
 var nextVersion string
 var fromVersion string
 var latestVersion bool
+var logger string
 
 // newCmd is the entry point for creating a new changelog
 var newCmd = &cobra.Command{
@@ -23,7 +24,7 @@ var newCmd = &cobra.Command{
 	Long:  "Creates a new changelog from activity in the current repository.",
 	RunE: func(command *cobra.Command, args []string) error {
 		opts := builder.BuilderOptions{
-			EnableSpinner: true,
+			Logger:        logger,
 			NextVersion:   nextVersion,
 			FromVersion:   fromVersion,
 			LatestVersion: latestVersion,
@@ -68,6 +69,8 @@ func init() {
 		false,
 		"Build the changelog starting from the latest tag. Using this flag will result in a changelog with one entry.\nIt can be useful for generating a changelog to be used in release notes.",
 	)
+
+	newCmd.Flags().StringVar(&logger, "logger", "", "The type of logger to use. Valid values are 'spinner' and 'text'. The default is 'spinner'.")
 
 	newCmd.MarkFlagsMutuallyExclusive("from-version", "latest")
 	newCmd.Flags().SortFlags = false

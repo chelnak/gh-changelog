@@ -11,15 +11,15 @@ import (
 	"github.com/chelnak/gh-changelog/internal/configuration"
 	"github.com/chelnak/gh-changelog/internal/gitclient"
 	"github.com/chelnak/gh-changelog/internal/githubclient"
+	"github.com/chelnak/gh-changelog/internal/logging"
 	"github.com/chelnak/gh-changelog/internal/utils"
 	"github.com/chelnak/gh-changelog/pkg/changelog"
-	"github.com/chelnak/ysmrr"
 )
 
 var Now = time.Now // must be a better way to stub this
 
 type BuilderOptions struct {
-	EnableSpinner bool
+	Logger        string
 	NextVersion   string
 	FromVersion   string
 	LatestVersion bool
@@ -50,15 +50,14 @@ type Builder interface {
 }
 
 type builder struct {
-	spinnerManager ysmrr.SpinnerManager
-	spinner        *ysmrr.Spinner
-	nextVersion    string
-	fromVersion    string
-	latestVersion  bool
-	tags           []githubclient.Tag
-	changelog      changelog.Changelog
-	git            gitclient.GitClient
-	github         githubclient.GitHubClient
+	nextVersion   string
+	fromVersion   string
+	latestVersion bool
+	tags          []githubclient.Tag
+	changelog     changelog.Changelog
+	git           gitclient.GitClient
+	github        githubclient.GitHubClient
+	logger        logging.Logger
 }
 
 func NewBuilder(options BuilderOptions) (Builder, error) {
@@ -82,36 +81,36 @@ func NewBuilder(options BuilderOptions) (Builder, error) {
 		github:        options.GitHubClient,
 	}
 
-	if options.EnableSpinner {
-		builder.spinnerManager = ysmrr.NewSpinnerManager()
-		builder.spinner = builder.spinnerManager.AddSpinner("Building changelog")
+	loggerType, err := logging.GetLoggerType(options.Logger)
+	if err != nil {
+		return builder, err
 	}
+
+	builder.logger = logging.NewLogger(loggerType)
 
 	return builder, nil
 }
 
 func (b *builder) BuildChangelog() (changelog.Changelog, error) {
-	b.spinnerManager.Start()
-	defer b.spinnerManager.Stop()
+	// defer b.spinnerManager.Stop()
 
-	b.spinner.UpdateMessage("Fetching tags...")
+	b.logger.Infof("Fetching tags...")
 	err := b.updateTags()
 	if err != nil {
-		b.spinner.Error()
-		b.spinner.UpdateMessage(err.Error())
+		b.logger.Errorf(err.Error())
 		return nil, err
 	}
 
 	if b.nextVersion != "" {
 		err = b.setNextVersion()
 		if err != nil {
-			b.spinner.Error()
+			b.logger.Errorf(err.Error())
 			return nil, err
 		}
 	}
 
 	if configuration.Config.ShowUnreleased && b.nextVersion == "" {
-		b.spinner.UpdateMessage("Getting unreleased entries")
+		b.logger.Infof("Getting unreleased entries")
 		err := b.getUnreleasedEntries()
 		if err != nil {
 			return nil, err
@@ -129,8 +128,8 @@ func (b *builder) BuildChangelog() (changelog.Changelog, error) {
 		}
 	}
 
-	b.spinner.Complete()
-	b.spinner.UpdateMessage(fmt.Sprintf("Open %s or run 'gh changelog show' to view your changelog.\n", configuration.Config.FileName))
+	b.logger.Infof("Open %s or run 'gh changelog show' to view your changelog.", configuration.Config.FileName)
+	b.logger.Complete()
 
 	return b.changelog, nil
 }
@@ -197,7 +196,7 @@ func (b *builder) getUnreleasedEntries() error {
 }
 
 func (b *builder) getReleasedEntries(idx int, currentTag githubclient.Tag) error {
-	b.spinner.UpdateMessage(fmt.Sprintf("Processing tags: 🏷️  %s", currentTag.Name))
+	b.logger.Infof("Processing tags: 🏷️  %s", currentTag.Name)
 	previousTag, err := b.getPreviousTag(idx + 1)
 	if err != nil {
 		return err
