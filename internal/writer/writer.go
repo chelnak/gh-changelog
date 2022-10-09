@@ -6,7 +6,7 @@ import (
 	"io"
 	"text/template"
 
-	"github.com/chelnak/gh-changelog/internal/changelog"
+	"github.com/chelnak/gh-changelog/pkg/changelog"
 )
 
 var tmplSrc = `# Changelog

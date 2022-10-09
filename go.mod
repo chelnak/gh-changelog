@@ -5,11 +5,11 @@ go 1.18
 require (
 	github.com/Masterminds/semver/v3 v3.1.1
 	github.com/alecthomas/chroma v0.10.0
-	github.com/briandowns/spinner v1.19.0
 	github.com/charmbracelet/bubbles v0.14.0
 	github.com/charmbracelet/bubbletea v0.22.1
 	github.com/charmbracelet/glamour v0.5.1-0.20220727184942-e70ff2d969da
 	github.com/charmbracelet/lipgloss v0.6.0
+	github.com/chelnak/ysmrr v0.2.0
 	github.com/cli/go-gh v0.1.1
 	github.com/fatih/color v1.13.0
 	github.com/jarcoal/httpmock v1.2.0
