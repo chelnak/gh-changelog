@@ -3,8 +3,17 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
+## [v0.10.0](https://github.com/chelnak/gh-changelog/tree/v0.10.0) - 2022-10-14
 
-## Unreleased
+[Full Changelog](https://github.com/chelnak/gh-changelog/compare/v0.9.0...v0.10.0)
+
+### Added
+
+- Rename text logger [#105](https://github.com/chelnak/gh-changelog/pull/105) ([chelnak](https://github.com/chelnak))
+
+- Better logging control [#102](https://github.com/chelnak/gh-changelog/pull/102) ([chelnak](https://github.com/chelnak))
+
+- Refactor builder & changelog in to pkg [#101](https://github.com/chelnak/gh-changelog/pull/101) ([chelnak](https://github.com/chelnak))
 
 - Scoped changelogs [#100](https://github.com/chelnak/gh-changelog/pull/100) ([chelnak](https://github.com/chelnak))
 
