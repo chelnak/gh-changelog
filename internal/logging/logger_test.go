@@ -14,8 +14,8 @@ func TestNewLoggerReturnsTheCorrectType(t *testing.T) {
 		hasError bool
 	}{
 		{
-			name:     "returns a text logger",
-			want:     logging.TEXT,
+			name:     "returns a console logger",
+			want:     logging.CONSOLE,
 			hasError: false,
 		},
 		{
@@ -41,9 +41,9 @@ func TestGetLoggerTypeReturnsTheCorrectType(t *testing.T) {
 		hasError bool
 	}{
 		{
-			name:     "returns a text logger",
-			input:    "text",
-			want:     logging.TEXT,
+			name:     "returns a console logger",
+			input:    "console",
+			want:     logging.CONSOLE,
 			hasError: false,
 		},
 		{
@@ -65,7 +65,7 @@ func TestGetLoggerTypeReturnsTheCorrectType(t *testing.T) {
 			got, err := logging.GetLoggerType(tt.input)
 			if tt.hasError {
 				assert.Error(t, err)
-				assert.Equal(t, "'invalid' is not a valid logger. Valid values are 'spinner' and 'text'", err.Error())
+				assert.Equal(t, "'invalid' is not a valid logger. Valid values are 'spinner' and 'console'", err.Error())
 			} else {
 				assert.NoError(t, err)
 				assert.Equal(t, tt.want, got)

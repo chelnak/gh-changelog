@@ -13,7 +13,7 @@ import (
 type LoggerType int64
 
 const (
-	TEXT LoggerType = iota
+	CONSOLE LoggerType = iota
 	SPINNER
 )
 
@@ -28,8 +28,8 @@ type Logger interface {
 // NewLogger returns a new logger based on the type passed in.
 func NewLogger(loggerType LoggerType) Logger {
 	switch loggerType {
-	case TEXT:
-		return newTextLogger()
+	case CONSOLE:
+		return newConsoleLogger()
 	case SPINNER:
 		return newSpinnerLogger()
 	default:
@@ -46,18 +46,18 @@ func GetLoggerType(name string) (LoggerType, error) {
 		// If we're running in a CI environment then we don't want to
 		// use the spinner.
 		if environment.IsCI() {
-			name = "text"
+			name = "console"
 		}
 	}
 
 	var loggerType LoggerType
 	switch name {
-	case "text":
-		loggerType = TEXT
+	case "console":
+		loggerType = CONSOLE
 	case "spinner":
 		loggerType = SPINNER
 	default:
-		return loggerType, fmt.Errorf("'%s' is not a valid logger. Valid values are 'spinner' and 'text'", name)
+		return loggerType, fmt.Errorf("'%s' is not a valid logger. Valid values are 'spinner' and 'console'", name)
 	}
 
 	return loggerType, nil
