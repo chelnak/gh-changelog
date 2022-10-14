@@ -27,6 +27,7 @@ func TestInitConfigSetsCorrectValues(t *testing.T) {
 	assert.Equal(t, false, config.SkipEntriesWithoutLabel)
 	assert.Equal(t, true, config.ShowUnreleased)
 	assert.Equal(t, true, config.CheckForUpdates)
+	assert.Equal(t, "spinner", config.Logger)
 }
 
 func TestPrintJSON(t *testing.T) {
@@ -61,9 +62,11 @@ func TestPrintJSON(t *testing.T) {
   },
   "skipEntriesWithoutLabel": false,
   "showUnreleased": true,
-  "checkForUpdates": true
+  "checkForUpdates": true,
+  "logger": "spinner"
 }
 `
+
 	assert.Equal(t, cfg, buf.String())
 }
 
@@ -95,6 +98,7 @@ sections:
 skip_entries_without_label: false
 show_unreleased: true
 check_for_updates: true
+logger: spinner
 `
 	assert.Equal(t, cfg, buf.String())
 }

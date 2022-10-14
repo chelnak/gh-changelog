@@ -30,6 +30,7 @@ type configuration struct {
 	SkipEntriesWithoutLabel bool                `mapstructure:"skip_entries_without_label" yaml:"skip_entries_without_label" json:"skipEntriesWithoutLabel"`
 	ShowUnreleased          bool                `mapstructure:"show_unreleased" yaml:"show_unreleased" json:"showUnreleased"`
 	CheckForUpdates         bool                `mapstructure:"check_for_updates" yaml:"check_for_updates" json:"checkForUpdates"`
+	Logger                  string              `mapstructure:"logger" yaml:"logger" json:"logger"`
 }
 
 type writeOptions struct {
@@ -154,4 +155,6 @@ func setDefaults() {
 	viper.SetDefault("check_for_updates", true)
 
 	viper.SetDefault("no_color", false)
+
+	viper.SetDefault("logger", "spinner")
 }

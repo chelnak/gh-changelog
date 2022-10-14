@@ -86,8 +86,6 @@ func setupBuilder(opts *builder.BuilderOptions) builder.Builder { // nolint:unpa
 		opts = &builder.BuilderOptions{}
 	}
 
-	opts.EnableSpinner = true
-
 	if opts.GitClient == nil {
 		opts.GitClient = setupMockGitClient()
 	}
