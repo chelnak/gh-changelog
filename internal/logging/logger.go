@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/chelnak/gh-changelog/internal/configuration"
+	"github.com/chelnak/gh-changelog/internal/environment"
 )
 
 // LoggerType is an enum for the different types of logger
@@ -41,6 +42,12 @@ func NewLogger(loggerType LoggerType) Logger {
 func GetLoggerType(name string) (LoggerType, error) {
 	if name == "" {
 		name = configuration.Config.Logger
+
+		// If we're running in a CI environment then we don't want to
+		// use the spinner.
+		if environment.IsCI() {
+			name = "text"
+		}
 	}
 
 	var loggerType LoggerType
