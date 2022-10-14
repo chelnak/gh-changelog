@@ -107,8 +107,6 @@ gh changelog config
 To print out JSON instead of YAML use `--output json` flag.
 
 ```bash
-
-```bash
 gh changelog config --output json
 ```
 
