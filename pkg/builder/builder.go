@@ -196,7 +196,7 @@ func (b *builder) getUnreleasedEntries() error {
 }
 
 func (b *builder) getReleasedEntries(idx int, currentTag githubclient.Tag) error {
-	b.logger.Infof("Processing tags: 🏷️  %s", currentTag.Name)
+	b.logger.Infof("Processing tag: 🏷️  %s", currentTag.Name)
 	previousTag, err := b.getPreviousTag(idx + 1)
 	if err != nil {
 		return err
