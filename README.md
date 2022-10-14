@@ -33,41 +33,86 @@ gh extension install chelnak/gh-changelog
 gh extension upgrade chelnak/gh-changelog
 ```
 
-### Create a new changelog
+### Create a changelog
+
+Creating changelog is simple.
+Once you have installed the extension just run:
 
 ```bash
 gh changelog new
 ```
 
-### Create a new changelog for an untagged version
+There are also a few useful flags available.
+
+#### --next-version
+
+Allows you to specify the next version of your project if it has not been tagged.
 
 ```bash
 gh changelog new --next-version v1.2.0
 ```
 
-### View your changelog in the terminal
+#### --from-version
+
+Allows you to specify the version to start generating the changelog from.
+
+```bash
+gh changelog new --from-version v1.0.0
+```
+
+#### --latest
+
+Creates a changelog that includes only the latest release.
+This option can work well with `--next-version`.
+
+```bash
+gh changelog new --latest
+```
+
+#### Console output
+
+You can switch between two `spinner` and `console`.
+
+The default (`spinner`) can be overriden with the `--logger` flag.
+
+```bash
+gh changelog new --logger console
+```
+
+#### Behaviour in CI environments
+
+If the extension detects that it is being ran in a CI environment, it will automatically switch to `console` logging mode.
+This behaviour can be prevented by passing the flag `--logger spinner`.
+
+### View your changelog
+
+You can view your changelog by running:
 
 ```bash
 gh changelog show
 ```
 
-### View the current configuration in the terminal
+The `show` command renders the changelog in your terminal.
+
+### Configuration
+
+Configuration for `gh changelog` can be found at `~/.config/gh-changelog/config.yaml`.
+
+You can also view the configuration by running:
 
 ```bash
 gh changelog config
 ```
 
-Or to print out JSON instead of YAML:
+To print out JSON instead of YAML use `--output json` flag.
 
 ```bash
-gh changelog config -o json
+
+```bash
+gh changelog config --output json
 ```
 
-## Configuration
-
-Configuration for `gh changelog` can be found at `~/.config/gh-changelog/config.yaml`.
-
-However some sensible defaults are provided to help you get off to a flying start.
+Some sensible defaults are provided to help you get off to a flying start.
 
 ```yaml
 # Labels added here will be ommitted from the changelog
@@ -97,6 +142,8 @@ skip_entries_without_label: false
 show_unreleased: true
 # If set to false, the tool will not check remotely for updates
 check_for_updates: true
+# Determines the logging mode. The default is spinner. The other option is console.
+logger: spinner
 ```
 
 You can also override any setting using environment variables. When configured from the environment,
