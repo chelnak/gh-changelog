@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
+## [v0.10.1](https://github.com/chelnak/gh-changelog/tree/v0.10.1) - 2022-10-20
+
+[Full Changelog](https://github.com/chelnak/gh-changelog/compare/v0.10.0...v0.10.1)
+
+### Fixed
+
+- Fix tags append [#109](https://github.com/chelnak/gh-changelog/pull/109) ([chelnak](https://github.com/chelnak))
+
 ## [v0.10.0](https://github.com/chelnak/gh-changelog/tree/v0.10.0) - 2022-10-14
 
 [Full Changelog](https://github.com/chelnak/gh-changelog/compare/v0.9.0...v0.10.0)
