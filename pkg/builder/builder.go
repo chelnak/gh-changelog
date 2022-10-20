@@ -171,7 +171,7 @@ func (b *builder) setNextVersion() error {
 		Date: Now(),
 	}
 
-	b.tags = append(b.tags, tag)
+	b.tags = append([]githubclient.Tag{tag}, b.tags...)
 
 	return nil
 }
