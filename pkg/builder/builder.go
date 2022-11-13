@@ -232,7 +232,7 @@ func (b *builder) getReleasedEntries(previousTag, currentTag githubclient.Tag) e
 
 func (b *builder) formatEntryLine(pr githubclient.PullRequest) string {
 	return fmt.Sprintf(
-		"%s [#%d](https://github.com/%s/%s/pull/%d) ([%s](https://github.com/%s))\n",
+		"%s [#%d](https://github.com/%s/%s/pull/%d) ([%s](https://github.com/%s))",
 		pr.Title,
 		pr.Number,
 		b.github.GetRepoOwner(),

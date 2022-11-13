@@ -113,7 +113,7 @@ func TestChangelogBuilder(t *testing.T) {
 
 	assert.Equal(
 		t,
-		"this is a test pr 2 [#2](https://github.com/repo-owner/repo-name/pull/2) ([test-user](https://github.com/test-user))\n",
+		"this is a test pr 2 [#2](https://github.com/repo-owner/repo-name/pull/2) ([test-user](https://github.com/test-user))",
 		changelog.GetEntries()[0].Added[0],
 	)
 }
@@ -158,7 +158,7 @@ func TestWithFromVersion(t *testing.T) {
 	assert.Len(t, changelog.GetEntries(), 1)
 	assert.Equal(
 		t,
-		"this is a test pr 2 [#2](https://github.com/repo-owner/repo-name/pull/2) ([test-user](https://github.com/test-user))\n",
+		"this is a test pr 2 [#2](https://github.com/repo-owner/repo-name/pull/2) ([test-user](https://github.com/test-user))",
 		changelog.GetEntries()[0].Added[0],
 	)
 }
@@ -175,7 +175,7 @@ func TestWithFromLastVersion(t *testing.T) {
 	assert.Len(t, changelog.GetEntries(), 1)
 	assert.Equal(
 		t,
-		"this is a test pr 2 [#2](https://github.com/repo-owner/repo-name/pull/2) ([test-user](https://github.com/test-user))\n",
+		"this is a test pr 2 [#2](https://github.com/repo-owner/repo-name/pull/2) ([test-user](https://github.com/test-user))",
 		changelog.GetEntries()[0].Added[0],
 	)
 }
