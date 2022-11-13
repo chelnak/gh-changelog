@@ -11,7 +11,8 @@ import (
 	"github.com/chelnak/gh-changelog/pkg/changelog"
 )
 
-var tmplSrc = `# Changelog
+var tmplSrc = `<!-- markdownlint-disable MD024 -->
+# Changelog
 
 All notable changes to this project will be documented in this file.
 
@@ -37,49 +38,45 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 {{range .Added}}
 - {{.}}
 {{- end}}
-{{- end -}}
+{{end}}
 {{- if .Changed }}
 ### Changed
 {{- range .Changed}}
 - {{.}}
 {{- end}}
-{{- end}}
-
+{{end}}
 {{- if .Deprecated }}
 ### Deprecated
 {{range .Deprecated}}
 - {{.}}
 {{- end}}
 {{- end}}
-
 {{- if .Removed }}
 ### Removed
 {{range .Removed}}
 - {{.}}
 {{- end}}
-{{- end}}
-
+{{end}}
 {{- if .Fixed }}
 ### Fixed
 {{range .Fixed}}
 - {{.}}
 {{- end}}
-{{- end}}
-
+{{end}}
 {{- if .Security }}
 ### Security
 {{range .Security}}
 - {{.}}
 {{- end}}
-{{- end}}
-
+{{end}}
 {{- if .Other }}
 ### Other
 {{range .Other}}
 - {{.}}
 {{- end}}
+{{end}}
 {{- end}}
-{{- end}}`
+`
 
 func Write(writer io.Writer, changelog changelog.Changelog) error {
 	tmpl, err := template.New("changelog").Funcs(template.FuncMap{
