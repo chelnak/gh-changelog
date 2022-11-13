@@ -114,7 +114,7 @@ func start(content string) error {
 		tea.WithMouseCellMotion(),
 	)
 
-	if err := p.Start(); err != nil {
+	if _, err := p.Run(); err != nil {
 		return err
 	}
 

@@ -14,6 +14,7 @@ import (
 	"github.com/chelnak/gh-changelog/internal/logging"
 	"github.com/chelnak/gh-changelog/internal/utils"
 	"github.com/chelnak/gh-changelog/pkg/changelog"
+	"github.com/chelnak/gh-changelog/pkg/entry"
 )
 
 var Now = time.Now // must be a better way to stub this
@@ -117,13 +118,20 @@ func (b *builder) BuildChangelog() (changelog.Changelog, error) {
 		}
 	}
 
-	for idx, currentTag := range b.tags {
-		err := b.getReleasedEntries(idx, currentTag)
+	for i := 0; i < len(b.tags); i++ {
+		var previousTag githubclient.Tag
+		if i+1 == len(b.tags) {
+			previousTag = githubclient.Tag{}
+		} else {
+			previousTag = b.tags[i+1]
+		}
+
+		err := b.getReleasedEntries(previousTag, b.tags[i])
 		if err != nil {
 			return nil, fmt.Errorf("could not process pull requests: %v", err)
 		}
 
-		if strings.EqualFold(b.fromVersion, currentTag.Name) || b.latestVersion {
+		if strings.EqualFold(b.fromVersion, b.tags[i].Name) || b.latestVersion {
 			break
 		}
 	}
@@ -195,23 +203,15 @@ func (b *builder) getUnreleasedEntries() error {
 	return nil
 }
 
-func (b *builder) getReleasedEntries(idx int, currentTag githubclient.Tag) error {
+func (b *builder) getReleasedEntries(previousTag, currentTag githubclient.Tag) error {
 	b.logger.Infof("Processing tag: 🏷️  %s", currentTag.Name)
-	previousTag, err := b.getPreviousTag(idx + 1)
-	if err != nil {
-		return err
-	}
 
 	pullRequests, err := b.github.GetPullRequestsBetweenDates(previousTag.Date, currentTag.Date)
 	if err != nil {
 		return err
 	}
 
-	entry := changelog.Entry{
-		CurrentTag:  currentTag.Name,
-		PreviousTag: previousTag.Name,
-		Date:        currentTag.Date,
-	}
+	e := entry.NewEntry(currentTag.Name, currentTag.Date)
 
 	for _, pr := range pullRequests {
 		if !hasExcludedLabel(pr) {
@@ -219,43 +219,15 @@ func (b *builder) getReleasedEntries(idx int, currentTag githubclient.Tag) error
 			line := b.formatEntryLine(pr)
 
 			if section != "" {
-				err := entry.Append(section, line)
+				err := e.Append(section, line)
 				if err != nil {
 					return err
 				}
 			}
 		}
 	}
-
-	b.changelog.AddEntry(entry)
-
+	b.changelog.Insert(e)
 	return nil
-}
-
-func (b *builder) getPreviousTag(idx int) (githubclient.Tag, error) {
-	var previousTag githubclient.Tag
-
-	if idx == len(b.tags) {
-		firstCommitSha, err := b.git.GetFirstCommit()
-		if err != nil {
-			return previousTag, err
-		}
-
-		date, err := b.git.GetDateOfHash(firstCommitSha)
-		if err != nil {
-			return previousTag, err
-		}
-
-		previousTag = githubclient.Tag{
-			Name: firstCommitSha,
-			Sha:  firstCommitSha,
-			Date: date,
-		}
-	} else {
-		previousTag = b.tags[idx]
-	}
-
-	return previousTag, nil
 }
 
 func (b *builder) formatEntryLine(pr githubclient.PullRequest) string {

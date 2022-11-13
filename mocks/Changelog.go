@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	changelog "github.com/chelnak/gh-changelog/pkg/changelog"
+	entry "github.com/chelnak/gh-changelog/pkg/entry"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -12,26 +12,21 @@ type Changelog struct {
 	mock.Mock
 }
 
-// AddEntry provides a mock function with given fields: _a0
-func (_m *Changelog) AddEntry(_a0 changelog.Entry) {
-	_m.Called(_a0)
-}
-
 // AddUnreleased provides a mock function with given fields: _a0
 func (_m *Changelog) AddUnreleased(_a0 []string) {
 	_m.Called(_a0)
 }
 
 // GetEntries provides a mock function with given fields:
-func (_m *Changelog) GetEntries() []changelog.Entry {
+func (_m *Changelog) GetEntries() []*entry.Entry {
 	ret := _m.Called()
 
-	var r0 []changelog.Entry
-	if rf, ok := ret.Get(0).(func() []changelog.Entry); ok {
+	var r0 []*entry.Entry
+	if rf, ok := ret.Get(0).(func() []*entry.Entry); ok {
 		r0 = rf()
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]changelog.Entry)
+			r0 = ret.Get(0).([]*entry.Entry)
 		}
 	}
 
@@ -76,6 +71,43 @@ func (_m *Changelog) GetUnreleased() []string {
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]string)
+		}
+	}
+
+	return r0
+}
+
+// Head provides a mock function with given fields:
+func (_m *Changelog) Head() *entry.Entry {
+	ret := _m.Called()
+
+	var r0 *entry.Entry
+	if rf, ok := ret.Get(0).(func() *entry.Entry); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*entry.Entry)
+		}
+	}
+
+	return r0
+}
+
+// Insert provides a mock function with given fields: _a0
+func (_m *Changelog) Insert(_a0 entry.Entry) {
+	_m.Called(_a0)
+}
+
+// Tail provides a mock function with given fields:
+func (_m *Changelog) Tail() *entry.Entry {
+	ret := _m.Called()
+
+	var r0 *entry.Entry
+	if rf, ok := ret.Get(0).(func() *entry.Entry); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*entry.Entry)
 		}
 	}
 

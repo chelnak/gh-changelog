@@ -8,6 +8,7 @@ import (
 
 	"github.com/chelnak/gh-changelog/internal/writer"
 	"github.com/chelnak/gh-changelog/pkg/changelog"
+	"github.com/chelnak/gh-changelog/pkg/entry"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -19,20 +20,19 @@ const (
 func Test_ItWritesOutAChangelogInTheCorrectFormat(t *testing.T) {
 	mockChangelog := changelog.NewChangelog(repoName, repoOwner)
 
-	entry := changelog.Entry{
-		CurrentTag:  "v1.0.0",
-		PreviousTag: "v0.0.0",
-		Date:        time.Now(),
-		Added:       []string{"Added 1", "Added 2"},
-		Changed:     []string{"Changed 1", "Changed 2"},
-		Deprecated:  []string{"Deprecated 1", "Deprecated 2"},
-		Removed:     []string{"Removed 1", "Removed 2"},
-		Fixed:       []string{"Fixed 1", "Fixed 2"},
-		Security:    []string{"Security 1", "Security 2"},
-		Other:       []string{"Other 1", "Other 2"},
+	entry := entry.Entry{
+		Tag:        "v1.0.0",
+		Date:       time.Now(),
+		Added:      []string{"Added 1", "Added 2"},
+		Changed:    []string{"Changed 1", "Changed 2"},
+		Deprecated: []string{"Deprecated 1", "Deprecated 2"},
+		Removed:    []string{"Removed 1", "Removed 2"},
+		Fixed:      []string{"Fixed 1", "Fixed 2"},
+		Security:   []string{"Security 1", "Security 2"},
+		Other:      []string{"Other 1", "Other 2"},
 	}
 
-	mockChangelog.AddEntry(entry)
+	mockChangelog.Insert(entry)
 	mockChangelog.AddUnreleased([]string{"Unreleased 1", "Unreleased 2"})
 
 	var buf bytes.Buffer
