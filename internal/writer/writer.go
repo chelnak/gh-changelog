@@ -4,8 +4,10 @@ package writer
 
 import (
 	"io"
+	"os/exec"
 	"text/template"
 
+	"github.com/chelnak/gh-changelog/internal/gitclient"
 	"github.com/chelnak/gh-changelog/pkg/changelog"
 )
 
@@ -16,17 +18,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
 {{- $unreleased := .GetUnreleased }}
-{{- if $unreleased }}
-
+{{if $unreleased }}
 ## Unreleased
 {{range $unreleased }}
 - {{.}}
 {{- end}}
 {{- end -}}
 {{range .GetEntries}}
-## [{{.CurrentTag}}](https://github.com/{{$.GetRepoOwner}}/{{$.GetRepoName}}/tree/{{.CurrentTag}}) - {{.Date.Format "2006-01-02"}}
+## [{{.Tag}}](https://github.com/{{$.GetRepoOwner}}/{{$.GetRepoName}}/tree/{{.Tag}}) - {{.Date.Format "2006-01-02"}}
+{{ if .Previous }}
+[Full Changelog](https://github.com/{{$.GetRepoOwner}}/{{$.GetRepoName}}/compare/{{.Previous.Tag}}...{{.Tag}})
+{{else}}
+[Full Changelog](https://github.com/{{$.GetRepoOwner}}/{{$.GetRepoName}}/compare/{{getFirstCommit}}...{{.Tag}})
+{{- end -}}
 
-[Full Changelog](https://github.com/{{$.GetRepoOwner}}/{{$.GetRepoName}}/compare/{{.PreviousTag}}...{{.CurrentTag}})
 {{if .Added }}
 ### Added
 {{range .Added}}
@@ -77,6 +82,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 {{- end}}`
 
 func Write(writer io.Writer, changelog changelog.Changelog) error {
-	tmpl := template.Must(template.New("changelog").Parse(tmplSrc))
+	tmpl, err := template.New("changelog").Funcs(template.FuncMap{
+		"getFirstCommit": func() string {
+			git := gitclient.NewGitClient(exec.Command)
+			commit, err := git.GetFirstCommit()
+			if err != nil {
+				return ""
+			}
+			return commit
+		},
+	}).Parse(tmplSrc)
+	if err != nil {
+		return err
+	}
+
 	return tmpl.Execute(writer, changelog)
 }
