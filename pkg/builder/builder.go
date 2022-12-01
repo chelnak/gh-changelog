@@ -148,8 +148,8 @@ func (b *builder) updateTags() error {
 		return err
 	}
 
-	if len(tags) == 0 {
-		return errors.New("there are no tags on this repository to evaluate")
+	if len(tags) == 0 && b.nextVersion == "" {
+		return errors.New("there are no tags on this repository to evaluate and the --next-version flag was not provided")
 	}
 
 	b.tags = append(b.tags, tags...)
@@ -158,14 +158,15 @@ func (b *builder) updateTags() error {
 }
 
 func (b *builder) setNextVersion() error {
-	currentVersion := b.tags[0].Name
-
 	if !utils.IsValidSemanticVersion(b.nextVersion) {
 		return fmt.Errorf("'%s' is not a valid semantic version", b.nextVersion)
 	}
+	if len(b.tags) > 0 {
+		currentVersion := b.tags[0].Name
 
-	if !utils.VersionIsGreaterThan(currentVersion, b.nextVersion) {
-		return fmt.Errorf("the next version should be greater than the former: '%s' ≤ '%s'", b.nextVersion, currentVersion)
+		if !utils.VersionIsGreaterThan(currentVersion, b.nextVersion) {
+			return fmt.Errorf("the next version should be greater than the former: '%s' ≤ '%s'", b.nextVersion, currentVersion)
+		}
 	}
 
 	lastCommitSha, err := b.git.GetLastCommit()
