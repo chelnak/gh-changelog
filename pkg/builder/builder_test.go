@@ -143,7 +143,7 @@ func TestShouldErrorWithNoTags(t *testing.T) {
 	_, err := builder.BuildChangelog()
 
 	assert.Error(t, err)
-	assert.Equal(t, "there are no tags on this repository to evaluate", err.Error())
+	assert.Equal(t, "there are no tags on this repository to evaluate and the --next-version flag was not provided", err.Error())
 }
 
 func TestWithFromVersion(t *testing.T) {
