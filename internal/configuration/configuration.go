@@ -105,17 +105,19 @@ func (c *configuration) PrintYAML(noColor bool, writer io.Writer) error {
 func InitConfig() error {
 	home, _ := os.UserHomeDir()
 
-	viper.SetConfigName("config")
-	viper.SetConfigType("yaml")
+	viper.SetConfigName(".changelog")
+	viper.SetConfigType("yml")
 
 	cfgPath := filepath.Join(home, ".config", "gh-changelog")
-	viper.AddConfigPath(cfgPath)
-
 	if _, err := os.Stat(cfgPath); os.IsNotExist(err) {
 		if err := os.MkdirAll(cfgPath, 0750); err != nil {
 			return fmt.Errorf("failed to create config directory: %s", err)
 		}
 	}
+
+	// Viper search paths in order of precedence
+	viper.AddConfigPath(".")
+	viper.AddConfigPath(cfgPath)
 
 	setDefaults()
 
