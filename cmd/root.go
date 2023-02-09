@@ -76,6 +76,7 @@ func init() {
 	rootCmd.AddCommand(newCmd)
 	rootCmd.AddCommand(showCmd)
 	rootCmd.AddCommand(configCmd)
+	rootCmd.AddCommand(parseCmd)
 }
 
 func formatError(err error) {
