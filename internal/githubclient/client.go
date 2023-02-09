@@ -6,9 +6,9 @@ package githubclient
 import (
 	"context"
 	"fmt"
-	"strings"
 	"time"
 
+	"github.com/chelnak/gh-changelog/internal/utils"
 	"github.com/cli/go-gh"
 	"github.com/shurcooL/githubv4"
 )
@@ -47,20 +47,16 @@ func NewGitHubClient() (GitHubClient, error) {
 
 	g := githubv4.NewClient(httpClient)
 
-	currentRepository, err := gh.CurrentRepository()
+	currentRepository, err := utils.GetRepoContext()
 	if err != nil {
-		if strings.Contains(err.Error(), "not a git repository (or any of the parent directories)") {
-			return nil, fmt.Errorf("the current directory is not a git repository")
-		}
-
 		return nil, err
 	}
 
 	client := &githubClient{
 		base: g,
 		repoContext: repoContext{
-			owner: currentRepository.Owner(),
-			name:  currentRepository.Name(),
+			owner: currentRepository.Owner,
+			name:  currentRepository.Name,
 		},
 		httpContext: context.Background(),
 	}
