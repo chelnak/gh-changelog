@@ -74,17 +74,16 @@ func requestLatestRelease() (Release, error) {
 }
 
 func VersionIsGreaterThan(currentVersion, nextVersion string) bool {
-	constraint, err := semver.NewConstraint(fmt.Sprintf("> %s", currentVersion))
+	currentSemVer, err := semver.NewVersion(currentVersion)
 	if err != nil {
 		return false
 	}
 
-	version, err := semver.NewVersion(nextVersion)
-	if err != nil {
-		return false
-	}
+	// The nextVersion has already been validated by the builder
+	// so we can safely eat the error.
+	nextSemVer, _ := semver.NewVersion(nextVersion)
 
-	return constraint.Check(version)
+	return nextSemVer.Compare(currentSemVer) == 1
 }
 
 func parseLocalVersion(version string) string {
