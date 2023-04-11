@@ -50,6 +50,11 @@ func TestIsValidSemanticVersion(t *testing.T) {
 			want:  true,
 		},
 		{
+			name:  "valid semantic version with pre-release",
+			value: "1.0.0-beta",
+			want:  true,
+		},
+		{
 			name:  "invalid semantic version",
 			value: "asdasdasd1",
 			want:  false,
@@ -84,6 +89,21 @@ func TestVersionIsGreaterThan(t *testing.T) {
 		{
 			name:  "when the version is equal",
 			value: "1.0.0",
+			want:  false,
+		},
+		{
+			name:  "when the version is greater with pre-release",
+			value: "1.0.1-beta",
+			want:  true,
+		},
+		{
+			name:  "version is not greater than with pre-release",
+			value: "0.2.0-beta",
+			want:  false,
+		},
+		{
+			name:  "when the version is equal with pre-release",
+			value: "1.0.0-beta",
 			want:  false,
 		},
 	}
