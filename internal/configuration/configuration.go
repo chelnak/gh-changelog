@@ -104,9 +104,11 @@ func (c *configuration) PrintYAML(noColor bool, writer io.Writer) error {
 
 func InitConfig() error {
 	home, _ := os.UserHomeDir()
+	file := ".changelog"
+	extension := "yml"
 
-	viper.SetConfigName(".changelog")
-	viper.SetConfigType("yml")
+	viper.SetConfigName(file)
+	viper.SetConfigType(extension)
 
 	cfgPath := filepath.Join(home, ".config", "gh-changelog")
 	if _, err := os.Stat(cfgPath); os.IsNotExist(err) {
@@ -122,7 +124,8 @@ func InitConfig() error {
 	setDefaults()
 
 	if err := viper.ReadInConfig(); err != nil {
-		err := viper.SafeWriteConfig()
+		defaultConfigPath := filepath.Join(cfgPath, fmt.Sprintf("%s.%s", file, extension))
+		err := viper.SafeWriteConfigAs(defaultConfigPath)
 		if err != nil {
 			return fmt.Errorf("failed to write config: %s", err)
 		}
