@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
+## [v0.12.1](https://github.com/chelnak/gh-changelog/tree/v0.12.1) - 2023-04-12
+
+[Full Changelog](https://github.com/chelnak/gh-changelog/compare/v0.12.0...v0.12.1)
+
+### Fixed
+
+- Fix config initialization [#129](https://github.com/chelnak/gh-changelog/pull/129) ([chelnak](https://github.com/chelnak))
+
 ## [v0.12.0](https://github.com/chelnak/gh-changelog/tree/v0.12.0) - 2023-04-11
 
 [Full Changelog](https://github.com/chelnak/gh-changelog/compare/v0.11.0...v0.12.0)
