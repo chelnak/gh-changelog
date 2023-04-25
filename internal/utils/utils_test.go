@@ -110,7 +110,82 @@ func TestVersionIsGreaterThan(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert.Equal(t, tt.want, utils.VersionIsGreaterThan("1.0.0", tt.value))
+			assert.Equal(t, tt.want, utils.NextVersionIsGreaterThanCurrent(tt.value, "1.0.0"))
+		})
+	}
+}
+
+func TestVersionIsGreaterThanPreRelease(t *testing.T) {
+	tests := []struct {
+		name  string
+		value string
+		want  bool
+	}{
+		{
+			name:  "version is greater than and not a pre-release",
+			value: "7.0.0",
+			want:  true,
+		},
+		{
+			name:  "version is greater than and is a standard release",
+			value: "6.0.0",
+			want:  true,
+		},
+		{
+			name:  "version is greater than and is a pre-release",
+			value: "6.0.1-rc.1",
+			want:  true,
+		},
+		{
+			name:  "version is not greater than and not a pre-repease",
+			value: "0.1.0",
+			want:  false,
+		},
+		{
+			name:  "version is not greater than and is a pre-repease",
+			value: "v0.1.0-rc.1",
+			want:  false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.want, utils.NextVersionIsGreaterThanCurrent(tt.value, "6.0.0-rc.1"))
+		})
+	}
+}
+
+func TestVersionParsesWithDifferentPreReleaseDelimeters(t *testing.T) {
+	tests := []struct {
+		name  string
+		value string
+		want  bool
+	}{
+		{
+			name:  "version is greater than and is a pre-release, using a -",
+			value: "6.0.1-rc.1",
+			want:  true,
+		},
+		{
+			name:  "version is greater than and is a pre-release, using a .",
+			value: "6.0.1-rc.1",
+			want:  true,
+		},
+		{
+			name:  "version is not greater than and is a pre-repease, using a -",
+			value: "v0.1.0-rc.1",
+			want:  false,
+		},
+		{
+			name:  "version is not greater than and is a pre-repease, using a .",
+			value: "v0.1.0.rc.1",
+			want:  false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.want, utils.NextVersionIsGreaterThanCurrent(tt.value, "6.0.0-rc.1"))
 		})
 	}
 }
