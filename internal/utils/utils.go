@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/Masterminds/semver/v3"
+	"github.com/chelnak/gh-changelog/internal/version"
 	"github.com/cli/go-gh"
 	"github.com/fatih/color"
 )
@@ -24,8 +24,8 @@ func SliceContainsString(s []string, str string) bool {
 	return false
 }
 
-func IsValidSemanticVersion(version string) bool {
-	_, err := semver.NewVersion(version)
+func IsValidSemanticVersion(v string) bool {
+	_, err := version.NormalizeVersion(v)
 	return err == nil
 }
 
@@ -41,7 +41,7 @@ func CheckForUpdate(currentVersion string) bool {
 
 	currentVersion = parseLocalVersion(currentVersion)
 
-	if VersionIsGreaterThan(currentVersion, release.Version) {
+	if NextVersionIsGreaterThanCurrent(release.Version, currentVersion) {
 		color.Yellow("\nVersion %s is available ✨\n\n", release.Version)
 		fmt.Println("Run", color.GreenString(`gh extension upgrade chelnak/gh-changelog`), "to upgrade.")
 
@@ -73,17 +73,20 @@ func requestLatestRelease() (Release, error) {
 	return release, nil
 }
 
-func VersionIsGreaterThan(currentVersion, nextVersion string) bool {
-	currentSemVer, err := semver.NewVersion(currentVersion)
+func NextVersionIsGreaterThanCurrent(nextVersion, currentVersion string) bool {
+	currentSemVer, err := version.NormalizeVersion(currentVersion)
 	if err != nil {
 		return false
 	}
 
 	// The nextVersion has already been validated by the builder
 	// so we can safely eat the error.
-	nextSemVer, _ := semver.NewVersion(nextVersion)
+	nextSemVer, err := version.NormalizeVersion(nextVersion)
+	if err != nil {
+		return false
+	}
 
-	return nextSemVer.Compare(currentSemVer) == 1
+	return nextSemVer.GreaterThan(currentSemVer)
 }
 
 func parseLocalVersion(version string) string {

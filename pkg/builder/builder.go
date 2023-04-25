@@ -163,8 +163,7 @@ func (b *builder) setNextVersion() error {
 	}
 	if len(b.tags) > 0 {
 		currentVersion := b.tags[0].Name
-
-		if !utils.VersionIsGreaterThan(currentVersion, b.nextVersion) {
+		if !utils.NextVersionIsGreaterThanCurrent(b.nextVersion, currentVersion) {
 			return fmt.Errorf("the next version should be greater than the former: '%s' ≤ '%s'", b.nextVersion, currentVersion)
 		}
 	}
