@@ -75,6 +75,7 @@ func init() {
 
 	rootCmd.AddCommand(newCmd)
 	rootCmd.AddCommand(showCmd)
+	rootCmd.AddCommand(getCmd)
 	rootCmd.AddCommand(configCmd)
 	rootCmd.AddCommand(parseCmd)
 }
