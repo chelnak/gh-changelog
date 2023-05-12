@@ -36,4 +36,6 @@ jobs:
           version: "latest"
 
       - name: "test"
-        run: go test -race -covermode=atomic -v ./...
+        run: |
+          export GH_HOST=github.com
+          go test -race -covermode=atomic -v ./...
