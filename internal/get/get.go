@@ -1,10 +1,9 @@
-// package get retrieves a local changelog, parses it and returns the result.
+// Package get retrieves a local changelog, parses it and returns the result.
 package get
 
 import (
-	"bytes"
+	"fmt"
 
-	"github.com/chelnak/gh-changelog/internal/writer"
 	"github.com/chelnak/gh-changelog/pkg/changelog"
 	"github.com/chelnak/gh-changelog/pkg/entry"
 	"github.com/chelnak/gh-changelog/pkg/parser"
@@ -26,14 +25,6 @@ func parseChangelog(fileName string) (changelog.Changelog, error) {
 	return parser.Parse()
 }
 
-func writeBuf(parsedChangelog changelog.Changelog) (string, error) {
-	var buf bytes.Buffer
-	if err := writer.Write(&buf, parsedChangelog); err != nil {
-		return "", err
-	}
-	return buf.String(), nil
-}
-
 func changelogWithSingleEntry(entry entry.Entry, repoName, repoOwner string) changelog.Changelog {
 	// Isolate the entry
 	entry.Next = nil
@@ -46,28 +37,32 @@ func changelogWithSingleEntry(entry entry.Entry, repoName, repoOwner string) cha
 
 // GetVersion retrieves a local changelog, parses it and returns a string
 // containing only the specified version.
-func GetVersion(fileName string, tag string) (string, error) {
+func GetVersion(fileName string, tag string) (changelog.Changelog, error) {
 	parsedChangelog, err := parseChangelog(fileName)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	versionEntry := getTag(parsedChangelog, tag)
+	if versionEntry == nil {
+		return nil, fmt.Errorf("version %s not found", tag)
+	}
+
 	cl := changelogWithSingleEntry(
 		*versionEntry,
 		parsedChangelog.GetRepoName(),
 		parsedChangelog.GetRepoOwner(),
 	)
 
-	return writeBuf(cl)
+	return cl, nil
 }
 
 // GetLatest retrieves a local changelog, parses it and returns a string
 // containing only the latest entry.
-func GetLatest(fileName string) (string, error) {
+func GetLatest(fileName string) (changelog.Changelog, error) {
 	parsedChangelog, err := parseChangelog(fileName)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	latestEntry := parsedChangelog.Tail()
@@ -77,16 +72,16 @@ func GetLatest(fileName string) (string, error) {
 		parsedChangelog.GetRepoOwner(),
 	)
 
-	return writeBuf(cl)
+	return cl, nil
 }
 
-// Get retrieves a local changelog, parses it and returns a string
+// GetAll retrieves a local changelog, parses it and returns a string
 // containing all entries
-func GetAll(fileName string) (string, error) {
+func GetAll(fileName string) (changelog.Changelog, error) {
 	parsedChangelog, err := parseChangelog(fileName)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return writeBuf(parsedChangelog)
+	return parsedChangelog, nil
 }
