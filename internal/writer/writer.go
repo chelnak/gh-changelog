@@ -33,9 +33,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 [Full Changelog](https://github.com/{{$.GetRepoOwner}}/{{$.GetRepoName}}/compare/{{getFirstCommit}}...{{.Tag}})
 {{- end -}}
 
-{{if .Added }}
-### Added
-{{range .Added}}
+{{- if .Security }}
+### Security
+{{range .Security}}
 - {{.}}
 {{- end}}
 {{end}}
@@ -45,27 +45,27 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - {{.}}
 {{- end}}
 {{end}}
-{{- if .Deprecated }}
-### Deprecated
-{{range .Deprecated}}
-- {{.}}
-{{- end}}
-{{- end}}
 {{- if .Removed }}
 ### Removed
 {{range .Removed}}
 - {{.}}
 {{- end}}
 {{end}}
-{{- if .Fixed }}
-### Fixed
-{{range .Fixed}}
+{{- if .Deprecated }}
+### Deprecated
+{{range .Deprecated}}
 - {{.}}
 {{- end}}
 {{end}}
-{{- if .Security }}
-### Security
-{{range .Security}}
+{{- if .Added }}
+### Added
+{{range .Added}}
+- {{.}}
+{{- end}}
+{{end}}
+{{- if .Fixed }}
+### Fixed
+{{range .Fixed}}
 - {{.}}
 {{- end}}
 {{end}}
