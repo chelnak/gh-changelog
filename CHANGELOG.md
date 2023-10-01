@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
+## [0.15.0](https://github.com/chelnak/gh-changelog/tree/0.15.0) - 2023-10-01
+
+[Full Changelog](https://github.com/chelnak/gh-changelog/compare/v0.14.0...0.15.0)
+
+### Added
+
+- Improve sections ordering [#139](https://github.com/chelnak/gh-changelog/pull/139) ([smortex](https://github.com/smortex))
+
 ## [v0.14.0](https://github.com/chelnak/gh-changelog/tree/v0.14.0) - 2023-05-12
 
 [Full Changelog](https://github.com/chelnak/gh-changelog/compare/v0.13.1...v0.14.0)
