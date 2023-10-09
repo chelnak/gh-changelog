@@ -89,7 +89,7 @@ func (c *changelog) Tail() *entry.Entry {
 }
 
 // NewChangelog creates a new changelog datastructure.
-func NewChangelog(repoName string, repoOwner string) Changelog {
+func NewChangelog(repoOwner string, repoName string) Changelog {
 	return &changelog{
 		repoName:   repoName,
 		repoOwner:  repoOwner,
