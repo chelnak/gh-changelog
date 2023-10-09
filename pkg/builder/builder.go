@@ -69,8 +69,8 @@ func NewBuilder(options BuilderOptions) (Builder, error) {
 	}
 
 	changelog := changelog.NewChangelog(
-		options.GitHubClient.GetRepoName(),
 		options.GitHubClient.GetRepoOwner(),
+		options.GitHubClient.GetRepoName(),
 	)
 
 	builder := &builder{

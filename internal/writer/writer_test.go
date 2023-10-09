@@ -18,7 +18,7 @@ const (
 )
 
 func Test_ItWritesOutAChangelogInTheCorrectFormat(t *testing.T) {
-	mockChangelog := changelog.NewChangelog(repoName, repoOwner)
+	mockChangelog := changelog.NewChangelog(repoOwner, repoName)
 
 	entry := entry.Entry{
 		Tag:        "v1.0.0",

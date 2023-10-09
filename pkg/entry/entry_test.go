@@ -23,7 +23,7 @@ func TestNewEntry(t *testing.T) {
 }
 
 func TestPrevious(t *testing.T) {
-	var testChangelog = changelog.NewChangelog(repoName, repoOwner)
+	var testChangelog = changelog.NewChangelog(repoOwner, repoName)
 	entries := []entry.Entry{
 		{
 			Tag:  "v2.0.0",
@@ -48,7 +48,7 @@ func TestPrevious(t *testing.T) {
 }
 
 func TestNext(t *testing.T) {
-	var testChangelog = changelog.NewChangelog(repoName, repoOwner)
+	var testChangelog = changelog.NewChangelog(repoOwner, repoName)
 	entries := []entry.Entry{
 		{
 			Tag:  "v2.0.0",
