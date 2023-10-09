@@ -30,7 +30,7 @@ func changelogWithSingleEntry(entry entry.Entry, repoName, repoOwner string) cha
 	entry.Next = nil
 	entry.Previous = nil
 
-	cl := changelog.NewChangelog(repoName, repoOwner)
+	cl := changelog.NewChangelog(repoOwner, repoName)
 	cl.Insert(entry)
 	return cl
 }

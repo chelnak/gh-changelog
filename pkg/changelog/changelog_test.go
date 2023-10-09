@@ -26,7 +26,7 @@ var entries = []entry.Entry{
 }
 
 func TetstNewChangelog(t *testing.T) {
-	var testChangelog = changelog.NewChangelog(repoName, repoOwner)
+	var testChangelog = changelog.NewChangelog(repoOwner, repoName)
 	assert.Equal(t, repoName, testChangelog.GetRepoName())
 	assert.Equal(t, repoOwner, testChangelog.GetRepoOwner())
 	assert.Equal(t, 0, len(testChangelog.GetEntries()))
@@ -34,7 +34,7 @@ func TetstNewChangelog(t *testing.T) {
 }
 
 func TestInsert(t *testing.T) {
-	var testChangelog = changelog.NewChangelog(repoName, repoOwner)
+	var testChangelog = changelog.NewChangelog(repoOwner, repoName)
 	for _, e := range entries {
 		err := e.Append("added", "test")
 		assert.Nil(t, err)
@@ -49,7 +49,7 @@ func TestInsert(t *testing.T) {
 }
 
 func TestTail(t *testing.T) {
-	var testChangelog = changelog.NewChangelog(repoName, repoOwner)
+	var testChangelog = changelog.NewChangelog(repoOwner, repoName)
 
 	for _, e := range entries {
 		err := e.Append("added", "test")
@@ -63,7 +63,7 @@ func TestTail(t *testing.T) {
 }
 
 func TestHead(t *testing.T) {
-	var testChangelog = changelog.NewChangelog(repoName, repoOwner)
+	var testChangelog = changelog.NewChangelog(repoOwner, repoName)
 	entries := []entry.Entry{
 		{
 			Tag:  "v2.0.0",
@@ -87,7 +87,7 @@ func TestHead(t *testing.T) {
 }
 
 func TestAddUnreleased(t *testing.T) {
-	var testChangelog = changelog.NewChangelog(repoName, repoOwner)
+	var testChangelog = changelog.NewChangelog(repoOwner, repoName)
 	testChangelog.AddUnreleased([]string{"test"})
 
 	unreleased := testChangelog.GetUnreleased()
@@ -97,7 +97,7 @@ func TestAddUnreleased(t *testing.T) {
 }
 
 func TestGetEntries(t *testing.T) {
-	var testChangelog = changelog.NewChangelog(repoName, repoOwner)
+	var testChangelog = changelog.NewChangelog(repoOwner, repoName)
 	for _, e := range entries {
 		err := e.Append("added", "test")
 		assert.Nil(t, err)
