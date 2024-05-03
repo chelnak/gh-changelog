@@ -5,9 +5,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
-## [0.15.2](https://github.com/chelnak/gh-changelog/tree/0.15.2) - 2024-05-03
+## [0.15.3](https://github.com/chelnak/gh-changelog/tree/0.15.3) - 2024-05-03
 
-[Full Changelog](https://github.com/chelnak/gh-changelog/compare/v0.15.1...0.15.2)
+[Full Changelog](https://github.com/chelnak/gh-changelog/compare/v0.15.2...0.15.3)
+
+### Fixed
+
+- Fix get latest panic on single entry changelog [#151](https://github.com/chelnak/gh-changelog/pull/151) ([h0tw1r3](https://github.com/h0tw1r3))
+
+## [v0.15.2](https://github.com/chelnak/gh-changelog/tree/v0.15.2) - 2024-05-03
+
+[Full Changelog](https://github.com/chelnak/gh-changelog/compare/v0.15.1...v0.15.2)
 
 ### Fixed
 
