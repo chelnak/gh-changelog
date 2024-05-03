@@ -20,7 +20,7 @@ const (
 func Test_ItWritesOutAChangelogInTheCorrectFormat(t *testing.T) {
 	mockChangelog := changelog.NewChangelog(repoOwner, repoName)
 
-	entry := entry.Entry{
+	one := entry.Entry{
 		Tag:        "v1.0.0",
 		Date:       time.Now(),
 		Added:      []string{"Added 1", "Added 2"},
@@ -32,7 +32,11 @@ func Test_ItWritesOutAChangelogInTheCorrectFormat(t *testing.T) {
 		Other:      []string{"Other 1", "Other 2"},
 	}
 
-	mockChangelog.Insert(entry)
+	two := one
+	two.Tag = "v0.9.0"
+	one.Previous = &two
+
+	mockChangelog.Insert(one)
 	mockChangelog.AddUnreleased([]string{"Unreleased 1", "Unreleased 2"})
 
 	var buf bytes.Buffer
@@ -45,6 +49,8 @@ func Test_ItWritesOutAChangelogInTheCorrectFormat(t *testing.T) {
 	assert.Regexp(t, "- Unreleased 2", buf.String())
 
 	assert.Regexp(t, regexp.MustCompile(`## \[v1.0.0\]\(https:\/\/github.com\/repo-owner\/repo-name\/tree\/v1.0.0\)`), buf.String())
+	assert.Regexp(t, regexp.MustCompile(`\[Full Changelog\]\(https:\/\/github.com\/repo-owner\/repo-name\/compare\/v0.9.0\.\.\.v1.0.0\)`), buf.String())
+
 	assert.Regexp(t, "### Added", buf.String())
 	assert.Regexp(t, "- Added 1", buf.String())
 	assert.Regexp(t, "- Added 2", buf.String())

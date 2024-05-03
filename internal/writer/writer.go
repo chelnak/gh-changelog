@@ -30,7 +30,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 {{ if .Previous }}
 [Full Changelog](https://github.com/{{$.GetRepoOwner}}/{{$.GetRepoName}}/compare/{{.Previous.Tag}}...{{.Tag}})
 {{else}}
-[Full Changelog](https://github.com/{{$.GetRepoOwner}}/{{$.GetRepoName}}/compare/{{getFirstCommit}}...{{.Tag}})
+[Full Changelog](https://github.com/{{$.GetRepoOwner}}/{{$.GetRepoName}}/compare/{{if .PrevTag }}{{.PrevTag}}{{else}}{{getFirstCommit}}{{end}}...{{.Tag}})
 {{- end -}}
 
 {{- if .Security }}
