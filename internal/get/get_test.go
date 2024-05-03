@@ -8,6 +8,7 @@ import (
 )
 
 var fileName string = "CHANGELOG.md"
+var singleEntryFileName string = "single_CHANGELOG.md"
 
 func TestGetAll(t *testing.T) {
 	cl, err := get.GetAll(fileName)
@@ -30,6 +31,18 @@ func TestGetLatest(t *testing.T) {
 	count := len(cl.GetEntries())
 	assert.Equal(t, 1, count)
 	assert.Equal(t, "v0.13.0", cl.GetEntries()[0].PrevTag)
+}
+
+func TestGetLatestWithNoPrevious(t *testing.T) {
+	cl, err := get.GetLatest(singleEntryFileName)
+
+	// Should not error
+	assert.Nil(t, err)
+
+	// Should have 1 entry
+	count := len(cl.GetEntries())
+	assert.Equal(t, 1, count)
+	assert.Equal(t, "", cl.GetEntries()[0].PrevTag)
 }
 
 func TestGetVersionWithAValidVersion(t *testing.T) {
