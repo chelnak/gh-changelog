@@ -28,8 +28,10 @@ func parseChangelog(fileName string) (changelog.Changelog, error) {
 func changelogWithSingleEntry(entry entry.Entry, repoName, repoOwner string) changelog.Changelog {
 	// Isolate the entry
 	entry.Next = nil
-	entry.PrevTag = entry.Previous.Tag
-	entry.Previous = nil
+	if entry.Previous != nil {
+		entry.PrevTag = entry.Previous.Tag
+		entry.Previous = nil
+	}
 
 	cl := changelog.NewChangelog(repoOwner, repoName)
 	cl.Insert(entry)
