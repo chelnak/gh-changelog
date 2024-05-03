@@ -19,12 +19,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
 {{- $unreleased := .GetUnreleased }}
-{{if $unreleased }}
+{{- if $unreleased }}
+
 ## Unreleased
 {{range $unreleased }}
 - {{.}}
-{{- end}}
 {{- end -}}
+{{- end }}
 {{range .GetEntries}}
 ## [{{.Tag}}](https://github.com/{{$.GetRepoOwner}}/{{$.GetRepoName}}/tree/{{.Tag}}) - {{.Date.Format "2006-01-02"}}
 {{ if .Previous }}

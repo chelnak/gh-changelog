@@ -58,7 +58,8 @@ func (p *parser) Parse() (changelog.Changelog, error) {
 	markdownParser := mdparser.New()
 	output := markdownParser.Parse(data)
 
-	var tagIndex []string                   // This is a list of tags in order
+	var tagIndex []string // This is a list of tags in order
+	var unreleased []string
 	var entries = map[string]*entry.Entry{} // Maintain a map of tag to entry
 	var currentTag string
 	var currentSection string
@@ -68,10 +69,14 @@ func (p *parser) Parse() (changelog.Changelog, error) {
 		case *ast.Heading:
 			if isHeading(child, 2) {
 				currentTag = getTagFromHeadingLink(child)
+				if currentTag == "" && isHeadingUnreleased(child) {
+					currentTag = "Unreleased"
+					continue
+				}
 				date := getDateFromHeading(child)
 				if _, ok := entries[currentTag]; !ok {
-					entry := entry.NewEntry(currentTag, date)
-					entries[currentTag] = &entry
+					e := entry.NewEntry(currentTag, date)
+					entries[currentTag] = &e
 					tagIndex = append(tagIndex, currentTag)
 				}
 			}
@@ -81,6 +86,13 @@ func (p *parser) Parse() (changelog.Changelog, error) {
 			}
 		case *ast.List:
 			items := getItemsFromList(child)
+			if currentTag == "Unreleased" {
+				for _, item := range items {
+					unreleased = append(unreleased, getTextFromChildNodes(item))
+				}
+				continue
+			}
+
 			for _, item := range items {
 				err := entries[currentTag].Append(currentSection, getTextFromChildNodes(item))
 				if err != nil {
@@ -96,6 +108,10 @@ func (p *parser) Parse() (changelog.Changelog, error) {
 	}
 
 	cl := changelog.NewChangelog(p.repoOwner, p.repoName)
+
+	if len(unreleased) > 0 {
+		cl.AddUnreleased(unreleased)
+	}
 
 	for _, tag := range tagIndex {
 		cl.Insert(*entries[tag])
@@ -185,4 +201,8 @@ func getDateFromHeading(node ast.Node) time.Time {
 		}
 	}
 	return date
+}
+
+func isHeadingUnreleased(node ast.Node) bool {
+	return strings.Contains(getTextFromChildNodes(node), "Unreleased")
 }
