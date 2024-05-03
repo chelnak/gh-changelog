@@ -17,6 +17,7 @@ type Entry struct {
 	Next     *Entry // Get or Set the next entry in the changelog.
 
 	Tag        string
+	PrevTag    string
 	Date       time.Time
 	Added      []string
 	Changed    []string

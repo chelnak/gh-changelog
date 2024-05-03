@@ -29,6 +29,7 @@ func TestGetLatest(t *testing.T) {
 	// Should have 1 entry
 	count := len(cl.GetEntries())
 	assert.Equal(t, 1, count)
+	assert.Equal(t, "v0.13.0", cl.GetEntries()[0].PrevTag)
 }
 
 func TestGetVersionWithAValidVersion(t *testing.T) {
@@ -39,6 +40,7 @@ func TestGetVersionWithAValidVersion(t *testing.T) {
 	// Should have 1 entry
 	count := len(cl.GetEntries())
 	assert.Equal(t, 1, count)
+	assert.Equal(t, "v0.8.1", cl.GetEntries()[0].PrevTag)
 }
 
 func TestGetVersionWithAnInvalidVersion(t *testing.T) {
