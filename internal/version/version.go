@@ -105,12 +105,12 @@ func NormalizeVersion(v string) (*semver.Version, error) {
 func (v Version) String() string {
 	var buf bytes.Buffer
 
-	fmt.Fprintf(&buf, "%d.%d.%d", v.major, v.minor, v.patch)
+	_, _ = fmt.Fprintf(&buf, "%d.%d.%d", v.major, v.minor, v.patch)
 	if v.pre != "" {
-		fmt.Fprintf(&buf, "-%s", v.pre)
+		_, _ = fmt.Fprintf(&buf, "-%s", v.pre)
 	}
 	if v.metadata != "" {
-		fmt.Fprintf(&buf, "+%s", v.metadata)
+		_, _ = fmt.Fprintf(&buf, "+%s", v.metadata)
 	}
 
 	return buf.String()
@@ -154,4 +154,25 @@ func validateMetadata(m string) error {
 		}
 	}
 	return nil
+}
+
+func IsValidSemanticVersion(v string) bool {
+	_, err := NormalizeVersion(v)
+	return err == nil
+}
+
+func NextVersionIsGreaterThanCurrent(nextVersion, currentVersion string) bool {
+	currentSemVer, err := NormalizeVersion(currentVersion)
+	if err != nil {
+		return false
+	}
+
+	// The nextVersion has already been validated by the builder
+	// so we can safely eat the error.
+	nextSemVer, err := NormalizeVersion(nextVersion)
+	if err != nil {
+		return false
+	}
+
+	return nextSemVer.GreaterThan(currentSemVer)
 }
