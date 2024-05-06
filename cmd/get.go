@@ -13,6 +13,32 @@ import (
 	"github.com/spf13/cobra"
 )
 
+type outputEnum string
+
+const (
+	outputStandard outputEnum = "standard"
+	outputNotes    outputEnum = "notes"
+)
+
+func (e *outputEnum) String() string {
+	return string(*e)
+}
+
+func (e *outputEnum) Set(v string) error {
+	switch v {
+	case string(outputStandard), string(outputNotes):
+		*e = outputEnum(v)
+		return nil
+	default:
+		return fmt.Errorf(`must be one of %s or %s`, outputStandard, outputNotes)
+	}
+}
+
+func (e *outputEnum) Type() string {
+	return "outputEnum"
+}
+
+var outputTemplate = outputStandard
 var printLatest bool
 var printVersion string
 
@@ -36,6 +62,7 @@ This command is useful for creating and updating Release notes in GitHub.
 	RunE: func(command *cobra.Command, args []string) error {
 		fileName := configuration.Config.FileName
 
+		var tmplSrc string
 		var changelog changelog.Changelog
 		var err error
 
@@ -43,8 +70,17 @@ This command is useful for creating and updating Release notes in GitHub.
 			changelog, err = get.GetLatest(fileName)
 		} else if printVersion != "" {
 			changelog, err = get.GetVersion(fileName, printVersion)
+		} else if outputTemplate == outputNotes {
+			err = fmt.Errorf("notes output only supported with latest or version")
 		} else {
 			changelog, err = get.GetAll(fileName)
+		}
+
+		switch outputTemplate {
+		case outputStandard:
+			tmplSrc = writer.TmplSrcStandard
+		case outputNotes:
+			tmplSrc = writer.TmplSrcNotes
 		}
 
 		if err != nil {
@@ -52,7 +88,7 @@ This command is useful for creating and updating Release notes in GitHub.
 		}
 
 		var buf bytes.Buffer
-		if err := writer.Write(&buf, changelog); err != nil {
+		if err := writer.Write(&buf, tmplSrc, changelog); err != nil {
 			return err
 		}
 
@@ -75,6 +111,12 @@ func init() {
 		"version",
 		"",
 		"Prints a specific version from the changelog to stdout.",
+	)
+
+	getCmd.Flags().Var(
+		&outputTemplate,
+		"output",
+		fmt.Sprintf(`Output template. allowed: "%s" or "%s"`, outputStandard, outputNotes),
 	)
 
 	getCmd.Flags().SortFlags = false

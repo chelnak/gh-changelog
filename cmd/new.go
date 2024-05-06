@@ -45,7 +45,7 @@ var newCmd = &cobra.Command{
 			return err
 		}
 
-		if err := writer.Write(f, changelog); err != nil {
+		if err := writer.Write(f, writer.TmplSrcStandard, changelog); err != nil {
 			return err
 		}
 
