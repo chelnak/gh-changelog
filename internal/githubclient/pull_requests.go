@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/shurcooL/githubv4"
+	graphql "github.com/cli/shurcooL-graphql"
 )
 
 type PullRequestLabel struct {
@@ -30,7 +30,7 @@ type PullRequestSearchQuery struct {
 	Search struct {
 		Edges    []PullRequestEdge
 		PageInfo struct {
-			EndCursor   githubv4.String
+			EndCursor   graphql.String
 			HasNextPage bool
 		}
 	} `graphql:"search(query: $query, type: ISSUE, first: 100, after: $cursor)"`
@@ -43,9 +43,9 @@ type PullRequest struct {
 	Labels []PullRequestLabel
 }
 
-func (client *githubClient) GetPullRequestsBetweenDates(fromDate, toDate time.Time) ([]PullRequest, error) {
+func (client *GitHub) GetPullRequestsBetweenDates(fromDate, toDate time.Time) ([]PullRequest, error) {
 	variables := map[string]interface{}{
-		"query": githubv4.String(
+		"query": graphql.String(
 			fmt.Sprintf(
 				`repo:%s/%s is:pr is:merged merged:%s..%s`,
 				client.repoContext.owner,
@@ -54,7 +54,7 @@ func (client *githubClient) GetPullRequestsBetweenDates(fromDate, toDate time.Ti
 				toDate.Local().Format(time.RFC3339),
 			),
 		),
-		"cursor": (*githubv4.String)(nil),
+		"cursor": (*graphql.String)(nil),
 	}
 
 	var pullRequestSearchQuery PullRequestSearchQuery
@@ -62,7 +62,7 @@ func (client *githubClient) GetPullRequestsBetweenDates(fromDate, toDate time.Ti
 	var edges []PullRequestEdge
 
 	for {
-		err := client.base.Query(client.httpContext, &pullRequestSearchQuery, variables)
+		err := client.base.Query("pr", &pullRequestSearchQuery, variables)
 		if err != nil {
 			return nil, err
 		}

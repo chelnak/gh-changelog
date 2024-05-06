@@ -5,7 +5,7 @@ import (
 	"sort"
 	"time"
 
-	"github.com/shurcooL/githubv4"
+	graphql "github.com/cli/shurcooL-graphql"
 )
 
 type RefNode struct {
@@ -32,7 +32,7 @@ type TagQuery struct {
 		Refs struct {
 			Nodes    []RefNode
 			PageInfo struct {
-				EndCursor   githubv4.String
+				EndCursor   graphql.String
 				HasNextPage bool
 			}
 		} `graphql:"refs(refPrefix: \"refs/tags/\", last: 100, after: $cursor)"`
@@ -45,11 +45,11 @@ type Tag struct {
 	Date time.Time
 }
 
-func (client *githubClient) GetTags() ([]Tag, error) {
+func (client *GitHub) GetTags() ([]Tag, error) {
 	variables := map[string]interface{}{
-		"repositoryOwner": githubv4.String(client.repoContext.owner),
-		"repositoryName":  githubv4.String(client.repoContext.name),
-		"cursor":          (*githubv4.String)(nil),
+		"repositoryOwner": graphql.String(client.repoContext.owner),
+		"repositoryName":  graphql.String(client.repoContext.name),
+		"cursor":          (*graphql.String)(nil),
 	}
 
 	var tags []Tag
@@ -57,7 +57,7 @@ func (client *githubClient) GetTags() ([]Tag, error) {
 	var nodes []RefNode
 
 	for {
-		err := client.base.Query(client.httpContext, &tagQuery, variables)
+		err := client.base.Query("tags", &tagQuery, variables)
 		if err != nil {
 			return nil, fmt.Errorf("error getting tags: %w", err)
 		}
