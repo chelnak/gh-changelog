@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/chelnak/gh-changelog/internal/environment"
-	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestIsCIReturnsTrueWhenRunningInCI(t *testing.T) {
@@ -13,5 +13,5 @@ func TestIsCIReturnsTrueWhenRunningInCI(t *testing.T) {
 	defer func() {
 		_ = os.Unsetenv("CI")
 	}()
-	assert.True(t, environment.IsCI())
+	require.True(t, environment.IsCI())
 }

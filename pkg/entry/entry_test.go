@@ -7,7 +7,7 @@ import (
 
 	"github.com/chelnak/gh-changelog/pkg/changelog"
 	"github.com/chelnak/gh-changelog/pkg/entry"
-	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 const (
@@ -16,10 +16,10 @@ const (
 )
 
 func TestNewEntry(t *testing.T) {
-	entry := entry.NewEntry("v2.0.0", time.Time{})
+	e := entry.NewEntry("v2.0.0", time.Time{})
 
-	assert.Equal(t, "v2.0.0", entry.Tag)
-	assert.Equal(t, time.Time{}, entry.Date)
+	require.Equal(t, "v2.0.0", e.Tag)
+	require.Equal(t, time.Time{}, e.Date)
 }
 
 func TestPrevious(t *testing.T) {
@@ -37,14 +37,14 @@ func TestPrevious(t *testing.T) {
 
 	for _, e := range entries {
 		err := e.Append("added", "test")
-		assert.Nil(t, err)
+		require.Nil(t, err)
 
 		testChangelog.Insert(e)
 	}
 
 	tail := testChangelog.Tail()
 	previous := tail.Previous
-	assert.Equal(t, "v1.0.0", previous.Tag)
+	require.Equal(t, "v1.0.0", previous.Tag)
 }
 
 func TestNext(t *testing.T) {
@@ -63,14 +63,14 @@ func TestNext(t *testing.T) {
 
 	for _, e := range entries {
 		err := e.Append("added", "test")
-		assert.Nil(t, err)
+		require.Nil(t, err)
 
 		testChangelog.Insert(e)
 	}
 
 	head := testChangelog.Head()
 	next := head.Next
-	assert.Equal(t, "v2.0.0", next.Tag)
+	require.Equal(t, "v2.0.0", next.Tag)
 }
 
 func TestAppend(t *testing.T) {
@@ -104,11 +104,11 @@ func TestAppend(t *testing.T) {
 	for _, test := range tests {
 		t.Run(fmt.Sprintf("Appends a line to section: %s", test.name), func(t *testing.T) {
 			err := e.Append(test.name, fmt.Sprintf("test %s", test.name))
-			assert.Nil(t, err)
+			require.Nil(t, err)
 
 			section := e.GetSection(test.name)
-			assert.Equal(t, 1, len(section))
-			assert.Regexp(t, fmt.Sprintf("test %s", test.name), section[0])
+			require.Equal(t, 1, len(section))
+			require.Regexp(t, fmt.Sprintf("test %s", test.name), section[0])
 		})
 	}
 }
@@ -116,18 +116,18 @@ func TestAppend(t *testing.T) {
 func TestReturnsAnErrorWhenAppendingToAnInvalidSection(t *testing.T) {
 	e := entry.NewEntry("v2.0.0", time.Time{})
 	err := e.Append("invalid", "test")
-	assert.NotNil(t, err)
+	require.NotNil(t, err)
 }
 
 func TestGetSection(t *testing.T) {
 	e := entry.NewEntry("v2.0.0", time.Time{})
 	err := e.Append("added", "test")
-	assert.Nil(t, err)
+	require.Nil(t, err)
 
 	section := e.GetSection("added")
-	assert.Equal(t, 1, len(section))
-	assert.Equal(t, "test", section[0])
+	require.Equal(t, 1, len(section))
+	require.Equal(t, "test", section[0])
 
 	section = e.GetSection("invalid")
-	assert.Equal(t, 0, len(section))
+	require.Equal(t, 0, len(section))
 }

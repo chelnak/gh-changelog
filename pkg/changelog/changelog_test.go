@@ -6,7 +6,7 @@ import (
 
 	"github.com/chelnak/gh-changelog/pkg/changelog"
 	"github.com/chelnak/gh-changelog/pkg/entry"
-	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 const (
@@ -25,27 +25,27 @@ var entries = []entry.Entry{
 	},
 }
 
-func TetstNewChangelog(t *testing.T) {
+func TestNewChangelog(t *testing.T) {
 	var testChangelog = changelog.NewChangelog(repoOwner, repoName)
-	assert.Equal(t, repoName, testChangelog.GetRepoName())
-	assert.Equal(t, repoOwner, testChangelog.GetRepoOwner())
-	assert.Equal(t, 0, len(testChangelog.GetEntries()))
-	assert.Equal(t, 0, len(testChangelog.GetUnreleased()))
+	require.Equal(t, repoName, testChangelog.GetRepoName())
+	require.Equal(t, repoOwner, testChangelog.GetRepoOwner())
+	require.Equal(t, 0, len(testChangelog.GetEntries()))
+	require.Equal(t, 0, len(testChangelog.GetUnreleased()))
 }
 
 func TestInsert(t *testing.T) {
 	var testChangelog = changelog.NewChangelog(repoOwner, repoName)
 	for _, e := range entries {
 		err := e.Append("added", "test")
-		assert.Nil(t, err)
+		require.Nil(t, err)
 
 		testChangelog.Insert(e)
 	}
 
 	entries := testChangelog.GetEntries()
-	assert.Equal(t, 2, len(entries))
-	assert.Equal(t, 1, len(entries[0].Added))
-	assert.Equal(t, "test", entries[0].Added[0])
+	require.Equal(t, 2, len(entries))
+	require.Equal(t, 1, len(entries[0].Added))
+	require.Equal(t, "test", entries[0].Added[0])
 }
 
 func TestTail(t *testing.T) {
@@ -53,13 +53,13 @@ func TestTail(t *testing.T) {
 
 	for _, e := range entries {
 		err := e.Append("added", "test")
-		assert.Nil(t, err)
+		require.Nil(t, err)
 
 		testChangelog.Insert(e)
 	}
 
 	tail := testChangelog.Tail()
-	assert.Equal(t, "v2.0.0", tail.Tag)
+	require.Equal(t, "v2.0.0", tail.Tag)
 }
 
 func TestHead(t *testing.T) {
@@ -77,13 +77,13 @@ func TestHead(t *testing.T) {
 
 	for _, e := range entries {
 		err := e.Append("added", "test")
-		assert.Nil(t, err)
+		require.Nil(t, err)
 
 		testChangelog.Insert(e)
 	}
 
 	head := testChangelog.Head()
-	assert.Equal(t, "v1.0.0", head.Tag)
+	require.Equal(t, "v1.0.0", head.Tag)
 }
 
 func TestAddUnreleased(t *testing.T) {
@@ -92,19 +92,19 @@ func TestAddUnreleased(t *testing.T) {
 
 	unreleased := testChangelog.GetUnreleased()
 
-	assert.Equal(t, 1, len(unreleased))
-	assert.Equal(t, "test", unreleased[0])
+	require.Equal(t, 1, len(unreleased))
+	require.Equal(t, "test", unreleased[0])
 }
 
 func TestGetEntries(t *testing.T) {
 	var testChangelog = changelog.NewChangelog(repoOwner, repoName)
 	for _, e := range entries {
 		err := e.Append("added", "test")
-		assert.Nil(t, err)
+		require.Nil(t, err)
 
 		testChangelog.Insert(e)
 	}
 
-	assert.Equal(t, 2, len(testChangelog.GetEntries()))
-	assert.Equal(t, "v2.0.0", testChangelog.GetEntries()[0].Tag)
+	require.Equal(t, 2, len(testChangelog.GetEntries()))
+	require.Equal(t, "v2.0.0", testChangelog.GetEntries()[0].Tag)
 }
