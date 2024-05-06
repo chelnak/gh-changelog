@@ -69,6 +69,23 @@ This option can work well with `--next-version`.
 gh changelog new --latest
 ```
 
+#### --filter
+
+Filter the results by tag name. This flag supports regular expressions.
+Regular expressions used should follow RE2 syntax as described [here](https://golang.org/s/re2syntax).
+
+```bash
+gh changelog new --filter v1.*
+```
+
+#### --ancestors-only
+
+Builds the changelog with tags that are ancestors of the current branch.
+
+```bash
+gh changelog new --ancestors-only
+```
+
 #### Console output
 
 You can switch between two `spinner` and `console`.
