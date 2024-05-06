@@ -2,9 +2,13 @@ linters:
   enable:
     - dogsled
     - dupl
+    - errcheck
+    - gocritic
     - gofmt
     - goimports
     - gosec
+    - gosimple
+    - govet
     - misspell
     - nakedret
     - stylecheck
@@ -17,5 +21,8 @@ linters:
     - ineffassign
     - unused
     - staticcheck
+    - typecheck
+    - usestdlibvars
+    - exportloopref
 issues: 
-  exclude-use-default: false 
+  exclude-use-default: false
