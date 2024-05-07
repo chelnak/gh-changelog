@@ -8,7 +8,7 @@ import (
 	"text/template"
 
 	"github.com/chelnak/gh-changelog/internal/gitclient"
-	"github.com/chelnak/gh-changelog/pkg/changelog"
+	"github.com/chelnak/gh-changelog/pkg/entry"
 )
 
 var tmplSrc = `<!-- markdownlint-disable MD024 -->
@@ -79,7 +79,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 {{- end}}
 `
 
-func Write(writer io.Writer, changelog changelog.Changelog) error {
+type Changelog interface {
+	GetRepoName() string
+	GetRepoOwner() string
+	GetUnreleased() []string
+	GetEntries() []*entry.Entry
+}
+
+func Write(writer io.Writer, changelog Changelog) error {
 	tmpl, err := template.New("changelog").Funcs(template.FuncMap{
 		"getFirstCommit": func() string {
 			git := gitclient.NewGitClient(exec.Command)

@@ -1,0 +1,17 @@
+with-expecter: true
+filename: "mock_{{.InterfaceName}}.go"
+dir: "mocks/{{.PackageName}}"
+mockname: "Mock{{.InterfaceName}}"
+outpkg: "{{.PackageName}}"
+
+packages:
+  github.com/chelnak/gh-changelog/pkg/builder:
+    interfaces:
+      Git:
+      GitHub:
+  github.com/chelnak/gh-changelog/internal/githubclient:
+    interfaces:
+      GitHubClient:
+  github.com/chelnak/gh-changelog/internal/gitclient:
+    interfaces:
+      GitClient:

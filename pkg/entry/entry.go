@@ -28,7 +28,7 @@ type Entry struct {
 	Other      []string
 }
 
-// Append updates the given section in the entry..
+// Append updates the given section in the entry.
 func (e *Entry) Append(section string, entry string) error {
 	switch strings.ToLower(section) {
 	case "added":
@@ -63,7 +63,7 @@ func (e *Entry) GetSection(section string) []string {
 	return nil
 }
 
-// NewEntry creates a new entry (node) that can be added to the changelog datastructure.
+// NewEntry creates a new entry (node) that can be added to the changelog data structure.
 func NewEntry(tag string, date time.Time) Entry {
 	return Entry{
 		Tag:  tag,

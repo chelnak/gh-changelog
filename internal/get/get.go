@@ -9,7 +9,7 @@ import (
 	"github.com/chelnak/gh-changelog/pkg/parser"
 )
 
-func getTag(parsedChangelog changelog.Changelog, tag string) *entry.Entry {
+func getTag(parsedChangelog *changelog.Changelog, tag string) *entry.Entry {
 	currentEntry := parsedChangelog.Head()
 	for currentEntry != nil {
 		if currentEntry.Tag == tag {
@@ -20,12 +20,12 @@ func getTag(parsedChangelog changelog.Changelog, tag string) *entry.Entry {
 	return nil
 }
 
-func parseChangelog(fileName string) (changelog.Changelog, error) {
-	parser := parser.NewParser(fileName, "", "")
-	return parser.Parse()
+func parseChangelog(fileName string) (*changelog.Changelog, error) {
+	p := parser.NewParser(fileName, "", "")
+	return p.Parse()
 }
 
-func changelogWithSingleEntry(entry entry.Entry, repoName, repoOwner string) changelog.Changelog {
+func changelogWithSingleEntry(entry entry.Entry, repoName, repoOwner string) *changelog.Changelog {
 	// Isolate the entry
 	entry.Next = nil
 	if entry.Previous != nil {
@@ -40,7 +40,7 @@ func changelogWithSingleEntry(entry entry.Entry, repoName, repoOwner string) cha
 
 // GetVersion retrieves a local changelog, parses it and returns a string
 // containing only the specified version.
-func GetVersion(fileName string, tag string) (changelog.Changelog, error) {
+func GetVersion(fileName string, tag string) (*changelog.Changelog, error) {
 	parsedChangelog, err := parseChangelog(fileName)
 	if err != nil {
 		return nil, err
@@ -62,7 +62,7 @@ func GetVersion(fileName string, tag string) (changelog.Changelog, error) {
 
 // GetLatest retrieves a local changelog, parses it and returns a string
 // containing only the latest entry.
-func GetLatest(fileName string) (changelog.Changelog, error) {
+func GetLatest(fileName string) (*changelog.Changelog, error) {
 	parsedChangelog, err := parseChangelog(fileName)
 	if err != nil {
 		return nil, err
@@ -80,7 +80,7 @@ func GetLatest(fileName string) (changelog.Changelog, error) {
 
 // GetAll retrieves a local changelog, parses it and returns a string
 // containing all entries
-func GetAll(fileName string) (changelog.Changelog, error) {
+func GetAll(fileName string) (*changelog.Changelog, error) {
 	parsedChangelog, err := parseChangelog(fileName)
 	if err != nil {
 		return nil, err

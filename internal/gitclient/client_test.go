@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/chelnak/gh-changelog/internal/gitclient"
-	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 var testStdoutValue = "test"
@@ -63,15 +63,15 @@ func TestGetFirstCommitSuccess(t *testing.T) {
 	gitClient := gitclient.NewGitClient(fakeExecSuccess)
 	commit, err := gitClient.GetFirstCommit()
 
-	assert.NoError(t, err)
-	assert.Equal(t, "test", commit)
+	require.NoError(t, err)
+	require.Equal(t, "test", commit)
 }
 
 func TestGetFirstCommitFailure(t *testing.T) {
 	gitClient := gitclient.NewGitClient(fakeExecFailure)
 	_, err := gitClient.GetFirstCommit()
 
-	assert.Error(t, err)
+	require.Error(t, err)
 }
 
 func TestGetFirstCommitWithOrphansSuccess(t *testing.T) {
@@ -80,23 +80,23 @@ func TestGetFirstCommitWithOrphansSuccess(t *testing.T) {
 	gitClient := gitclient.NewGitClient(fakeExecSuccess)
 	commit, err := gitClient.GetFirstCommit()
 
-	assert.NoError(t, err)
-	assert.Equal(t, "test-hash-0", commit)
+	require.NoError(t, err)
+	require.Equal(t, "test-hash-0", commit)
 }
 
 func TestGetLastCommitSuccess(t *testing.T) {
 	gitClient := gitclient.NewGitClient(fakeExecSuccess)
 	commit, err := gitClient.GetLastCommit()
 
-	assert.NoError(t, err)
-	assert.Equal(t, "test", commit)
+	require.NoError(t, err)
+	require.Equal(t, "test", commit)
 }
 
 func TestGetLastCommitFailure(t *testing.T) {
 	gitClient := gitclient.NewGitClient(fakeExecFailure)
 	_, err := gitClient.GetLastCommit()
 
-	assert.Error(t, err)
+	require.Error(t, err)
 }
 
 func TestGetDateOfHashSuccess(t *testing.T) {
@@ -107,6 +107,6 @@ func TestGetDateOfHashSuccess(t *testing.T) {
 	date, err := gitClient.GetDateOfHash("test-hash")
 	expectedDate, _ := time.ParseInLocation(time.RFC3339, mockDate, time.Local)
 
-	assert.NoError(t, err)
-	assert.Equal(t, expectedDate, date)
+	require.NoError(t, err)
+	require.Equal(t, expectedDate, date)
 }

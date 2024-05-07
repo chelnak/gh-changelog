@@ -8,7 +8,7 @@ import (
 	"os"
 
 	"github.com/chelnak/gh-changelog/internal/configuration"
-	"github.com/chelnak/gh-changelog/internal/utils"
+	"github.com/chelnak/gh-changelog/internal/update"
 	"github.com/spf13/cobra"
 )
 
@@ -55,7 +55,7 @@ Issues or feature requests can be opened at:
 	Run:           nil,
 	PersistentPostRun: func(cmd *cobra.Command, args []string) {
 		if configuration.Config.CheckForUpdates {
-			utils.CheckForUpdate(version)
+			update.CheckForUpdate(version)
 		}
 	},
 }
@@ -83,7 +83,7 @@ func init() {
 func formatError(err error) {
 	fmt.Print("\n❌ It looks like something went wrong!\n")
 	fmt.Println("\nReported errors:")
-	fmt.Fprintln(os.Stderr, fmt.Errorf("• %s", err))
+	_, _ = fmt.Fprintln(os.Stderr, fmt.Errorf("• %s", err))
 	fmt.Println()
 }
 
@@ -91,7 +91,7 @@ func formatError(err error) {
 // requests to the application and handling exit codes appropriately
 func Execute() int {
 	if err := rootCmd.Execute(); err != nil {
-		if err != errSilent {
+		if !errors.Is(err, errSilent) {
 			formatError(err)
 		}
 		return 1

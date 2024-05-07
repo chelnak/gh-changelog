@@ -5,40 +5,40 @@ import (
 	"testing"
 
 	"github.com/chelnak/gh-changelog/internal/configuration"
-	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestInitConfigSetsCorrectValues(t *testing.T) {
 	err := configuration.InitConfig()
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	config := configuration.Config
 
-	assert.Equal(t, "CHANGELOG.md", config.FileName)
+	require.Equal(t, "CHANGELOG.md", config.FileName)
 
-	assert.Equal(t, []string{"maintenance", "dependencies"}, config.ExcludedLabels)
-	assert.Equal(t, 2, len(config.ExcludedLabels))
+	require.Equal(t, []string{"maintenance", "dependencies"}, config.ExcludedLabels)
+	require.Equal(t, 2, len(config.ExcludedLabels))
 
-	assert.True(t, containsKey(config.Sections, "changed"))
-	assert.True(t, containsKey(config.Sections, "added"))
-	assert.True(t, containsKey(config.Sections, "fixed"))
+	require.True(t, containsKey(config.Sections, "changed"))
+	require.True(t, containsKey(config.Sections, "added"))
+	require.True(t, containsKey(config.Sections, "fixed"))
 
-	assert.Equal(t, 3, len(config.Sections))
-	assert.Equal(t, false, config.SkipEntriesWithoutLabel)
-	assert.Equal(t, true, config.ShowUnreleased)
-	assert.Equal(t, true, config.CheckForUpdates)
-	assert.Equal(t, "spinner", config.Logger)
+	require.Equal(t, 3, len(config.Sections))
+	require.Equal(t, false, config.SkipEntriesWithoutLabel)
+	require.Equal(t, true, config.ShowUnreleased)
+	require.Equal(t, true, config.CheckForUpdates)
+	require.Equal(t, "spinner", config.Logger)
 }
 
 func TestPrintJSON(t *testing.T) {
 	err := configuration.InitConfig()
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	config := configuration.Config
 
 	var buf bytes.Buffer
 	err = config.PrintJSON(true, &buf)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	cfg := `{
   "fileName": "CHANGELOG.md",
@@ -67,18 +67,18 @@ func TestPrintJSON(t *testing.T) {
 }
 `
 
-	assert.Equal(t, cfg, buf.String())
+	require.Equal(t, cfg, buf.String())
 }
 
 func TestPrintYAML(t *testing.T) {
 	err := configuration.InitConfig()
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	config := configuration.Config
 
 	var buf bytes.Buffer
 	err = config.PrintYAML(true, &buf)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	cfg := `---
 file_name: CHANGELOG.md
@@ -100,7 +100,7 @@ show_unreleased: true
 check_for_updates: true
 logger: spinner
 `
-	assert.Equal(t, cfg, buf.String())
+	require.Equal(t, cfg, buf.String())
 }
 
 func containsKey(m map[string][]string, key string) bool {

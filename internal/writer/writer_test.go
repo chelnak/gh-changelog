@@ -9,7 +9,7 @@ import (
 	"github.com/chelnak/gh-changelog/internal/writer"
 	"github.com/chelnak/gh-changelog/pkg/changelog"
 	"github.com/chelnak/gh-changelog/pkg/entry"
-	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 const (
@@ -42,20 +42,20 @@ func Test_ItWritesOutAChangelogInTheCorrectFormat(t *testing.T) {
 	var buf bytes.Buffer
 	err := writer.Write(&buf, mockChangelog)
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
-	assert.Regexp(t, "## Unreleased", buf.String())
-	assert.Regexp(t, "- Unreleased 1", buf.String())
-	assert.Regexp(t, "- Unreleased 2", buf.String())
+	require.Regexp(t, "## Unreleased", buf.String())
+	require.Regexp(t, "- Unreleased 1", buf.String())
+	require.Regexp(t, "- Unreleased 2", buf.String())
 
-	assert.Regexp(t, regexp.MustCompile(`## \[v1.0.0\]\(https:\/\/github.com\/repo-owner\/repo-name\/tree\/v1.0.0\)`), buf.String())
-	assert.Regexp(t, regexp.MustCompile(`\[Full Changelog\]\(https:\/\/github.com\/repo-owner\/repo-name\/compare\/v0.9.0\.\.\.v1.0.0\)`), buf.String())
+	require.Regexp(t, regexp.MustCompile(`## \[v1.0.0]\(https://github.com/repo-owner/repo-name/tree/v1.0.0\)`), buf.String())
+	require.Regexp(t, regexp.MustCompile(`\[Full Changelog]\(https://github.com/repo-owner/repo-name/compare/v0.9.0\.\.\.v1.0.0\)`), buf.String())
 
-	assert.Regexp(t, "### Added", buf.String())
-	assert.Regexp(t, "- Added 1", buf.String())
-	assert.Regexp(t, "- Added 2", buf.String())
+	require.Regexp(t, "### Added", buf.String())
+	require.Regexp(t, "- Added 1", buf.String())
+	require.Regexp(t, "- Added 2", buf.String())
 
-	assert.Regexp(t, "### Other", buf.String())
-	assert.Regexp(t, "- Other 1", buf.String())
-	assert.Regexp(t, "- Other 2", buf.String())
+	require.Regexp(t, "### Other", buf.String())
+	require.Regexp(t, "- Other 1", buf.String())
+	require.Regexp(t, "- Other 2", buf.String())
 }
