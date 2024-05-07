@@ -36,7 +36,7 @@ This command is useful for creating and updating Release notes in GitHub.
 	RunE: func(command *cobra.Command, args []string) error {
 		fileName := configuration.Config.FileName
 
-		var changelog changelog.Changelog
+		var changelog *changelog.Changelog
 		var err error
 
 		if printLatest {

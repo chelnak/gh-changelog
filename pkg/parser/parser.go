@@ -8,27 +8,22 @@ import (
 	"strings"
 	"time"
 
-	"github.com/chelnak/gh-changelog/internal/utils"
+	"github.com/chelnak/gh-changelog/internal/githubclient"
 	"github.com/chelnak/gh-changelog/pkg/changelog"
 	"github.com/chelnak/gh-changelog/pkg/entry"
 	"github.com/gomarkdown/markdown/ast"
 	mdparser "github.com/gomarkdown/markdown/parser"
 )
 
-type parser struct {
+type Parser struct {
 	path      string
 	repoOwner string
 	repoName  string
 }
 
-// Parser is an interface for parsing markdown changelogs.
-type Parser interface {
-	Parse() (changelog.Changelog, error)
-}
-
 // NewParser returns a new parser for the given changelog..
-func NewParser(path, repoOwner, repoName string) Parser {
-	return &parser{
+func NewParser(path, repoOwner, repoName string) *Parser {
+	return &Parser{
 		path:      path,
 		repoName:  repoName,
 		repoOwner: repoOwner,
@@ -36,8 +31,8 @@ func NewParser(path, repoOwner, repoName string) Parser {
 }
 
 // Parse parses the changelog and returns a Changelog struct.
-func (p *parser) Parse() (changelog.Changelog, error) {
-	repoContext, err := utils.GetRepoContext()
+func (p *Parser) Parse() (*changelog.Changelog, error) {
+	repoContext, err := githubclient.GetRepoContext()
 	if err != nil {
 		return nil, err
 	}
