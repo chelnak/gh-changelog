@@ -5,17 +5,23 @@ package cmd
 import (
 	"os"
 	"path/filepath"
+	"regexp"
 
 	"github.com/chelnak/gh-changelog/internal/configuration"
+	"github.com/chelnak/gh-changelog/internal/log"
 	"github.com/chelnak/gh-changelog/internal/writer"
 	"github.com/chelnak/gh-changelog/pkg/builder"
 	"github.com/spf13/cobra"
 )
 
-var nextVersion string
-var fromVersion string
-var latestVersion bool
-var logger string
+var (
+	nextVersion   string
+	fromVersion   string
+	latestVersion bool
+	filter        string
+	ancestorsOnly bool
+	logger        string
+)
 
 // newCmd is the entry point for creating a new changelog
 var newCmd = &cobra.Command{
@@ -23,19 +29,37 @@ var newCmd = &cobra.Command{
 	Short: "Creates a new changelog from activity in the current repository",
 	Long:  "Creates a new changelog from activity in the current repository.",
 	RunE: func(command *cobra.Command, args []string) error {
-		opts := builder.BuilderOptions{
-			Logger:        logger,
-			NextVersion:   nextVersion,
-			FromVersion:   fromVersion,
-			LatestVersion: latestVersion,
-		}
-
-		builder, err := builder.NewBuilder(opts)
+		log.SetupLogging(log.GetLoggerType(logger))
+		builder, err := builder.NewBuilder()
 		if err != nil {
 			return err
 		}
 
-		changelog, err := builder.BuildChangelog()
+		if nextVersion != "" {
+			builder.NextVersion(nextVersion)
+		}
+
+		if fromVersion != "" {
+			builder.FromVersion(fromVersion)
+		}
+
+		if latestVersion {
+			builder.LatestVersion()
+		}
+
+		if filter != "" {
+			fil, err := regexp.Compile(filter)
+			if err != nil {
+				return err
+			}
+			builder.Filter(fil)
+		}
+
+		if ancestorsOnly {
+			builder.AncestorsOnly()
+		}
+
+		changelog, err := builder.Build()
 		if err != nil {
 			return err
 		}
@@ -70,7 +94,9 @@ func init() {
 		"Build the changelog starting from the latest tag. Using this flag will result in a changelog with one entry.\nIt can be useful for generating a changelog to be used in release notes.",
 	)
 
-	newCmd.Flags().StringVar(&logger, "logger", "", "The type of logger to use. Valid values are 'spinner' and 'console'. The default is 'spinner'.")
+	newCmd.Flags().StringVar(&filter, "filter", "", "Filter the results by tag name. This flag supports regular expressions.")
+	newCmd.Flags().BoolVar(&ancestorsOnly, "ancestors-only", false, "Builds the changelog with tags that are ancestor of the current branch.")
+	newCmd.Flags().StringVar(&logger, "logger", "spinner", "The type of logger to use. Valid values are 'spinner' and 'console'. The default is 'spinner'.")
 
 	newCmd.MarkFlagsMutuallyExclusive("from-version", "latest")
 	newCmd.Flags().SortFlags = false

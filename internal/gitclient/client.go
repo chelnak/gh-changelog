@@ -10,23 +10,17 @@ import (
 	"time"
 )
 
-type GitClient interface {
-	GetFirstCommit() (string, error)
-	GetLastCommit() (string, error)
-	GetDateOfHash(hash string) (time.Time, error)
-}
-
 type execContext = func(name string, arg ...string) *exec.Cmd
 
 type execOptions struct {
 	args []string
 }
 
-type git struct {
+type Git struct {
 	execContext execContext
 }
 
-func (g git) exec(opts execOptions) (string, error) {
+func (g Git) exec(opts execOptions) (string, error) {
 	// TODO: Consider not using a private exec function and hardcode
 	// each call to git in the respective command.
 	// For now, the lint check is disabled.
@@ -39,7 +33,7 @@ func (g git) exec(opts execOptions) (string, error) {
 	return strings.Trim(string(output), "\n"), nil
 }
 
-func (g git) GetFirstCommit() (string, error) {
+func (g Git) GetFirstCommit() (string, error) {
 	response, err := g.exec(execOptions{
 		args: []string{"rev-list", "--max-parents=0", "HEAD", "--reverse"},
 	})
@@ -60,13 +54,13 @@ func (g git) GetFirstCommit() (string, error) {
 	return hashes[0], nil
 }
 
-func (g git) GetLastCommit() (string, error) {
+func (g Git) GetLastCommit() (string, error) {
 	return g.exec(execOptions{
 		args: []string{"log", "-1", "--pretty=format:%H"},
 	})
 }
 
-func (g git) GetDateOfHash(hash string) (time.Time, error) {
+func (g Git) GetDateOfHash(hash string) (time.Time, error) {
 	date, err := g.exec(execOptions{
 		args: []string{"log", "-1", "--format=%cI", hash, "--date=local"},
 	})
@@ -78,8 +72,50 @@ func (g git) GetDateOfHash(hash string) (time.Time, error) {
 	return time.ParseInLocation(time.RFC3339, date, time.Local)
 }
 
-func NewGitClient(cmdContext execContext) GitClient {
-	return git{
+func (g Git) GetCurrentBranch() (string, error) {
+	return g.exec(execOptions{
+		args: []string{"rev-parse", "--abbrev-ref", "HEAD"},
+	})
+}
+
+func (g Git) FetchAll() error {
+	_, err := g.exec(execOptions{
+		args: []string{"fetch", "--all"},
+	})
+
+	return err
+}
+
+func (g Git) Tags() ([]string, error) {
+	tags, err := g.exec(execOptions{
+		args: []string{"for-each-ref", "--format='%(refname:short) %(objectname) %(taggerdate:iso-strict)'", "refs/tags"},
+	})
+
+	if err != nil {
+		return nil, err
+	}
+	t := strings.Split(tags, "\n")
+	return t, nil
+}
+
+func (g Git) IsAncestorOf(commit, ancestor string) (bool, error) {
+	_, err := g.exec(execOptions{
+		args: []string{"merge-base", "--is-ancestor", commit, ancestor},
+	})
+
+	if err != nil {
+		if strings.Contains(err.Error(), "exit status 1") {
+			return false, nil
+		}
+
+		return false, err
+	}
+
+	return true, nil
+}
+
+func NewGitClient(cmdContext execContext) Git {
+	return Git{
 		execContext: cmdContext,
 	}
 }
