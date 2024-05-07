@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/chelnak/gh-changelog/internal/utils"
-	"github.com/cli/go-gh"
+	"github.com/cli/go-gh/v2/pkg/api"
 	"github.com/shurcooL/githubv4"
 )
 
@@ -40,7 +40,7 @@ func (client *githubClient) GetRepoOwner() string {
 }
 
 func NewGitHubClient() (GitHubClient, error) {
-	httpClient, err := gh.HTTPClient(nil)
+	httpClient, err := api.DefaultHTTPClient()
 	if err != nil {
 		return nil, fmt.Errorf("could not create initial client: %s", err)
 	}
