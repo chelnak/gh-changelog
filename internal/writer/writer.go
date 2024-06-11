@@ -11,7 +11,7 @@ import (
 	"github.com/chelnak/gh-changelog/pkg/changelog"
 )
 
-var tmplSrc = `<!-- markdownlint-disable MD024 -->
+const tmplStandard = `<!-- markdownlint-disable MD024 -->
 # Changelog
 
 All notable changes to this project will be documented in this file.
@@ -79,7 +79,57 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 {{- end}}
 `
 
-func Write(writer io.Writer, changelog changelog.Changelog) error {
+const tmplNotes = `{{range .GetEntries }}
+{{- if .Security }}
+### Security
+{{range .Security}}
+- {{.}}
+{{- end}}
+{{end}}
+{{- if .Changed }}
+### Changed
+{{range .Changed}}
+- {{.}}
+{{- end}}
+{{end}}
+{{- if .Removed }}
+### Removed
+{{range .Removed}}
+- {{.}}
+{{- end}}
+{{end}}
+{{- if .Deprecated }}
+### Deprecated
+{{range .Deprecated}}
+- {{.}}
+{{- end}}
+{{end}}
+{{- if .Added }}
+### Added
+{{range .Added}}
+- {{.}}
+{{- end}}
+{{end}}
+{{- if .Fixed }}
+### Fixed
+{{range .Fixed}}
+- {{.}}
+{{- end}}
+{{end}}
+{{- if .Other }}
+### Other
+{{range .Other}}
+- {{.}}
+{{- end}}
+{{end}}
+{{- end}}`
+
+const (
+	TmplSrcStandard = tmplStandard
+	TmplSrcNotes    = tmplNotes
+)
+
+func Write(writer io.Writer, tmplSrc string, changelog changelog.Changelog) error {
 	tmpl, err := template.New("changelog").Funcs(template.FuncMap{
 		"getFirstCommit": func() string {
 			git := gitclient.NewGitClient(exec.Command)

@@ -40,7 +40,7 @@ func Test_ItWritesOutAChangelogInTheCorrectFormat(t *testing.T) {
 	mockChangelog.AddUnreleased([]string{"Unreleased 1", "Unreleased 2"})
 
 	var buf bytes.Buffer
-	err := writer.Write(&buf, mockChangelog)
+	err := writer.Write(&buf, writer.TmplSrcStandard, mockChangelog)
 
 	assert.NoError(t, err)
 
@@ -58,4 +58,12 @@ func Test_ItWritesOutAChangelogInTheCorrectFormat(t *testing.T) {
 	assert.Regexp(t, "### Other", buf.String())
 	assert.Regexp(t, "- Other 1", buf.String())
 	assert.Regexp(t, "- Other 2", buf.String())
+
+	buf.Reset()
+	err = writer.Write(&buf, writer.TmplSrcNotes, mockChangelog)
+
+	assert.NoError(t, err)
+
+	assert.NotRegexp(t, regexp.MustCompile(`## \[v1.0.0\]\(https:\/\/github.com\/repo-owner\/repo-name\/tree\/v1.0.0\)`), buf.String())
+	assert.NotRegexp(t, regexp.MustCompile(`\[Full Changelog\]\(https:\/\/github.com\/repo-owner\/repo-name\/compare\/v0.9.0\.\.\.v1.0.0\)`), buf.String())
 }
