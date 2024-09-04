@@ -10,7 +10,7 @@ import (
 	"strings"
 
 	"github.com/chelnak/gh-changelog/internal/version"
-	"github.com/cli/go-gh"
+	"github.com/cli/go-gh/v2/pkg/repository"
 	"github.com/fatih/color"
 )
 
@@ -107,7 +107,7 @@ type RepoContext struct {
 
 // GetRepoContext returns a new RepoContext struct with the current repository owner and name.
 func GetRepoContext() (RepoContext, error) {
-	currentRepository, err := gh.CurrentRepository()
+	currentRepository, err := repository.Current()
 	if err != nil {
 		if strings.Contains(err.Error(), "not a git repository (or any of the parent directories)") {
 			return RepoContext{}, fmt.Errorf("the current directory is not a git repository")
@@ -117,7 +117,7 @@ func GetRepoContext() (RepoContext, error) {
 	}
 
 	return RepoContext{
-		Owner: currentRepository.Owner(),
-		Name:  currentRepository.Name(),
+		Owner: currentRepository.Owner,
+		Name:  currentRepository.Name,
 	}, nil
 }
