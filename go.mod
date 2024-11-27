@@ -10,7 +10,7 @@ require (
 	github.com/charmbracelet/glamour v0.7.0
 	github.com/charmbracelet/lipgloss v0.10.1-0.20240413172830-d0be07ea6b9c
 	github.com/chelnak/ysmrr v0.4.0
-	github.com/cli/go-gh/v2 v2.9.0
+	github.com/cli/go-gh/v2 v2.11.1
 	github.com/fatih/color v1.16.0
 	github.com/gomarkdown/markdown v0.0.0-20240419095408-642f0ee99ae2
 	github.com/jarcoal/httpmock v1.2.0
