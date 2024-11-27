@@ -26,8 +26,8 @@ github.com/charmbracelet/x/exp/term v0.0.0-20240506152644-8135bef4e495 h1:+0U9qX
 github.com/charmbracelet/x/exp/term v0.0.0-20240506152644-8135bef4e495/go.mod h1:qeR6w1zITbkF7vEhcx0CqX5GfnIiQloJWQghN6HfP+c=
 github.com/chelnak/ysmrr v0.4.0 h1:WMvLGPlBK0kb6wHf5z9FfNvpM6sB9765jy2ajYc1Sfs=
 github.com/chelnak/ysmrr v0.4.0/go.mod h1:8vCna4PJsPCb6eevtoG7Tljzfx3twpsO203Qj2gafLM=
-github.com/cli/go-gh/v2 v2.9.0 h1:D3lTjEneMYl54M+WjZ+kRPrR5CEJ5BHS05isBPOV3LI=
-github.com/cli/go-gh/v2 v2.9.0/go.mod h1:MeRoKzXff3ygHu7zP+NVTT+imcHW6p3tpuxHAzRM2xE=
+github.com/cli/go-gh/v2 v2.11.1 h1:amAyfqMWQTBdue8iTmDUegGZK7c8kk6WCxD9l/wLtGI=
+github.com/cli/go-gh/v2 v2.11.1/go.mod h1:MeRoKzXff3ygHu7zP+NVTT+imcHW6p3tpuxHAzRM2xE=
 github.com/cli/safeexec v1.0.1 h1:e/C79PbXF4yYTN/wauC4tviMxEV13BwljGj0N9j+N00=
 github.com/cli/safeexec v1.0.1/go.mod h1:Z/D4tTN8Vs5gXYHDCbaM1S/anmEDnJb1iW0+EJ5zx3Q=
 github.com/cli/shurcooL-graphql v0.0.4 h1:6MogPnQJLjKkaXPyGqPRXOI2qCsQdqNfUY1QSJu2GuY=
